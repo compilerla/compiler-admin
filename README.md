@@ -16,3 +16,17 @@ Additionally, GYB is used for Gmail backup/restore. See the [GYB Wiki](https://g
 for more information.
 
 **Note:** This setup can only be performed by administrators of the Compiler Google Workspace.
+
+## Offboarding a user
+
+**Usage:**
+
+```bash
+bin/offboard.sh USER [ALIAS]
+```
+
+* `USER` is the username (sans domain) to offboard
+* `ALIAS` is optional, and is a username (sans domain) that will get an alias
+   added for the offboarded `USER`
+
+Read more about the [offboarding process in Compiler's notes](https://docs.google.com/document/d/1UEwQzJZyJEkRs3PRwOi0-KXwBFne70am4Nk9-_qYItE/edit#heading=h.liqi1hwxykhs).
