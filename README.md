@@ -30,3 +30,11 @@ bin/offboard.sh USER [ALIAS]
    added for the offboarded `USER`
 
 Read more about the [offboarding process in Compiler's notes](https://docs.google.com/document/d/1UEwQzJZyJEkRs3PRwOi0-KXwBFne70am4Nk9-_qYItE/edit#heading=h.liqi1hwxykhs).
+
+This script creates a local backup of `USER`'s inbox; a separate script can be run to archive this backup into the `archive@compiler.la` account:
+
+```bash
+bin/archive-gmail-backup.sh USER
+```
+
+* `USER` is the account in compiler.la (sans domain) with a local backup to archive

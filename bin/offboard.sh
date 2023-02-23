@@ -66,10 +66,6 @@ gyb --service-account --email $ACCOUNT --action backup
 
 echo_ts "Email backup complete"
 
-echo_ts "Restoring email to $ARCHIVE..."
-
-gyb --service-account --email $ARCHIVE --action restore --local-folder GYB-GMail-Backup-$ACCOUNT --label-restored $ACCOUNT
-
 echo_ts "Starting Drive and Calendar transfer..."
 
 gam create transfer $ACCOUNT calendar,drive $ARCHIVE all releaseresources
