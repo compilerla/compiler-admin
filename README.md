@@ -17,6 +17,17 @@ for more information.
 
 **Note:** This setup can only be performed by administrators of the Compiler Google Workspace.
 
+## Creating a user
+
+**Usage:**
+
+```bash
+bin/create.sh USER [OPTIONS]
+```
+
+* `USER` is the username (sans domain) to create
+* `OPTIONS` is a list of options for [GAM user create](https://github.com/taers232c/GAMADV-XTD3/wiki/Users#create-a-user)
+
 ## Offboarding a user
 
 **Usage:**
