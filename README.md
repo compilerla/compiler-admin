@@ -25,8 +25,19 @@ for more information.
 bin/create.sh USER [OPTIONS]
 ```
 
-* `USER` is the username (sans domain) to create
-* `OPTIONS` is a list of options for [GAM user create](https://github.com/taers232c/GAMADV-XTD3/wiki/Users#create-a-user)
+- `USER` is the username (sans domain) to create
+- `OPTIONS` is a list of options for [GAM user create](https://github.com/taers232c/GAMADV-XTD3/wiki/Users#create-a-user)
+
+## Convert a user
+
+**Usage:**
+
+```bash
+bin/convert.sh USER TYPE
+```
+
+- `USER` is the username (sans domain) to convert
+- `TYPE` is either `STAFF` to convert the user to a staff member, or `PARTNER` to conver the user to a partner.
 
 ## Offboarding a user
 
@@ -36,9 +47,9 @@ bin/create.sh USER [OPTIONS]
 bin/offboard.sh USER [ALIAS]
 ```
 
-* `USER` is the username (sans domain) to offboard
-* `ALIAS` is optional, and is a username (sans domain) that will get an alias
-   added for the offboarded `USER`
+- `USER` is the username (sans domain) to offboard
+- `ALIAS` is optional, and is a username (sans domain) that will get an alias
+  added for the offboarded `USER`
 
 Read more about the [offboarding process in Compiler's notes](https://docs.google.com/document/d/1UEwQzJZyJEkRs3PRwOi0-KXwBFne70am4Nk9-_qYItE/edit#heading=h.liqi1hwxykhs).
 
@@ -48,4 +59,4 @@ This script creates a local backup of `USER`'s inbox; a separate script can be r
 bin/archive-gmail-backup.sh USER
 ```
 
-* `USER` is the account in compiler.la (sans domain) with a local backup to archive
+- `USER` is the account in compiler.la (sans domain) with a local backup to archive

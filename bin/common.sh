@@ -6,6 +6,8 @@ DOMAIN="compiler.la"
 # Compiler's archive account
 ARCHIVE="archive@$DOMAIN"
 # Compiler groups
+PARTNERS="partners@$DOMAIN"
+STAFF="staff@$DOMAIN"
 TEAM="team@$DOMAIN"
 
 # prints a simple timestamp HH:mm:ss
@@ -30,4 +32,19 @@ archive_user_exists() {
         echo_ts "Compiler archive user $ARCHIVE not found! This is a problem!!"
         exit 1
     fi
+}
+
+user_in_group() {
+    user="$1"
+    group="$2"
+
+    gam print groups member "$user" | grep "$group" &> /dev/null
+}
+
+user_is_partner() {
+    user_in_group "$1" "$PARTNERS"
+}
+
+user_is_staff() {
+    user_in_group "$1" "$STAFF"
 }
