@@ -38,7 +38,6 @@ if user_exists $ACCOUNT; then
     exit 1
 else
     echo_ts "Account $ACCOUNT does not exist, continuing..."
-
 fi
 
 # Account creation
@@ -46,5 +45,9 @@ fi
 echo_ts "Creating account..."
 
 gam create user $ACCOUNT "$@"
+
+echo_ts "Adding to $TEAM group..."
+
+gam user $ACCOUNT add groups member $TEAM
 
 echo_ts "$ACCOUNT has been created"

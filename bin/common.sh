@@ -5,6 +5,8 @@ set -eu
 DOMAIN="compiler.la"
 # Compiler's archive account
 ARCHIVE="archive@$DOMAIN"
+# Compiler groups
+TEAM="team@$DOMAIN"
 
 # prints a simple timestamp HH:mm:ss
 ts () {
