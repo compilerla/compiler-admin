@@ -13,13 +13,13 @@ Arguments:
   OPTIONS      A list of options for GAM user create, e.g.
     firstname User
     lastname Name
-    password random
-    changepassword
     recoveryemail something@something.com
     recoveryphone \"+1 (310) 555-5555\"
 
     See https://github.com/taers232c/GAMADV-XTD3/wiki/Users#create-a-user
     for the complete list of OPTIONS
+
+    The user's password is randomly generated and requires reset on first login.
 "
 
 # print usage for -? or -h or --help
@@ -44,7 +44,7 @@ fi
 
 echo_ts "Creating account..."
 
-gam create user $ACCOUNT "$@"
+gam create user $ACCOUNT password random changepassword "$@"
 
 echo_ts "Adding to $TEAM group..."
 
