@@ -48,15 +48,6 @@ fi
 
 # Offboard process
 
-signout="${SCRIPT_DIR}/signout.sh"
-$signout "$1"
-
-echo_ts "Suspending account..."
-
-gam suspend user $ACCOUNT noactionifalias
-
-echo_ts "Suspending account done"
-
 echo_ts "Removing from groups..."
 
 gam user $ACCOUNT delete groups
@@ -83,11 +74,13 @@ done
 
 echo_ts "Drive and Calendar transfer complete"
 
-echo_ts "Starting account deletion..."
+echo_ts "Starting account deprovision..."
+
+gam user $ACCOUNT deprovision popimap signout
 
 gam delete user $ACCOUNT noactionifalias
 
-echo_ts "Account deletion complete"
+echo_ts "Account deprovision complete"
 
 if [[ "$ALIAS" != "" ]]; then
     echo_ts "Adding an alias on account $ALIAS..."
