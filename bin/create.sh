@@ -46,8 +46,8 @@ echo_ts "Creating account..."
 
 gam create user $ACCOUNT password random changepassword "$@"
 
-echo_ts "Adding to $TEAM group..."
+echo_ts "Adding to $GROUP_TEAM group..."
 
-gam user $ACCOUNT add groups member $TEAM
+gam user $ACCOUNT add groups member $GROUP_TEAM
 
 echo_ts "$ACCOUNT has been created"

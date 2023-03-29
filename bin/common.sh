@@ -5,10 +5,13 @@ set -eu
 DOMAIN="compiler.la"
 # Compiler's archive account
 ARCHIVE="archive@$DOMAIN"
-# Compiler groups
-PARTNERS="partners@$DOMAIN"
-STAFF="staff@$DOMAIN"
-TEAM="team@$DOMAIN"
+# Compiler org structure
+OU_CONTRACTORS="contractors"
+OU_STAFF="staff"
+OU_PARTNERS="$OU_STAFF/partners"
+GROUP_PARTNERS="$OU_PARTNERS@$DOMAIN"
+GROUP_STAFF="$OU_STAFF@$DOMAIN"
+GROUP_TEAM="team@$DOMAIN"
 
 # prints a simple timestamp HH:mm:ss
 ts () {
@@ -42,9 +45,9 @@ user_in_group() {
 }
 
 user_is_partner() {
-    user_in_group "$1" "$PARTNERS"
+    user_in_group "$1" "$GROUP_PARTNERS"
 }
 
 user_is_staff() {
-    user_in_group "$1" "$STAFF"
+    user_in_group "$1" "$GROUP_STAFF"
 }
