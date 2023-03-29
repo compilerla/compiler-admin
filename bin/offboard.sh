@@ -48,6 +48,9 @@ fi
 
 # Offboard process
 
+signout="${SCRIPT_DIR}/signout.sh"
+$signout "$1"
+
 echo_ts "Suspending account..."
 
 gam suspend user $ACCOUNT noactionifalias
