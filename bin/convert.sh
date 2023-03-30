@@ -14,7 +14,7 @@ Arguments:
 "
 
 # print usage for -? or -h or --help
-if [[ "$#" -lt 1 || "$1" =~ ^(-\?|-h|--help)$ ]]; then
+if [[ "$#" -lt 2 || "$1" =~ ^(-\?|-h|--help)$ ]]; then
     echo "$__usage"
     exit 0
 fi
