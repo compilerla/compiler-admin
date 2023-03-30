@@ -10,7 +10,7 @@ Usage: $(basename $0) USER TYPE
 
 Arguments:
   USER         The account in $DOMAIN (sans domain) to convert
-  TYPE         The type of conversion [STAFF or PARTNER]
+  TYPE         The type of conversion [CONTRACTOR, STAFF, or PARTNER]
 "
 
 # print usage for -? or -h or --help
@@ -32,23 +32,34 @@ fi
 
 TYPE="$2"
 
-if echo "$TYPE" | grep -i staff &> /dev/null; then
+if echo "$TYPE" | grep -i contractor &> /dev/null; then
+    if user_is_staff $ACCOUNT; then
+      gam update group $GROUP_STAFF delete $ACCOUNT
+    elif user_is_partner $ACCOUNT; then
+        gam update group $GROUP_PARTNERS delete $ACCOUNT
+    fi
+
+    gam update ou $OU_CONTRACTORS move $ACCOUNT
+elif echo "$TYPE" | grep -i staff &> /dev/null; then
     if user_is_staff "$ACCOUNT"; then
-        echo_ts "Account $ACCOUNT is already a member of $STAFF"
+        echo_ts "Account $ACCOUNT is already a member of $GROUP_STAFF"
         exit 1
     fi
-    GROUP="$STAFF"
+
+    gam user $ACCOUNT add groups member $GROUP_STAFF
+    gam update ou $OU_STAFF move $ACCOUNT
 elif echo "$TYPE" | grep -i partner &> /dev/null; then
     if user_is_partner "$ACCOUNT"; then
-        echo_ts "Account $ACCOUNT is already a member of $PARTNERS"
+        echo_ts "Account $ACCOUNT is already a member of $GROUP_PARTNERS"
         exit 1
     fi
-    GROUP="$PARTNERS"
+
+    gam user $ACCOUNT add groups member $GROUP_STAFF
+    gam user $ACCOUNT add groups member $GROUP_PARTNERS
+    gam update ou $OU_PARTNERS move $ACCOUNT
 else
     echo_ts "Unsupported conversion type: $TYPE"
     exit 1
 fi
 
-echo_ts "Converting $ACCOUNT to $TYPE..."
-
-gam user $ACCOUNT add groups member $GROUP
+echo_ts "Account conversion complete"
