@@ -10,7 +10,7 @@ Usage: $(basename $0) USER TYPE
 
 Arguments:
   USER         The account in $DOMAIN (sans domain) to assign
-  CLIENT       The client code used to construct the group
+  GROUP        The group in $DOMAIN (sans domain) to assign
 "
 
 # print usage for -? or -h or --help
