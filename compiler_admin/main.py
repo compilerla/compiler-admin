@@ -1,8 +1,9 @@
+from compiler_admin import __version__ as version
 from compiler_admin.services.google import CallGAMCommand
 
 
 def main():
-    print("compiler-admin")
+    print(f"compiler-admin: {version}")
 
     return CallGAMCommand(["version"])
 

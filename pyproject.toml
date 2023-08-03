@@ -1,6 +1,6 @@
 [project]
 name = "compiler-admin"
-version = "2.0.0"
+dynamic = ["version"]
 description = "Administrative tasks for Compiler's internal systems."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -35,7 +35,7 @@ test = [
 compiler-admin = "compiler_admin.main:main"
 
 [build-system]
-requires = ["setuptools>=64", "wheel"]
+requires = ["setuptools>=64", "wheel", "setuptools-git-versioning<2"]
 build-backend = "setuptools.build_meta"
 
 [tool.black]
@@ -54,3 +54,7 @@ norecursedirs = [
     ".pytest_cache",
     ".vscode",
 ]
+
+[tool.setuptools-git-versioning]
+enabled = true
+dev_template = "{tag}+{ccount}.{sha}"
