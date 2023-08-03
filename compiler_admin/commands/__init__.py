@@ -1,0 +1,1 @@
+RESULT_SUCCESS = 0

@@ -2,7 +2,7 @@ import argparse
 import sys
 
 from compiler_admin import __version__ as version
-from compiler_admin.services.google import CallGAMCommand
+from compiler_admin.commands.info import info
 
 
 def main(argv=None):
@@ -17,11 +17,21 @@ def main(argv=None):
         version=f"%(prog)s {version}",
     )
 
-    parser.parse_args(argv)
+    subparsers = parser.add_subparsers(dest="command")
 
-    print(f"compiler-admin: {version}")
+    def _subcmd(name, help):
+        parser = subparsers.add_parser(name, help=help)
+        return parser
 
-    return CallGAMCommand(["version"])
+    _subcmd("info", help="Print configuration and debugging information.")
+
+    if len(argv) == 0:
+        argv = ["info"]
+
+    args = parser.parse_args(argv)
+
+    if args.command == "info":
+        return info()
 
 
 if __name__ == "__main__":

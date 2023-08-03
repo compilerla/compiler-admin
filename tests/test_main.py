@@ -1,31 +1,26 @@
 import subprocess
 
+from compiler_admin import __version__ as version
+import compiler_admin.main
 from compiler_admin.main import main
-
-import pytest
-
-
-@pytest.fixture
-def main_cmd():
-    return "compiler-admin"
+from compiler_admin.services.google import DOMAIN
 
 
-def test_main(capfd, main_cmd):
+def test_main(mocker):
+    spy_info = mocker.spy(compiler_admin.main, "info")
     res = main(argv=[])
-    captured = capfd.readouterr()
 
     assert res == 0
-    assert main_cmd in captured.out
-    assert "GAMADV-XTD3" in captured.out
-    assert "WARNING: Config File:" not in captured.err
+    spy_info.assert_called_once()
 
 
-def test_run_compiler(capfd, main_cmd):
+def test_run_compiler_admin(capfd):
     # call CLI command as a subprocess
-    res = subprocess.call([main_cmd])
+    res = subprocess.call(["compiler-admin"])
     captured = capfd.readouterr()
 
     assert res == 0
-    assert main_cmd in captured.out
+    assert f"compiler-admin: {version}" in captured.out
     assert "GAMADV-XTD3" in captured.out
+    assert f"Primary Domain: {DOMAIN}" in captured.out
     assert "WARNING: Config File:" not in captured.err
