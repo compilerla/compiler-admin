@@ -3,6 +3,7 @@ import sys
 
 from compiler_admin import __version__ as version
 from compiler_admin.commands.info import info
+from compiler_admin.commands.init import init
 
 
 def main(argv=None):
@@ -25,6 +26,9 @@ def main(argv=None):
 
     _subcmd("info", help="Print configuration and debugging information.")
 
+    init_parser = _subcmd("init", help="Initialize a new admin project. This command should be run once before any others.")
+    init_parser.add_argument("admin_user")
+
     if len(argv) == 0:
         argv = ["info"]
 
@@ -32,6 +36,8 @@ def main(argv=None):
 
     if args.command == "info":
         return info()
+    elif args.command == "init":
+        return init(args.admin_user)
 
 
 if __name__ == "__main__":
