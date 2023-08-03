@@ -11,7 +11,7 @@ def main_cmd():
 
 
 def test_main(capfd, main_cmd):
-    res = main()
+    res = main(argv=[])
     captured = capfd.readouterr()
 
     assert res == 0
