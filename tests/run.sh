@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -eu
+
+# run normal pytests, skip e2e tests
+pytest -m "not e2e" --cov=compiler_admin --cov-branch --import-mode=importlib
+
+# clean out old coverage results
+rm -rf ./tests/coverage
+
+# regenerate coverate report
+coverage html --directory ./tests/coverage

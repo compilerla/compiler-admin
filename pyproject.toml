@@ -48,6 +48,9 @@ include = ["compiler_admin", "tests"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+    "e2e: marks tests that need a live config",
+]
 norecursedirs = [
     "*.egg-info",
     ".git",

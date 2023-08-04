@@ -1,9 +1,12 @@
+import pytest
+
 from compiler_admin import __version__ as version
 from compiler_admin.commands import RESULT_SUCCESS
 from compiler_admin.commands.info import info
 from compiler_admin.services.google import DOMAIN
 
 
+@pytest.mark.e2e
 def test_info(capfd):
     res = info()
     captured = capfd.readouterr()

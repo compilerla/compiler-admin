@@ -1,11 +1,14 @@
 import subprocess
 
+import pytest
+
 from compiler_admin import __version__ as version
 import compiler_admin.main
 from compiler_admin.main import main
 from compiler_admin.services.google import DOMAIN
 
 
+@pytest.mark.e2e
 def test_main(mocker):
     spy_info = mocker.spy(compiler_admin.main, "info")
     res = main(argv=[])
@@ -14,6 +17,7 @@ def test_main(mocker):
     spy_info.assert_called_once()
 
 
+@pytest.mark.e2e
 def test_run_compiler_admin(capfd):
     # call CLI command as a subprocess
     res = subprocess.call(["compiler-admin"])

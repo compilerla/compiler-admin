@@ -219,6 +219,7 @@ def test_user_is_staff_checks_staff_group(mock_user_in_group):
     assert mock_user_in_group.call_args.args == ("username", GROUP_STAFF)
 
 
+@pytest.mark.e2e
 def test_archive_user_exists(capfd):
     res = user_exists(USER_ARCHIVE)
     captured = capfd.readouterr()
@@ -228,6 +229,7 @@ def test_archive_user_exists(capfd):
     assert "Google Unique ID:" in captured.out
 
 
+@pytest.mark.e2e
 def test_nonexistent_user_does_not_exist(capfd):
     username = f"nope_does_not_exist@{DOMAIN}"
     res = user_exists(username)
@@ -237,19 +239,23 @@ def test_nonexistent_user_does_not_exist(capfd):
     assert f"User: {username}, Does not exist" in captured.err
 
 
+@pytest.mark.e2e
 def test_nonexistent_not_in_team():
     username = f"nope_does_not_exist@{DOMAIN}"
 
     assert not user_in_group(username, GROUP_TEAM)
 
 
+@pytest.mark.e2e
 def test_archive_user_not_in_team():
     assert not user_in_group(USER_ARCHIVE, GROUP_TEAM)
 
 
+@pytest.mark.e2e
 def test_archive_user_is_not_partner():
     assert not user_is_partner(USER_ARCHIVE)
 
 
+@pytest.mark.e2e
 def test_archive_user_is_not_staff():
     assert not user_is_staff(USER_ARCHIVE)
