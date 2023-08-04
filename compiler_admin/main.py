@@ -5,6 +5,7 @@ from compiler_admin import __version__ as version
 from compiler_admin.commands.create import create
 from compiler_admin.commands.info import info
 from compiler_admin.commands.init import init
+from compiler_admin.commands.signout import signout
 
 
 def main(argv=None):
@@ -38,6 +39,8 @@ def main(argv=None):
 
     _subcmd("create", help="Create a new user in the Compiler domain.", add_username_arg=True)
 
+    _subcmd("signout", help="Signs a user out from all active sessions.", add_username_arg=True)
+
     if len(argv) == 0:
         argv = ["info"]
 
@@ -49,6 +52,8 @@ def main(argv=None):
         return create(args.username, *extra)
     elif args.command == "init":
         return init(args.username)
+    elif args.command == "signout":
+        return signout(args.username)
 
 
 if __name__ == "__main__":
