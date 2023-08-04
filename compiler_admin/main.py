@@ -3,6 +3,7 @@ import sys
 
 from compiler_admin import __version__ as version
 from compiler_admin.commands.create import create
+from compiler_admin.commands.delete import delete
 from compiler_admin.commands.info import info
 from compiler_admin.commands.init import init
 from compiler_admin.commands.signout import signout
@@ -39,6 +40,8 @@ def main(argv=None):
 
     _subcmd("create", help="Create a new user in the Compiler domain.", add_username_arg=True)
 
+    _subcmd("delete", help="Delete a user account.", add_username_arg=True)
+
     _subcmd("signout", help="Signs a user out from all active sessions.", add_username_arg=True)
 
     if len(argv) == 0:
@@ -50,6 +53,8 @@ def main(argv=None):
         return info()
     elif args.command == "create":
         return create(args.username, *extra)
+    elif args.command == "delete":
+        return delete(args.username)
     elif args.command == "init":
         return init(args.username)
     elif args.command == "signout":
