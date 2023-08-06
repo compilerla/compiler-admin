@@ -6,7 +6,7 @@ from compiler_admin.commands.offboard import offboard, __name__ as MODULE
 
 @pytest.fixture
 def mock_NamedTemporaryFile(mock_NamedTemporaryFile):
-    return mock_NamedTemporaryFile(MODULE)
+    return mock_NamedTemporaryFile(MODULE, ["Overall Transfer Status: completed"])
 
 
 @pytest.fixture
@@ -30,7 +30,6 @@ def mock_CallGAMCommand(mock_CallGAMCommand):
 
 
 def test_offboard_user_exists(
-    mocker,
     mock_user_exists,
     mock_CallGAMCommand,
     mock_NamedTemporaryFile,
@@ -38,16 +37,6 @@ def test_offboard_user_exists(
     mock_delete,
 ):
     mock_user_exists.return_value = True
-
-    # mock the enter/exit methods to fake a context manager
-    # supporting mocking of the "with" context for a NamedTemporaryFile
-    # idea from https://stackoverflow.com/a/28852060
-    mock_stdout = mocker.Mock()
-    mock_stdout.__enter__ = mocker.Mock(
-        return_value=mocker.Mock(readlines=mocker.Mock(return_value=["Overall Transfer Status: completed"]))
-    )
-    mock_stdout.__exit__ = mocker.Mock()
-    mock_NamedTemporaryFile.return_value = mock_stdout
 
     res = offboard("username")
 

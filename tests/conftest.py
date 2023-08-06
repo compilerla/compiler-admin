@@ -33,10 +33,21 @@ def mock_add_user_to_group(mocker):
 
 @pytest.fixture
 def mock_NamedTemporaryFile(mocker):
-    """Fixture returns a function that patches NamedTemporaryFile in a given module."""
+    """Fixture returns a function that patches NamedTemporaryFile in a given module.
 
-    def _mock_NamedTemporaryFile(module, **kwargs):
-        return mocker.patch(f"{module}.NamedTemporaryFile", **kwargs)
+    Optionally provide a value for GAM stdout.readlines().
+    """
+
+    def _mock_NamedTemporaryFile(module, readlines=[""], **kwargs):
+        patched = mocker.patch(f"{module}.NamedTemporaryFile", **kwargs)
+        # mock the enter/exit methods to fake a context manager
+        # supporting mocking of the "with" context for a NamedTemporaryFile
+        # idea from https://stackoverflow.com/a/28852060
+        mock_stdout = mocker.Mock()
+        mock_stdout.__enter__ = mocker.Mock(return_value=mocker.Mock(readlines=mocker.Mock(return_value=readlines)))
+        mock_stdout.__exit__ = mocker.Mock()
+        patched.return_value = mock_stdout
+        return patched
 
     return _mock_NamedTemporaryFile
 
