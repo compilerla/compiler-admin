@@ -28,18 +28,18 @@ def mock_gam_CallGAMCommand(mocker):
 
 
 @pytest.fixture
-def mock_CallGAMCommand(mock_CallGAMCommand):
-    return mock_CallGAMCommand(MODULE)
+def mock_google_CallGAMCommand(mock_google_CallGAMCommand):
+    return mock_google_CallGAMCommand(MODULE)
 
 
 @pytest.fixture
-def mock_user_exists(mock_user_exists):
-    return mock_user_exists(MODULE)
+def mock_google_user_exists(mock_google_user_exists):
+    return mock_google_user_exists(MODULE)
 
 
 @pytest.fixture
-def mock_user_in_group(mock_user_in_group):
-    return mock_user_in_group(MODULE)
+def mock_google_user_in_group(mock_google_user_in_group):
+    return mock_google_user_in_group(MODULE)
 
 
 @pytest.fixture
@@ -161,24 +161,24 @@ def test_user_exists_username_not_in_domain(capfd):
     assert "User not in domain" in captured.out
 
 
-def test_user_exists_user_exists(mock_CallGAMCommand):
-    mock_CallGAMCommand.return_value = 0
+def test_user_exists_user_exists(mock_google_CallGAMCommand):
+    mock_google_CallGAMCommand.return_value = 0
 
     res = user_exists(user_account_name("username"))
 
     assert res is True
 
 
-def test_user_exists_user_does_not_exists(mock_CallGAMCommand):
-    mock_CallGAMCommand.return_value = -1
+def test_user_exists_user_does_not_exists(mock_google_CallGAMCommand):
+    mock_google_CallGAMCommand.return_value = -1
 
     res = user_exists(user_account_name("username"))
 
     assert res is False
 
 
-def test_user_in_group_user_does_not_exist(mock_user_exists, capfd):
-    mock_user_exists.return_value = False
+def test_user_in_group_user_does_not_exist(mock_google_user_exists, capfd):
+    mock_google_user_exists.return_value = False
 
     res = user_in_group("username", "group")
     captured = capfd.readouterr()
@@ -187,36 +187,36 @@ def test_user_in_group_user_does_not_exist(mock_user_exists, capfd):
     assert "User does not exist" in captured.out
 
 
-@pytest.mark.usefixtures("mock_NamedTemporaryFile", "mock_CallGAMCommand")
-def test_user_in_group_user_exists_in_group(mock_user_exists):
-    mock_user_exists.return_value = True
+@pytest.mark.usefixtures("mock_NamedTemporaryFile", "mock_google_CallGAMCommand")
+def test_user_in_group_user_exists_in_group(mock_google_user_exists):
+    mock_google_user_exists.return_value = True
 
     res = user_in_group("username", "group")
 
     assert res is True
 
 
-@pytest.mark.usefixtures("mock_NamedTemporaryFile", "mock_CallGAMCommand")
-def test_user_in_group_user_exists_not_in_group(mock_user_exists):
-    mock_user_exists.return_value = True
+@pytest.mark.usefixtures("mock_NamedTemporaryFile", "mock_google_CallGAMCommand")
+def test_user_in_group_user_exists_not_in_group(mock_google_user_exists):
+    mock_google_user_exists.return_value = True
 
     res = user_in_group("username", "nope")
 
     assert res is False
 
 
-def test_user_is_partner_checks_partner_group(mock_user_in_group):
+def test_user_is_partner_checks_partner_group(mock_google_user_in_group):
     user_is_partner("username")
 
-    mock_user_in_group.assert_called_once()
-    assert mock_user_in_group.call_args.args == ("username", GROUP_PARTNERS)
+    mock_google_user_in_group.assert_called_once()
+    assert mock_google_user_in_group.call_args.args == ("username", GROUP_PARTNERS)
 
 
-def test_user_is_staff_checks_staff_group(mock_user_in_group):
+def test_user_is_staff_checks_staff_group(mock_google_user_in_group):
     user_is_staff("username")
 
-    mock_user_in_group.assert_called_once()
-    assert mock_user_in_group.call_args.args == ("username", GROUP_STAFF)
+    mock_google_user_in_group.assert_called_once()
+    assert mock_google_user_in_group.call_args.args == ("username", GROUP_STAFF)
 
 
 @pytest.mark.e2e

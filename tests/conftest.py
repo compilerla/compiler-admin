@@ -2,43 +2,63 @@ import pytest
 
 
 @pytest.fixture
-def mock_CallGAMCommand(mocker):
+def mock_commands_delete(mocker):
+    """Fixture returns a function that patches commands.delete in a given module."""
+
+    def _mock_commands_delete(module, **kwargs):
+        return mocker.patch(f"{module}.delete", **kwargs)
+
+    return _mock_commands_delete
+
+
+@pytest.fixture
+def mock_commands_signout(mocker):
+    """Fixture returns a function that patches commands.signout in a given module."""
+
+    def _mock_commands_signout(module, **kwargs):
+        return mocker.patch(f"{module}.signout", **kwargs)
+
+    return _mock_commands_signout
+
+
+@pytest.fixture
+def mock_google_CallGAMCommand(mocker):
     """Fixture returns a function that patches the CallGAMCommand function from a given module."""
 
-    def _mock_CallGAMCommand(module, **kwargs):
+    def _mock_google_CallGAMCommand(module, **kwargs):
         return mocker.patch(f"{module}.CallGAMCommand", **kwargs)
 
-    return _mock_CallGAMCommand
+    return _mock_google_CallGAMCommand
 
 
 @pytest.fixture
-def mock_user_exists(mocker):
+def mock_google_user_exists(mocker):
     """Fixture returns a function that patches the user_exists function from a given module."""
 
-    def _mock_user_exists(module, **kwargs):
+    def _mock_google_user_exists(module, **kwargs):
         return mocker.patch(f"{module}.user_exists", **kwargs)
 
-    return _mock_user_exists
+    return _mock_google_user_exists
 
 
 @pytest.fixture
-def mock_user_in_group(mocker):
+def mock_google_user_in_group(mocker):
     """Fixture returns a function that patches the user_in_group function from a given module."""
 
-    def _mock_user_in_group(module, **kwargs):
+    def _mock_google_user_in_group(module, **kwargs):
         return mocker.patch(f"{module}.user_in_group", **kwargs)
 
-    return _mock_user_in_group
+    return _mock_google_user_in_group
 
 
 @pytest.fixture
-def mock_add_user_to_group(mocker):
+def mock_google_add_user_to_group(mocker):
     """Fixture returns a function that patches the add_user_to_group function from a given module."""
 
-    def _mock_add_user_to_group(module, **kwargs):
+    def _mock_google_add_user_to_group(module, **kwargs):
         return mocker.patch(f"{module}.add_user_to_group", **kwargs)
 
-    return _mock_add_user_to_group
+    return _mock_google_add_user_to_group
 
 
 @pytest.fixture
@@ -60,23 +80,3 @@ def mock_NamedTemporaryFile(mocker):
         return patched
 
     return _mock_NamedTemporaryFile
-
-
-@pytest.fixture
-def mock_signout(mocker):
-    """Fixture returns a function that patches commands.signout in a given module."""
-
-    def _mock_signout(module, **kwargs):
-        return mocker.patch(f"{module}.signout", **kwargs)
-
-    return _mock_signout
-
-
-@pytest.fixture
-def mock_delete(mocker):
-    """Fixture returns a function that patches commands.delete in a given module."""
-
-    def _mock_delete(module, **kwargs):
-        return mocker.patch(f"{module}.delete", **kwargs)
-
-    return _mock_delete

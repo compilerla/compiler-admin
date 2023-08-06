@@ -8,8 +8,16 @@ from compiler_admin.main import main
 from compiler_admin.services.google import DOMAIN
 
 
+def test_main_(mocker):
+    spy_info = mocker.spy(compiler_admin.main, "info")
+    res = main(argv=[])
+
+    assert res == 0
+    spy_info.assert_called_once()
+
+
 @pytest.mark.e2e
-def test_main(mocker):
+def test_main_e2e(mocker):
     spy_info = mocker.spy(compiler_admin.main, "info")
     res = main(argv=[])
 
