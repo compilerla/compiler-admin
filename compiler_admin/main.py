@@ -7,6 +7,7 @@ from compiler_admin.commands.delete import delete
 from compiler_admin.commands.info import info
 from compiler_admin.commands.init import init
 from compiler_admin.commands.offboard import offboard
+from compiler_admin.commands.restore import restore
 from compiler_admin.commands.signout import signout
 
 
@@ -45,6 +46,8 @@ def main(argv=None):
 
     _subcmd("offboard", help="Offboard a user account.", add_username_arg=True)
 
+    _subcmd("restore", help="Restore an email backup from a prior offboarding.", add_username_arg=True)
+
     _subcmd("signout", help="Signs a user out from all active sessions.", add_username_arg=True)
 
     if len(argv) == 0:
@@ -62,6 +65,8 @@ def main(argv=None):
         return init(args.username)
     elif args.command == "offboard":
         return offboard(args.username)
+    elif args.command == "restore":
+        return restore(args.username)
     elif args.command == "signout":
         return signout(args.username)
 
