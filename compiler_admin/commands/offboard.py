@@ -6,7 +6,6 @@ from compiler_admin.commands.signout import signout
 from compiler_admin.services.google import (
     USER_ARCHIVE,
     CallGAMCommand,
-    CallGAMCommand_RedirectOutErr,
     user_account_name,
     user_exists,
 )
@@ -45,7 +44,7 @@ def offboard(username: str, alias: str = None) -> int:
     with NamedTemporaryFile("w+") as stdout:
         while "Overall Transfer Status: completed" not in status:
             print("Transfer in progress")
-            CallGAMCommand_RedirectOutErr(("show", "transfers", "olduser", username), stdout=stdout.name, stderr="stdout")
+            CallGAMCommand(("show", "transfers", "olduser", username), stdout=stdout.name, stderr="stdout")
             status = " ".join(stdout.readlines())
             stdout.seek(0)
 

@@ -29,17 +29,11 @@ def mock_CallGAMCommand(mock_CallGAMCommand):
     return mock_CallGAMCommand(MODULE)
 
 
-@pytest.fixture
-def mock_CallGAMCommand_RedirectOutErr(mock_CallGAMCommand_RedirectOutErr):
-    return mock_CallGAMCommand_RedirectOutErr(MODULE)
-
-
 def test_offboard_user_exists(
     mocker,
     mock_user_exists,
     mock_CallGAMCommand,
     mock_NamedTemporaryFile,
-    mock_CallGAMCommand_RedirectOutErr,
     mock_signout,
     mock_delete,
 ):
@@ -61,7 +55,6 @@ def test_offboard_user_exists(
     assert mock_CallGAMCommand.call_count > 0
     mock_NamedTemporaryFile.assert_called_once()
 
-    assert mock_CallGAMCommand_RedirectOutErr.call_count > 0
     mock_signout.assert_called_once()
     mock_delete.assert_called_once()
 

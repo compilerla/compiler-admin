@@ -12,16 +12,6 @@ def mock_CallGAMCommand(mocker):
 
 
 @pytest.fixture
-def mock_CallGAMCommand_RedirectOutErr(mocker):
-    """Fixture returns a function that patches the CallGAMCommand_RedirectOutErr function from a given module."""
-
-    def _mock_CallGAMCommand(module, **kwargs):
-        return mocker.patch(f"{module}.CallGAMCommand_RedirectOutErr", **kwargs)
-
-    return _mock_CallGAMCommand
-
-
-@pytest.fixture
 def mock_user_exists(mocker):
     """Fixture returns a function that patches the user_exists function from a given module."""
 

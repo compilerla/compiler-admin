@@ -1,13 +1,22 @@
+import pytest
+
 from compiler_admin.services.google import (
     DOMAIN,
+    GAM,
     GROUP_TEAM,
     USER_ARCHIVE,
     user_account_name,
+    CallGAMCommand,
     user_exists,
     user_in_group,
     user_is_partner,
     user_is_staff,
 )
+
+
+@pytest.fixture
+def mock_gam_CallGAMCommand(mocker):
+    return mocker.patch("compiler_admin.services.google.__CallGAMCommand")
 
 
 def test_user_account_name_None():
@@ -38,6 +47,33 @@ def test_user_not_in_domain(capfd):
 
     assert res is False
     assert "User not in domain" in captured.out
+
+
+def test_CallGAMCommand_prepends_gam(mock_gam_CallGAMCommand):
+    CallGAMCommand(("args",))
+
+    mock_gam_CallGAMCommand.assert_called_once()
+    call_args = mock_gam_CallGAMCommand.call_args[0][0]
+    assert call_args == (GAM, "args")
+
+
+def test_CallGAMCommand_does_not_duplicate_gam(mock_gam_CallGAMCommand):
+    CallGAMCommand((GAM, "args"))
+
+    mock_gam_CallGAMCommand.assert_called_once()
+    call_args = mock_gam_CallGAMCommand.call_args[0][0]
+    assert call_args == (GAM, "args")
+
+
+def test_CallGAMCommand_stdouterr_override(mock_gam_CallGAMCommand):
+    CallGAMCommand(("args",), stdout="override-stdout", stderr="override-stderr")
+
+    mock_gam_CallGAMCommand.assert_called_once()
+    call_args = mock_gam_CallGAMCommand.call_args[0][0]
+    call_str = " ".join(call_args)
+
+    assert "redirect stdout override-stdout" in call_str
+    assert "redirect stderr override-stderr" in call_str
 
 
 def test_archive_user_exists(capfd):

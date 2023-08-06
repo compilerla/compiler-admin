@@ -41,15 +41,7 @@ GROUP_STAFF = user_account_name("staff")
 GROUP_TEAM = user_account_name("team")
 
 
-def CallGAMCommand(args: Sequence[str]) -> int:
-    """Call GAM with the provided arguments."""
-    if not args[0] == GAM:
-        args = (GAM, *args)
-
-    return int(__CallGAMCommand(args))
-
-
-def CallGAMCommand_RedirectOutErr(args: Sequence[str], stdout: str = None, stderr: str = None) -> int:
+def CallGAMCommand(args: Sequence[str], stdout: str = None, stderr: str = None) -> int:
     """Call GAM with the provided arguments, optionally redirecting stdout and/or stderr."""
     if stdout:
         args = ("redirect", "stdout", stdout, *args)
@@ -57,7 +49,10 @@ def CallGAMCommand_RedirectOutErr(args: Sequence[str], stdout: str = None, stder
     if stderr:
         args = ("redirect", "stderr", stderr, *args)
 
-    return CallGAMCommand(args)
+    if not args[0] == GAM:
+        args = (GAM, *args)
+
+    return int(__CallGAMCommand(args))
 
 
 def user_exists(username: str) -> bool:
@@ -88,7 +83,7 @@ def user_in_group(username: str, group: str) -> bool:
     """
     if user_exists(username):
         with NamedTemporaryFile("w+") as stdout:
-            CallGAMCommand_RedirectOutErr(("print", "groups", "member", username), stdout=stdout.name, stderr="stdout")
+            CallGAMCommand(("print", "groups", "member", username), stdout=stdout.name, stderr="stdout")
             output = "\n".join(stdout.readlines())
 
         return group in output
