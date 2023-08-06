@@ -43,7 +43,8 @@ def main(argv=None):
 
     _subcmd("delete", help="Delete a user account.")
 
-    _subcmd("offboard", help="Offboard a user account.")
+    offboard_parser = _subcmd("offboard", help="Offboard a user account.")
+    offboard_parser.add_argument("--alias", help="Account to assign username as an alias.")
 
     _subcmd("restore", help="Restore an email backup from a prior offboarding.")
 
@@ -63,7 +64,7 @@ def main(argv=None):
     elif args.command == "init":
         return init(args.username)
     elif args.command == "offboard":
-        return offboard(args.username)
+        return offboard(args.username, args.alias)
     elif args.command == "restore":
         return restore(args.username)
     elif args.command == "signout":

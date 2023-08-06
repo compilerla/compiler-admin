@@ -105,6 +105,13 @@ def test_main_offboard(mock_commands_offboard):
     assert "username" in call_args
 
 
+def test_main_offboard_with_alias(mock_commands_offboard):
+    main(argv=["offboard", "username", "--alias", "anotheruser"])
+
+    mock_commands_offboard.assert_called_once()
+    assert mock_commands_offboard.call_args.args == ("username", "anotheruser")
+
+
 def test_main_offboard_no_username(mock_commands_offboard):
     with pytest.raises(SystemExit):
         main(argv=["offboard"])
