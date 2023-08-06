@@ -2,6 +2,16 @@ import pytest
 
 
 @pytest.fixture
+def mock_commands_create(mocker):
+    """Fixture returns a function that patches commands.create in a given module."""
+
+    def _mock_commands_create(module, **kwargs):
+        return mocker.patch(f"{module}.create", **kwargs)
+
+    return _mock_commands_create
+
+
+@pytest.fixture
 def mock_commands_delete(mocker):
     """Fixture returns a function that patches commands.delete in a given module."""
 
@@ -9,6 +19,46 @@ def mock_commands_delete(mocker):
         return mocker.patch(f"{module}.delete", **kwargs)
 
     return _mock_commands_delete
+
+
+@pytest.fixture
+def mock_commands_info(mocker):
+    """Fixture returns a function that patches commands.info in a given module."""
+
+    def _mock_commands_info(module, **kwargs):
+        return mocker.patch(f"{module}.info", **kwargs)
+
+    return _mock_commands_info
+
+
+@pytest.fixture
+def mock_commands_init(mocker):
+    """Fixture returns a function that patches commands.init in a given module."""
+
+    def _mock_commands_init(module, **kwargs):
+        return mocker.patch(f"{module}.init", **kwargs)
+
+    return _mock_commands_init
+
+
+@pytest.fixture
+def mock_commands_offboard(mocker):
+    """Fixture returns a function that patches commands.offboard in a given module."""
+
+    def _mock_commands_offboard(module, **kwargs):
+        return mocker.patch(f"{module}.offboard", **kwargs)
+
+    return _mock_commands_offboard
+
+
+@pytest.fixture
+def mock_commands_restore(mocker):
+    """Fixture returns a function that patches commands.restore in a given module."""
+
+    def _mock_commands_restore(module, **kwargs):
+        return mocker.patch(f"{module}.restore", **kwargs)
+
+    return _mock_commands_restore
 
 
 @pytest.fixture
