@@ -1,5 +1,7 @@
+import subprocess
+import sys
 from tempfile import NamedTemporaryFile
-from typing import Sequence
+from typing import Any, Sequence, IO
 
 # import and alias CallGAMCommand so we can simplify usage in this app
 from gam import CallGAMCommand as __CallGAMCommand, initializeLogging
@@ -7,6 +9,7 @@ from gam import CallGAMCommand as __CallGAMCommand, initializeLogging
 initializeLogging()
 
 GAM = "gam"
+GYB = "gyb"
 
 # Primary domain
 DOMAIN = "compiler.la"
@@ -53,6 +56,14 @@ def CallGAMCommand(args: Sequence[str], stdout: str = None, stderr: str = None) 
         args = (GAM, *args)
 
     return int(__CallGAMCommand(args))
+
+
+def CallGYBCommand(args: Sequence[str], stdout: IO[Any] = sys.stdout, stderr: IO[Any] = sys.stderr) -> int:
+    """Call GYB with the provided arguments."""
+    if not args[0] == GYB:
+        args = (GYB, *args)
+
+    return subprocess.call(args, stdout=stdout, stderr=stderr)
 
 
 def user_exists(username: str) -> bool:

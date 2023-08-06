@@ -1,5 +1,6 @@
 from compiler_admin import __version__ as version
-from compiler_admin.services.google import CallGAMCommand
+from compiler_admin.commands import RESULT_SUCCESS, RESULT_FAILURE
+from compiler_admin.services.google import CallGAMCommand, CallGYBCommand
 
 
 def info() -> int:
@@ -10,6 +11,8 @@ def info() -> int:
     """
     print(f"compiler-admin: {version}")
 
-    CallGAMCommand(("version",))
+    res = CallGAMCommand(("version",))
+    res += CallGAMCommand(("info", "domain"))
+    res += CallGYBCommand(("--version",))
 
-    return CallGAMCommand(("info", "domain"))
+    return RESULT_SUCCESS if res == RESULT_SUCCESS else RESULT_FAILURE

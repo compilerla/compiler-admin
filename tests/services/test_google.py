@@ -1,12 +1,17 @@
+import sys
+from tempfile import TemporaryFile
+
 import pytest
 
 from compiler_admin.services.google import (
     DOMAIN,
     GAM,
     GROUP_TEAM,
+    GYB,
     USER_ARCHIVE,
     user_account_name,
     CallGAMCommand,
+    CallGYBCommand,
     user_exists,
     user_in_group,
     user_is_partner,
@@ -17,6 +22,11 @@ from compiler_admin.services.google import (
 @pytest.fixture
 def mock_gam_CallGAMCommand(mocker):
     return mocker.patch("compiler_admin.services.google.__CallGAMCommand")
+
+
+@pytest.fixture
+def mock_subprocess_call(mocker):
+    return mocker.patch("compiler_admin.services.google.subprocess.call")
 
 
 def test_user_account_name_None():
@@ -74,6 +84,50 @@ def test_CallGAMCommand_stdouterr_override(mock_gam_CallGAMCommand):
 
     assert "redirect stdout override-stdout" in call_str
     assert "redirect stderr override-stderr" in call_str
+
+
+def test_CallGYBCommand_prepends_gyb(mock_subprocess_call):
+    CallGYBCommand(("args",))
+
+    mock_subprocess_call.assert_called_once()
+    call_args = mock_subprocess_call.call_args[0][0]
+    assert call_args == (GYB, "args")
+
+
+def test_CallGYBCommand_does_not_duplicate_gyb(mock_subprocess_call):
+    CallGYBCommand((GYB, "args"))
+
+    mock_subprocess_call.assert_called_once()
+    call_args = mock_subprocess_call.call_args[0][0]
+    assert call_args == (GYB, "args")
+
+
+def test_CallGYBCommand_stdouterr_default(mock_subprocess_call):
+    CallGYBCommand(("args",))
+
+    mock_subprocess_call.assert_called_once()
+    call_kwargs = mock_subprocess_call.call_args.kwargs
+
+    assert "stdout" in call_kwargs
+    assert call_kwargs["stdout"] == sys.stdout
+    assert "stderr" in call_kwargs
+    assert call_kwargs["stderr"] == sys.stderr
+
+
+def test_CallGYBCommand_stdouterr_override(mock_subprocess_call):
+    stdout, stderr = TemporaryFile(), TemporaryFile()
+    CallGYBCommand(("args",), stdout=stdout, stderr=stderr)
+
+    mock_subprocess_call.assert_called_once()
+    call_kwargs = mock_subprocess_call.call_args.kwargs
+
+    assert "stdout" in call_kwargs
+    assert call_kwargs["stdout"] == stdout
+    assert "stderr" in call_kwargs
+    assert call_kwargs["stderr"] == stderr
+
+    stdout.close()
+    stderr.close()
 
 
 def test_archive_user_exists(capfd):

@@ -12,4 +12,5 @@ def test_info(capfd):
     assert f"compiler-admin: {version}" in captured.out
     assert "GAMADV-XTD3" in captured.out
     assert f"Primary Domain: {DOMAIN}" in captured.out
+    assert "Got Your Back" in captured.out
     assert "WARNING: Config File:" not in captured.err

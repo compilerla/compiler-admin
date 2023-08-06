@@ -6,6 +6,7 @@ from compiler_admin.commands.signout import signout
 from compiler_admin.services.google import (
     USER_ARCHIVE,
     CallGAMCommand,
+    CallGYBCommand,
     user_account_name,
     user_exists,
 )
@@ -33,31 +34,35 @@ def offboard(username: str, alias: str = None) -> int:
         return RESULT_FAILURE
 
     print(f"User exists, offboarding: {account}")
+    res = RESULT_SUCCESS
 
     print("Removing from groups")
-    CallGAMCommand(("user", account, "delete", "groups"))
+    res += CallGAMCommand(("user", account, "delete", "groups"))
+
+    print("Backing up email")
+    res += CallGYBCommand(("--service-account", "--email", account, "--action", "backup"))
 
     print("Starting Drive and Calendar transfer")
-    CallGAMCommand(("create", "transfer", account, "calendar,drive", USER_ARCHIVE, "all", "releaseresources"))
+    res += CallGAMCommand(("create", "transfer", account, "calendar,drive", USER_ARCHIVE, "all", "releaseresources"))
 
     status = ""
     with NamedTemporaryFile("w+") as stdout:
         while "Overall Transfer Status: completed" not in status:
             print("Transfer in progress")
-            CallGAMCommand(("show", "transfers", "olduser", username), stdout=stdout.name, stderr="stdout")
+            res += CallGAMCommand(("show", "transfers", "olduser", username), stdout=stdout.name, stderr="stdout")
             status = " ".join(stdout.readlines())
             stdout.seek(0)
 
-    CallGAMCommand(("user", account, "deprovision", "popimap"))
+    res += CallGAMCommand(("user", account, "deprovision", "popimap"))
 
-    signout(account)
+    res += signout(account)
 
-    delete(account)
+    res += delete(account)
 
     if alias_account:
         print(f"Adding an alias to account: {alias_account}")
-        CallGAMCommand(("create", "alias", account, "user", alias_account))
+        res += CallGAMCommand(("create", "alias", account, "user", alias_account))
 
     print(f"Offboarding for user complete: {account}")
 
-    return RESULT_SUCCESS
+    return RESULT_SUCCESS if res == RESULT_SUCCESS else RESULT_FAILURE
