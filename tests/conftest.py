@@ -22,6 +22,16 @@ def mock_user_exists(mocker):
 
 
 @pytest.fixture
+def mock_user_in_group(mocker):
+    """Fixture returns a function that patches the user_in_group function from a given module."""
+
+    def _mock_user_in_group(module, **kwargs):
+        return mocker.patch(f"{module}.user_in_group", **kwargs)
+
+    return _mock_user_in_group
+
+
+@pytest.fixture
 def mock_add_user_to_group(mocker):
     """Fixture returns a function that patches the add_user_to_group function from a given module."""
 
