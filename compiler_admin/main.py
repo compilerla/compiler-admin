@@ -25,30 +25,29 @@ def main(argv=None):
 
     subparsers = parser.add_subparsers(dest="command")
 
-    def _subcmd(name, help, add_username_arg=False):
+    def _subcmd(name, help, add_username_arg=True) -> argparse.ArgumentParser:
         """Helper creates a new subcommand parser."""
         parser = subparsers.add_parser(name, help=help)
         if add_username_arg is True:
-            parser.add_argument("username", help="The user's account name, sans domain.")
+            parser.add_argument("username", help="A Compiler user account name, sans domain.")
         return parser
 
-    _subcmd("info", help="Print configuration and debugging information.")
+    _subcmd("info", help="Print configuration and debugging information.", add_username_arg=False)
 
     _subcmd(
         "init",
         help="Initialize a new admin project. This command should be run once before any others.",
-        add_username_arg=True,
     )
 
-    _subcmd("create", help="Create a new user in the Compiler domain.", add_username_arg=True)
+    _subcmd("create", help="Create a new user in the Compiler domain.")
 
-    _subcmd("delete", help="Delete a user account.", add_username_arg=True)
+    _subcmd("delete", help="Delete a user account.")
 
-    _subcmd("offboard", help="Offboard a user account.", add_username_arg=True)
+    _subcmd("offboard", help="Offboard a user account.")
 
-    _subcmd("restore", help="Restore an email backup from a prior offboarding.", add_username_arg=True)
+    _subcmd("restore", help="Restore an email backup from a prior offboarding.")
 
-    _subcmd("signout", help="Signs a user out from all active sessions.", add_username_arg=True)
+    _subcmd("signout", help="Signs a user out from all active sessions.")
 
     if len(argv) == 0:
         argv = ["info"]
