@@ -1,62 +1,119 @@
-# Google Admin
+# Compiler Admin
 
-Administrative tasks in Compiler's Google Workspace.
+Automating Compiler's administrative tasks.
 
 Built on top of [GAMADV-XTD3](https://github.com/taers232c/GAMADV-XTD3) and [GYB](https://github.com/GAM-team/got-your-back).
 
+**Note:** This tool can only be used by those with administrator access to Compiler's Google Workspace.
+
+## Usage
+
+```bash
+$ compiler-admin -h
+usage: compiler-admin [-h] [-v] {info,init,create,convert,delete,offboard,restore,signout} ...
+
+positional arguments:
+  {info,init,create,convert,delete,offboard,restore,signout}
+    info                Print configuration and debugging information.
+    init                Initialize a new admin project. This command should be run once before any others.
+    create              Create a new user in the Compiler domain.
+    convert             Convert a user account to a new type.
+    delete              Delete a user account.
+    offboard            Offboard a user account.
+    restore             Restore an email backup from a prior offboarding.
+    signout             Signs a user out from all active sessions.
+
+options:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+```
+
+## Getting started
+
+```bash
+git clone https://github.com/compilerla/compiler-admin.git
+
+cd compiler-admin
+```
+
+Now open in VS Code, and when prompted, reopen in the devcontainer.
+
 ## Initial setup
 
-Initial setup of a GAMADV-XTD3 project is required to provide necessary API access to the Google Workspace.
+Initial setup of a GAMADV-XTD3 project and GYB project is required to provide necessary API access to the Google Workspace.
 
-Follow the steps in the [GAMADV-XTD3 Wiki](https://github.com/taers232c/GAMADV-XTD3/wiki/#requirements), and read
-[Compiler's setup notes](https://docs.google.com/document/d/1UEwQzJZyJEkRs3PRwOi0-KXwBFne70am4Nk9-_qYItE/edit#heading=h.gbmx14gcpp2a)
-for more information.
+```bash
+$ compiler-admin init -h
+usage: compiler-admin init [-h] username
 
-Additionally, GYB is used for Gmail backup/restore. See the [GYB Wiki](https://github.com/GAM-team/got-your-back/wiki)
-for more information.
+positional arguments:
+  username    The user's account name, sans domain.
 
-**Note:** This setup can only be performed by those with administrator access to Compiler's Google Workspace.
+options:
+  -h, --help  show this help message and exit
+```
+
+The `init` commands follows the steps in the [GAMADV-XTD3 Wiki](https://github.com/taers232c/GAMADV-XTD3/wiki/#requirements).
+
+Additionally, GYB is used for Gmail backup/restore. See the [GYB Wiki](https://github.com/GAM-team/got-your-back/wiki) for more information.
 
 ## Creating a user
 
-**Usage:**
-
 ```bash
-bin/create.sh USER [OPTIONS]
+$ compiler-admin create -h
+usage: compiler-admin create [-h] username [OPTIONS]
+
+positional arguments:
+  username    The user's account name, sans domain.
+
+options:
+  -h, --help  show this help message and exit
 ```
 
-- `USER` is the username (sans domain) to create
-- `OPTIONS` is a list of options for [GAM user create](https://github.com/taers232c/GAMADV-XTD3/wiki/Users#create-a-user)
+Additional options are passed through to GAM, see more about [GAM user create](https://github.com/taers232c/GAMADV-XTD3/wiki/Users#create-a-user)
 
 ## Convert a user
 
-**Usage:**
-
 ```bash
-bin/convert.sh USER TYPE
-```
+$ compiler-admin convert -h
+usage: compiler-admin convert [-h] username {contractor,partner,staff}
 
-- `USER` is the username (sans domain) to convert
-- `TYPE` is either `STAFF` to convert the user to a staff member, or `PARTNER` to conver the user to a partner.
+positional arguments:
+  username              A Compiler user account name, sans domain.
+  {contractor,partner,staff}
+                        Target account type for this conversion.
+
+options:
+  -h, --help            show this help message and exit
+```
 
 ## Offboarding a user
 
-**Usage:**
-
 ```bash
-bin/offboard.sh USER [ALIAS]
+$ compiler-admin offboard -h
+usage: compiler-admin offboard [-h] [--alias ALIAS] username
+
+positional arguments:
+  username       A Compiler user account name, sans domain.
+
+options:
+  -h, --help     show this help message and exit
+  --alias ALIAS  Account to assign username as an alias.
 ```
 
-- `USER` is the username (sans domain) to offboard
-- `ALIAS` is optional, and is a username (sans domain) that will get an alias
-  added for the offboarded `USER`
+This script creates a local backup of `USER`'s inbox, see [Restore](#restore-an-email-backup)
 
-Read more about the [offboarding process in Compiler's notes](https://docs.google.com/document/d/1UEwQzJZyJEkRs3PRwOi0-KXwBFne70am4Nk9-_qYItE/edit#heading=h.liqi1hwxykhs).
+## Restore an email backup
 
-This script creates a local backup of `USER`'s inbox; a separate script can be run to archive this backup into the `archive@compiler.la` account:
+Retore a backup from a prior [Offboarding](#offboarding-a-user) into the `archive@compiler.la` account.
 
 ```bash
-bin/archive-gmail-backup.sh USER
-```
+$ compiler-admin restore -h
+usage: compiler-admin restore [-h] username
 
-- `USER` is the account in compiler.la (sans domain) with a local backup to archive
+positional arguments:
+  username    The user's account name, sans domain.
+
+options:
+  -h, --help  show this help message and exit
+```
