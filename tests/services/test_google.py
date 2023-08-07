@@ -14,6 +14,9 @@ from compiler_admin.services.google import (
     user_account_name,
     CallGAMCommand,
     CallGYBCommand,
+    add_user_to_group,
+    move_user_ou,
+    remove_user_from_group,
     user_exists,
     user_in_group,
     user_is_partner,
@@ -151,6 +154,24 @@ def test_CallGYBCommand_stdouterr_override(mock_subprocess_call):
 
     stdout.close()
     stderr.close()
+
+
+def test_add_user_to_group(mock_google_CallGAMCommand):
+    add_user_to_group("username", "thegroup")
+
+    mock_google_CallGAMCommand.assert_called_once()
+
+
+def test_move_user_ou(mock_google_CallGAMCommand):
+    move_user_ou("username", "theou")
+
+    mock_google_CallGAMCommand.assert_called_once()
+
+
+def test_remove_user_from_group(mock_google_CallGAMCommand):
+    remove_user_from_group("username", "thegroup")
+
+    mock_google_CallGAMCommand.assert_called_once()
 
 
 def test_user_exists_username_not_in_domain(capfd):

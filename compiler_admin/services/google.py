@@ -66,6 +66,21 @@ def CallGYBCommand(args: Sequence[str], stdout: IO[Any] = sys.stdout, stderr: IO
     return subprocess.call(args, stdout=stdout, stderr=stderr)
 
 
+def add_user_to_group(username: str, group: str) -> int:
+    """Add a user to a group."""
+    return CallGAMCommand(("user", username, "add", "groups", "member", group))
+
+
+def move_user_ou(username: str, ou: str) -> int:
+    """Remove a user from a group."""
+    return CallGAMCommand(("update", "ou", ou, "move", username))
+
+
+def remove_user_from_group(username: str, group: str) -> int:
+    """Remove a user from a group."""
+    return CallGAMCommand(("update", "group", group, "delete", username))
+
+
 def user_exists(username: str) -> bool:
     """Checks if a user exists.
 
@@ -109,8 +124,3 @@ def user_is_partner(username: str) -> bool:
 
 def user_is_staff(username: str) -> bool:
     return user_in_group(username, GROUP_STAFF)
-
-
-def add_user_to_group(username: str, group: str) -> bool:
-    """Add a user to a group."""
-    return bool(CallGAMCommand(("user", username, "add", "groups", "member", group)))

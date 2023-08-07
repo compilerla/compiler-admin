@@ -92,6 +92,36 @@ def mock_google_CallGYBCommand(mocker):
 
 
 @pytest.fixture
+def mock_google_add_user_to_group(mocker):
+    """Fixture returns a function that patches the add_user_to_group function from a given module."""
+
+    def _mock_google_add_user_to_group(module, **kwargs):
+        return mocker.patch(f"{module}.add_user_to_group", **kwargs)
+
+    return _mock_google_add_user_to_group
+
+
+@pytest.fixture
+def mock_google_move_user_ou(mocker):
+    """Fixture returns a function that patches the move_user_ou function from a given module."""
+
+    def _mock_google_move_user_ou(module, **kwargs):
+        return mocker.patch(f"{module}.move_user_ou", **kwargs)
+
+    return _mock_google_move_user_ou
+
+
+@pytest.fixture
+def mock_google_remove_user_from_group(mocker):
+    """Fixture returns a function that patches the remove_user_from_group function from a given module."""
+
+    def _mock_google_remove_user_from_group(module, **kwargs):
+        return mocker.patch(f"{module}.remove_user_from_group", **kwargs)
+
+    return _mock_google_remove_user_from_group
+
+
+@pytest.fixture
 def mock_google_user_exists(mocker):
     """Fixture returns a function that patches the user_exists function from a given module."""
 
@@ -112,13 +142,23 @@ def mock_google_user_in_group(mocker):
 
 
 @pytest.fixture
-def mock_google_add_user_to_group(mocker):
-    """Fixture returns a function that patches the add_user_to_group function from a given module."""
+def mock_google_user_is_partner(mocker):
+    """Fixture returns a function that patches the user_is_partner function from a given module."""
 
-    def _mock_google_add_user_to_group(module, **kwargs):
-        return mocker.patch(f"{module}.add_user_to_group", **kwargs)
+    def _mock_google_user_is_partner(module, **kwargs):
+        return mocker.patch(f"{module}.user_is_partner", **kwargs)
 
-    return _mock_google_add_user_to_group
+    return _mock_google_user_is_partner
+
+
+@pytest.fixture
+def mock_google_user_is_staff(mocker):
+    """Fixture returns a function that patches the user_is_staff function from a given module."""
+
+    def _mock_google_user_is_staff(module, **kwargs):
+        return mocker.patch(f"{module}.user_is_staff", **kwargs)
+
+    return _mock_google_user_is_staff
 
 
 @pytest.fixture
