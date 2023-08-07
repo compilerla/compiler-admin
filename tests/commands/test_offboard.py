@@ -29,9 +29,15 @@ def mock_google_CallGAMCommand(mock_google_CallGAMCommand):
     return mock_google_CallGAMCommand(MODULE)
 
 
+@pytest.fixture
+def mock_google_CallGYBCommand(mock_google_CallGYBCommand):
+    return mock_google_CallGYBCommand(MODULE)
+
+
 def test_offboard_user_exists(
     mock_google_user_exists,
     mock_google_CallGAMCommand,
+    mock_google_CallGYBCommand,
     mock_NamedTemporaryFile,
     mock_commands_signout,
     mock_commands_delete,
@@ -42,6 +48,7 @@ def test_offboard_user_exists(
 
     assert res == RESULT_SUCCESS
     assert mock_google_CallGAMCommand.call_count > 0
+    mock_google_CallGYBCommand.assert_called_once()
     mock_NamedTemporaryFile.assert_called_once()
 
     mock_commands_signout.assert_called_once()

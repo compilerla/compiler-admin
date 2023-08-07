@@ -82,6 +82,16 @@ def mock_google_CallGAMCommand(mocker):
 
 
 @pytest.fixture
+def mock_google_CallGYBCommand(mocker):
+    """Fixture returns a function that patches the CallGYBCommand function from a given module."""
+
+    def _mock_google_CallGYBCommand(module, **kwargs):
+        return mocker.patch(f"{module}.CallGYBCommand", **kwargs)
+
+    return _mock_google_CallGYBCommand
+
+
+@pytest.fixture
 def mock_google_user_exists(mocker):
     """Fixture returns a function that patches the user_exists function from a given module."""
 
