@@ -1,0 +1,13 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    image: compiler_admin:dev
+    environment:
+      GAMCFGDIR: /home/compiler/.config/gam
+    entrypoint: sleep infinity
+    volumes:
+      - ./:/home/compiler/admin
+      - ./.config/:/home/compiler/.config/gam
+      - ./.downloads/:/home/compiler/Downloads

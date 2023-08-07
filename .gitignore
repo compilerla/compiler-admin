@@ -1,2 +1,8 @@
-GYB-GMail-Backup-*
+GYB-GMail-Backup-*/
+__pycache__
+.config
+.coverage
+.downloads
+.pytest_cache
 *.csv
+*.egg-info
