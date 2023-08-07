@@ -1,174 +1,127 @@
 import pytest
 
+from compiler_admin.commands import RESULT_SUCCESS
+
 
 @pytest.fixture
-def mock_commands_create(mocker):
+def mock_module_name(mocker):
+    """Fixture returns a function taking a name, that returns a function taking a module,
+    patching the given name in the given module.
+
+    By default, the patched object is given a return_value = RESULT_SUCCESS.
+    """
+
+    def _mock_module_name(name):
+        def __mock_module_name(module):
+            patched = mocker.patch(f"{module}.{name}")
+            patched.return_value = RESULT_SUCCESS
+            return patched
+
+        return __mock_module_name
+
+    return _mock_module_name
+
+
+@pytest.fixture
+def mock_commands_create(mock_module_name):
     """Fixture returns a function that patches commands.create in a given module."""
-
-    def _mock_commands_create(module, **kwargs):
-        return mocker.patch(f"{module}.create", **kwargs)
-
-    return _mock_commands_create
+    return mock_module_name("create")
 
 
 @pytest.fixture
-def mock_commands_convert(mocker):
+def mock_commands_convert(mock_module_name):
     """Fixture returns a function that patches commands.convert in a given module."""
-
-    def _mock_commands_convert(module, **kwargs):
-        return mocker.patch(f"{module}.convert", **kwargs)
-
-    return _mock_commands_convert
+    return mock_module_name("convert")
 
 
 @pytest.fixture
-def mock_commands_delete(mocker):
+def mock_commands_delete(mock_module_name):
     """Fixture returns a function that patches commands.delete in a given module."""
-
-    def _mock_commands_delete(module, **kwargs):
-        return mocker.patch(f"{module}.delete", **kwargs)
-
-    return _mock_commands_delete
+    return mock_module_name("delete")
 
 
 @pytest.fixture
-def mock_commands_info(mocker):
+def mock_commands_info(mock_module_name):
     """Fixture returns a function that patches commands.info in a given module."""
-
-    def _mock_commands_info(module, **kwargs):
-        return mocker.patch(f"{module}.info", **kwargs)
-
-    return _mock_commands_info
+    return mock_module_name("info")
 
 
 @pytest.fixture
-def mock_commands_init(mocker):
+def mock_commands_init(mock_module_name):
     """Fixture returns a function that patches commands.init in a given module."""
-
-    def _mock_commands_init(module, **kwargs):
-        return mocker.patch(f"{module}.init", **kwargs)
-
-    return _mock_commands_init
+    return mock_module_name("init")
 
 
 @pytest.fixture
-def mock_commands_offboard(mocker):
+def mock_commands_offboard(mock_module_name):
     """Fixture returns a function that patches commands.offboard in a given module."""
-
-    def _mock_commands_offboard(module, **kwargs):
-        return mocker.patch(f"{module}.offboard", **kwargs)
-
-    return _mock_commands_offboard
+    return mock_module_name("offboard")
 
 
 @pytest.fixture
-def mock_commands_restore(mocker):
+def mock_commands_restore(mock_module_name):
     """Fixture returns a function that patches commands.restore in a given module."""
-
-    def _mock_commands_restore(module, **kwargs):
-        return mocker.patch(f"{module}.restore", **kwargs)
-
-    return _mock_commands_restore
+    return mock_module_name("restore")
 
 
 @pytest.fixture
-def mock_commands_signout(mocker):
+def mock_commands_signout(mock_module_name):
     """Fixture returns a function that patches commands.signout in a given module."""
-
-    def _mock_commands_signout(module, **kwargs):
-        return mocker.patch(f"{module}.signout", **kwargs)
-
-    return _mock_commands_signout
+    return mock_module_name("signout")
 
 
 @pytest.fixture
-def mock_google_CallGAMCommand(mocker):
+def mock_google_CallGAMCommand(mock_module_name):
     """Fixture returns a function that patches the CallGAMCommand function from a given module."""
-
-    def _mock_google_CallGAMCommand(module, **kwargs):
-        return mocker.patch(f"{module}.CallGAMCommand", **kwargs)
-
-    return _mock_google_CallGAMCommand
+    return mock_module_name("CallGAMCommand")
 
 
 @pytest.fixture
-def mock_google_CallGYBCommand(mocker):
+def mock_google_CallGYBCommand(mock_module_name):
     """Fixture returns a function that patches the CallGYBCommand function from a given module."""
-
-    def _mock_google_CallGYBCommand(module, **kwargs):
-        return mocker.patch(f"{module}.CallGYBCommand", **kwargs)
-
-    return _mock_google_CallGYBCommand
+    return mock_module_name("CallGYBCommand")
 
 
 @pytest.fixture
-def mock_google_add_user_to_group(mocker):
+def mock_google_add_user_to_group(mock_module_name):
     """Fixture returns a function that patches the add_user_to_group function from a given module."""
-
-    def _mock_google_add_user_to_group(module, **kwargs):
-        return mocker.patch(f"{module}.add_user_to_group", **kwargs)
-
-    return _mock_google_add_user_to_group
+    return mock_module_name("add_user_to_group")
 
 
 @pytest.fixture
-def mock_google_move_user_ou(mocker):
+def mock_google_move_user_ou(mock_module_name):
     """Fixture returns a function that patches the move_user_ou function from a given module."""
-
-    def _mock_google_move_user_ou(module, **kwargs):
-        return mocker.patch(f"{module}.move_user_ou", **kwargs)
-
-    return _mock_google_move_user_ou
+    return mock_module_name("move_user_ou")
 
 
 @pytest.fixture
-def mock_google_remove_user_from_group(mocker):
+def mock_google_remove_user_from_group(mock_module_name):
     """Fixture returns a function that patches the remove_user_from_group function from a given module."""
-
-    def _mock_google_remove_user_from_group(module, **kwargs):
-        return mocker.patch(f"{module}.remove_user_from_group", **kwargs)
-
-    return _mock_google_remove_user_from_group
+    return mock_module_name("remove_user_from_group")
 
 
 @pytest.fixture
-def mock_google_user_exists(mocker):
+def mock_google_user_exists(mock_module_name):
     """Fixture returns a function that patches the user_exists function from a given module."""
-
-    def _mock_google_user_exists(module, **kwargs):
-        return mocker.patch(f"{module}.user_exists", **kwargs)
-
-    return _mock_google_user_exists
+    return mock_module_name("user_exists")
 
 
 @pytest.fixture
-def mock_google_user_in_group(mocker):
+def mock_google_user_in_group(mock_module_name):
     """Fixture returns a function that patches the user_in_group function from a given module."""
-
-    def _mock_google_user_in_group(module, **kwargs):
-        return mocker.patch(f"{module}.user_in_group", **kwargs)
-
-    return _mock_google_user_in_group
+    return mock_module_name("user_in_group")
 
 
 @pytest.fixture
-def mock_google_user_is_partner(mocker):
+def mock_google_user_is_partner(mock_module_name):
     """Fixture returns a function that patches the user_is_partner function from a given module."""
-
-    def _mock_google_user_is_partner(module, **kwargs):
-        return mocker.patch(f"{module}.user_is_partner", **kwargs)
-
-    return _mock_google_user_is_partner
+    return mock_module_name("user_is_partner")
 
 
 @pytest.fixture
-def mock_google_user_is_staff(mocker):
+def mock_google_user_is_staff(mock_module_name):
     """Fixture returns a function that patches the user_is_staff function from a given module."""
-
-    def _mock_google_user_is_staff(module, **kwargs):
-        return mocker.patch(f"{module}.user_is_staff", **kwargs)
-
-    return _mock_google_user_is_staff
+    return mock_module_name("user_is_staff")
 
 
 @pytest.fixture
