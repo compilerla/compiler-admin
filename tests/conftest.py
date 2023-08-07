@@ -12,6 +12,16 @@ def mock_commands_create(mocker):
 
 
 @pytest.fixture
+def mock_commands_convert(mocker):
+    """Fixture returns a function that patches commands.convert in a given module."""
+
+    def _mock_commands_convert(module, **kwargs):
+        return mocker.patch(f"{module}.convert", **kwargs)
+
+    return _mock_commands_convert
+
+
+@pytest.fixture
 def mock_commands_delete(mocker):
     """Fixture returns a function that patches commands.delete in a given module."""
 

@@ -3,6 +3,7 @@ import sys
 
 from compiler_admin import __version__ as version
 from compiler_admin.commands.create import create
+from compiler_admin.commands.convert import ACCOUNT_TYPE_OU, convert
 from compiler_admin.commands.delete import delete
 from compiler_admin.commands.info import info
 from compiler_admin.commands.init import init
@@ -41,6 +42,11 @@ def main(argv=None):
 
     _subcmd("create", help="Create a new user in the Compiler domain.")
 
+    convert_parser = _subcmd("convert", help="Convert a user account to a new type.")
+    convert_parser.add_argument(
+        "account_type", choices=ACCOUNT_TYPE_OU.keys(), help="Target account type for this conversion."
+    )
+
     _subcmd("delete", help="Delete a user account.")
 
     offboard_parser = _subcmd("offboard", help="Offboard a user account.")
@@ -59,6 +65,8 @@ def main(argv=None):
         return info()
     elif args.command == "create":
         return create(args.username, *extra)
+    elif args.command == "convert":
+        return convert(args.username, args.account_type)
     elif args.command == "delete":
         return delete(args.username)
     elif args.command == "init":
