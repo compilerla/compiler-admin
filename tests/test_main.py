@@ -108,12 +108,28 @@ def test_main_info_default(mock_commands_info):
     mock_commands_info.assert_called_once()
 
 
-def test_main_init(mock_commands_init):
+def test_main_init_default(mock_commands_init):
     main(argv=["init", "username"])
 
     mock_commands_init.assert_called_once()
-    call_args = mock_commands_init.call_args.args
-    assert "username" in call_args
+    assert mock_commands_init.call_args.args == ("username",)
+    assert mock_commands_init.call_args.kwargs == {"gam": False, "gyb": False}
+
+
+def test_main_init_gam(mock_commands_init):
+    main(argv=["init", "username", "--gam"])
+
+    mock_commands_init.assert_called_once()
+    assert mock_commands_init.call_args.args == ("username",)
+    assert mock_commands_init.call_args.kwargs == {"gam": True, "gyb": False}
+
+
+def test_main_init_gyb(mock_commands_init):
+    main(argv=["init", "username", "--gyb"])
+
+    mock_commands_init.assert_called_once()
+    assert mock_commands_init.call_args.args == ("username",)
+    assert mock_commands_init.call_args.kwargs == {"gam": False, "gyb": True}
 
 
 def test_main_init_no_username(mock_commands_init):
