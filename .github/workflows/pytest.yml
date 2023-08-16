@@ -1,12 +1,22 @@
 name: Pytest
 
 on:
-  - push
-  - pull_request
+  pull_request:
+  push:
+    branches:
+      - "main"
 
 jobs:
   pytest:
     runs-on: ubuntu-latest
+    permissions:
+      # Gives the action the necessary permissions for publishing new
+      # comments in pull requests.
+      pull-requests: write
+      # Gives the action the necessary permissions for pushing data to the
+      # python-coverage-comment-action branch, and for editing existing
+      # comments (to avoid publishing multiple comments in the same PR)
+      contents: write
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -28,8 +38,9 @@ jobs:
       - name: Run tests
         run: ./tests/run.sh
 
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v3
+      - name: Coverage comment
+        uses: py-cov-action/python-coverage-comment-action@v3
         with:
-          name: coverage-report
-          path: ./tests/coverage
+          GITHUB_TOKEN: ${{ github.token }}
+          MINIMUM_GREEN: 90
+          MINIMUM_ORANGE: 80
