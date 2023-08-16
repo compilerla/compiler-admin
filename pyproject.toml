@@ -9,7 +9,7 @@ keywords = ["gam", "google"]
 authors = [
     { name = "Compiler LLC", email = "dev@compiler.la" }
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = [
     "advanced-gam-for-google-workspace @ git+https://github.com/taers232c/GAMADV-XTD3.git@v6.61.14#subdirectory=src"
 ]
@@ -26,8 +26,8 @@ dev = [
     "pre-commit"
 ]
 test = [
+    "coverage",
     "pytest",
-    "pytest-cov",
     "pytest-mock"
 ]
 
@@ -42,6 +42,10 @@ build-backend = "setuptools.build_meta"
 line-length = 127
 target-version = ['py311']
 include = '\.pyi?$'
+
+[tool.coverage.run]
+branch = true
+source = ["compiler_admin"]
 
 [tool.pyright]
 include = ["compiler_admin", "tests"]
