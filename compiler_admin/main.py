@@ -35,10 +35,12 @@ def main(argv=None):
 
     _subcmd("info", help="Print configuration and debugging information.", add_username_arg=False)
 
-    _subcmd(
+    init_parser = _subcmd(
         "init",
         help="Initialize a new admin project. This command should be run once before any others.",
     )
+    init_parser.add_argument("--gam", action="store_true", help="If provided, initialize a new GAM project.")
+    init_parser.add_argument("--gyb", action="store_true", help="If provided, initialize a new GYB project.")
 
     _subcmd("create", help="Create a new user in the Compiler domain.")
 
@@ -70,7 +72,7 @@ def main(argv=None):
     elif args.command == "delete":
         return delete(args.username)
     elif args.command == "init":
-        return init(args.username)
+        return init(args.username, gam=args.gam, gyb=args.gyb)
     elif args.command == "offboard":
         return offboard(args.username, args.alias)
     elif args.command == "restore":

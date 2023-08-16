@@ -5,9 +5,9 @@ services:
       dockerfile: .devcontainer/Dockerfile
     image: compiler_admin:dev
     environment:
-      GAMCFGDIR: /home/compiler/.config/gam
+      GAMCFGDIR: /home/compiler/.config/compiler-admin/gam
     entrypoint: sleep infinity
     volumes:
-      - ./:/home/compiler/admin
-      - ./.config/:/home/compiler/.config/gam
-      - ./.downloads/:/home/compiler/Downloads
+      - .:/home/compiler/admin
+      - ./.config:/home/compiler/.config/compiler-admin
+      - ./.downloads:/home/compiler/Downloads

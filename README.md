@@ -44,13 +44,15 @@ Initial setup of a GAMADV-XTD3 project and GYB project is required to provide ne
 
 ```bash
 $ compiler-admin init -h
-usage: compiler-admin init [-h] username
+usage: compiler-admin init [-h] [--gam] [--gyb] username
 
 positional arguments:
-  username    The user's account name, sans domain.
+  username    A Compiler user account name, sans domain.
 
 options:
   -h, --help  show this help message and exit
+  --gam       If provided, initialize a new GAM project.
+  --gyb       If provided, initialize a new GYB project.
 ```
 
 The `init` commands follows the steps in the [GAMADV-XTD3 Wiki](https://github.com/taers232c/GAMADV-XTD3/wiki/#requirements).
