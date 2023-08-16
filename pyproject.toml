@@ -45,6 +45,7 @@ include = '\.pyi?$'
 
 [tool.coverage.run]
 branch = true
+relative_files = true
 source = ["compiler_admin"]
 
 [tool.pyright]
