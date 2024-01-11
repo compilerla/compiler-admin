@@ -15,6 +15,7 @@ WORKDIR /home/$USER/admin
 
 RUN python -m pip install --upgrade pip
 
+COPY .git .git
 COPY compiler_admin compiler_admin
 COPY pyproject.toml pyproject.toml
 RUN pip install -e .[dev,test]
