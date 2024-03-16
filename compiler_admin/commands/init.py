@@ -58,6 +58,8 @@ def init(args: Namespace) -> int:
         with gyb.open("w+") as dest:
             res += subprocess.call(("curl", "-s", "-S", "-L", "https://gyb-shortn.jaylee.us/gyb-install"), stdout=dest)
 
+        res += subprocess.call(("chmod", "+x", str(gyb.absolute())))
+
         # install, giving values to some options
         # https://github.com/GAM-team/got-your-back/blob/main/install-gyb.sh
         #
