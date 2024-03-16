@@ -93,7 +93,7 @@ options:
 
 ```bash
 $ compiler-admin offboard -h
-usage: compiler-admin offboard [-h] [--alias ALIAS] username
+usage: compiler-admin offboard [-h] [--alias ALIAS] [--force] username
 
 positional arguments:
   username       A Compiler user account name, sans domain.
@@ -101,6 +101,7 @@ positional arguments:
 options:
   -h, --help     show this help message and exit
   --alias ALIAS  Account to assign username as an alias.
+  --force        Don't ask for confirmation before offboarding.
 ```
 
 This script creates a local backup of `USER`'s inbox, see [Restore](#restore-an-email-backup)
