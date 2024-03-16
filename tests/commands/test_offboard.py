@@ -1,7 +1,22 @@
+from argparse import Namespace
 import pytest
 
 from compiler_admin.commands import RESULT_FAILURE, RESULT_SUCCESS
 from compiler_admin.commands.offboard import offboard, __name__ as MODULE
+
+
+@pytest.fixture
+def mock_input_yes(mock_input):
+    fix = mock_input(MODULE)
+    fix.return_value = "y"
+    return fix
+
+
+@pytest.fixture
+def mock_input_no(mock_input):
+    fix = mock_input(MODULE)
+    fix.return_value = "n"
+    return fix
 
 
 @pytest.fixture
@@ -34,7 +49,15 @@ def mock_google_CallGYBCommand(mock_google_CallGYBCommand):
     return mock_google_CallGYBCommand(MODULE)
 
 
-def test_offboard_user_exists(
+def test_offboard_user_username_required():
+    args = Namespace()
+
+    with pytest.raises(ValueError, match="username is required"):
+        offboard(args)
+
+
+@pytest.mark.usefixtures("mock_input_yes")
+def test_offboard_confirm_yes(
     mock_google_user_exists,
     mock_google_CallGAMCommand,
     mock_google_CallGYBCommand,
@@ -44,7 +67,8 @@ def test_offboard_user_exists(
 ):
     mock_google_user_exists.return_value = True
 
-    res = offboard("username")
+    args = Namespace(username="username")
+    res = offboard(args)
 
     assert res == RESULT_SUCCESS
     assert mock_google_CallGAMCommand.call_count > 0
@@ -55,10 +79,32 @@ def test_offboard_user_exists(
     mock_commands_delete.assert_called_once()
 
 
+@pytest.mark.usefixtures("mock_input_no")
+def test_offboard_confirm_no(
+    mock_google_user_exists,
+    mock_google_CallGAMCommand,
+    mock_google_CallGYBCommand,
+    mock_commands_signout,
+    mock_commands_delete,
+):
+    mock_google_user_exists.return_value = True
+
+    args = Namespace(username="username")
+    res = offboard(args)
+
+    assert res == RESULT_SUCCESS
+    mock_google_CallGAMCommand.assert_not_called()
+    mock_google_CallGYBCommand.assert_not_called()
+
+    mock_commands_signout.assert_not_called()
+    mock_commands_delete.assert_not_called()
+
+
 def test_offboard_user_does_not_exist(mock_google_user_exists, mock_google_CallGAMCommand):
     mock_google_user_exists.return_value = False
 
-    res = offboard("username")
+    args = Namespace(username="username")
+    res = offboard(args)
 
     assert res == RESULT_FAILURE
     assert mock_google_CallGAMCommand.call_count == 0
@@ -69,7 +115,8 @@ def test_offboard_alias_user_does_not_exist(mock_google_user_exists, mock_google
     # https://stackoverflow.com/a/24897297
     mock_google_user_exists.side_effect = [True, False]
 
-    res = offboard("username", "alias_username")
+    args = Namespace(username="username", alias="alias_username")
+    res = offboard(args)
 
     assert res == RESULT_FAILURE
     assert mock_google_user_exists.call_count == 2

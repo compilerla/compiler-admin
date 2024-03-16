@@ -1,3 +1,4 @@
+from argparse import Namespace
 import pytest
 
 from compiler_admin.commands.init import _clean_config_dir, init, __name__ as MODULE
@@ -51,8 +52,16 @@ def test_clean_config_dir(mocker, mock_GAM_CONFIG_PATH, mock_rmtree):
     assert mock_dir in mock_rmtree.call_args.args
 
 
+def test_init_admin_user_required():
+    args = Namespace()
+
+    with pytest.raises(ValueError, match="admin_user is required"):
+        init(args)
+
+
 def test_init_default(mock_clean_config_dir, mock_google_CallGAMCommand, mock_subprocess_call):
-    init("username")
+    args = Namespace(admin_user="username")
+    init(args)
 
     assert mock_clean_config_dir.call_count == 0
     assert mock_google_CallGAMCommand.call_count == 0
@@ -60,7 +69,8 @@ def test_init_default(mock_clean_config_dir, mock_google_CallGAMCommand, mock_su
 
 
 def test_init_gam(mock_GAM_CONFIG_PATH, mock_clean_config_dir, mock_google_CallGAMCommand):
-    init("username", gam=True, gyb=False)
+    args = Namespace(admin_user="username", gam=True, gyb=False)
+    init(args)
 
     mock_clean_config_dir.assert_called_once()
     assert mock_GAM_CONFIG_PATH in mock_clean_config_dir.call_args.args
@@ -68,7 +78,8 @@ def test_init_gam(mock_GAM_CONFIG_PATH, mock_clean_config_dir, mock_google_CallG
 
 
 def test_init_gyb(mock_GYB_CONFIG_PATH, mock_clean_config_dir, mock_subprocess_call):
-    init("username", gam=False, gyb=True)
+    args = Namespace(admin_user="username", gam=False, gyb=True)
+    init(args)
 
     mock_clean_config_dir.assert_called_once()
     assert mock_GYB_CONFIG_PATH in mock_clean_config_dir.call_args.args

@@ -1,8 +1,10 @@
+from argparse import Namespace
+
 from compiler_admin.commands import RESULT_SUCCESS, RESULT_FAILURE
 from compiler_admin.services.google import CallGAMCommand, user_account_name, user_exists
 
 
-def delete(username: str) -> int:
+def delete(args: Namespace) -> int:
     """Delete the user account.
 
     Args:
@@ -10,11 +12,20 @@ def delete(username: str) -> int:
     Returns:
         A value indicating if the operation succeeded or failed.
     """
-    account = user_account_name(username)
+    if not hasattr(args, "username"):
+        raise ValueError("username is required")
+
+    account = user_account_name(args.username)
 
     if not user_exists(account):
         print(f"User does not exist: {account}")
         return RESULT_FAILURE
+
+    if getattr(args, "force", False) is False:
+        cont = input(f"Delete account {account}? (Y/n)")
+        if not cont.lower().startswith("y"):
+            print("Aborting delete.")
+            return RESULT_SUCCESS
 
     print(f"User exists, deleting: {account}")
 

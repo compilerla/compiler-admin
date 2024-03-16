@@ -23,6 +23,12 @@ def mock_module_name(mocker):
 
 
 @pytest.fixture
+def mock_input(mock_module_name):
+    """Fixture returns a function that patches the built-in input in a given module."""
+    return mock_module_name("input")
+
+
+@pytest.fixture
 def mock_commands_create(mock_module_name):
     """Fixture returns a function that patches commands.create in a given module."""
     return mock_module_name("create")

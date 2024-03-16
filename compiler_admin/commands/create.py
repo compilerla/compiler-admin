@@ -1,10 +1,11 @@
+from argparse import Namespace
 from typing import Sequence
 
 from compiler_admin.commands import RESULT_SUCCESS, RESULT_FAILURE
 from compiler_admin.services.google import GROUP_TEAM, add_user_to_group, CallGAMCommand, user_account_name, user_exists
 
 
-def create(username: str, *args: Sequence[str]) -> int:
+def create(args: Namespace, *extra: Sequence[str]) -> int:
     """Create a new user account in Compiler.
 
     The user's password is randomly generated and requires reset on first login.
@@ -18,7 +19,10 @@ def create(username: str, *args: Sequence[str]) -> int:
     Returns:
         A value indicating if the operation succeeded or failed.
     """
-    account = user_account_name(username)
+    if not hasattr(args, "username"):
+        raise ValueError("username is required")
+
+    account = user_account_name(args.username)
 
     if user_exists(account):
         print(f"User already exists: {account}")
@@ -26,7 +30,7 @@ def create(username: str, *args: Sequence[str]) -> int:
 
     print(f"User does not exist, continuing: {account}")
 
-    res = CallGAMCommand(("create", "user", account, "password", "random", "changepassword", *args))
+    res = CallGAMCommand(("create", "user", account, "password", "random", "changepassword", *extra))
 
     res += add_user_to_group(account, GROUP_TEAM)
 

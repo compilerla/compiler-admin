@@ -1,3 +1,4 @@
+from argparse import Namespace
 from tempfile import NamedTemporaryFile
 
 from compiler_admin.commands import RESULT_SUCCESS, RESULT_FAILURE
@@ -12,7 +13,7 @@ from compiler_admin.services.google import (
 )
 
 
-def offboard(username: str, alias: str = None) -> int:
+def offboard(args: Namespace) -> int:
     """Fully offboard a user from Compiler.
 
     Args:
@@ -22,16 +23,27 @@ def offboard(username: str, alias: str = None) -> int:
     Returns:
         A value indicating if the operation succeeded or failed.
     """
+    if not hasattr(args, "username"):
+        raise ValueError("username is required")
+
+    username = args.username
     account = user_account_name(username)
 
     if not user_exists(account):
         print(f"User does not exist: {account}")
         return RESULT_FAILURE
 
+    alias = getattr(args, "alias", None)
     alias_account = user_account_name(alias)
     if alias_account is not None and not user_exists(alias_account):
         print(f"Alias target user does not exist: {alias_account}")
         return RESULT_FAILURE
+
+    if getattr(args, "force", False) is False:
+        cont = input(f"Offboard account {account} {' (assigning alias to '+ alias_account +')' if alias else ''}? (Y/n)")
+        if not cont.lower().startswith("y"):
+            print("Aborting offboard.")
+            return RESULT_SUCCESS
 
     print(f"User exists, offboarding: {account}")
     res = RESULT_SUCCESS

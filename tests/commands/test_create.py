@@ -1,3 +1,4 @@
+from argparse import Namespace
 import pytest
 
 from compiler_admin.commands import RESULT_FAILURE, RESULT_SUCCESS
@@ -19,10 +20,18 @@ def mock_google_add_user_to_group(mock_google_add_user_to_group):
     return mock_google_add_user_to_group(MODULE)
 
 
+def test_create_user_username_required():
+    args = Namespace()
+
+    with pytest.raises(ValueError, match="username is required"):
+        create(args)
+
+
 def test_create_user_exists(mock_google_user_exists):
     mock_google_user_exists.return_value = True
 
-    res = create("username")
+    args = Namespace(username="username")
+    res = create(args)
 
     assert res == RESULT_FAILURE
 
@@ -30,7 +39,8 @@ def test_create_user_exists(mock_google_user_exists):
 def test_create_user_does_not_exists(mock_google_user_exists, mock_google_CallGAMCommand, mock_google_add_user_to_group):
     mock_google_user_exists.return_value = False
 
-    res = create("username")
+    args = Namespace(username="username")
+    res = create(args)
 
     assert res == RESULT_SUCCESS
 

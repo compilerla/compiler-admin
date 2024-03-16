@@ -49,14 +49,23 @@ def main(argv=None):
         "account_type", choices=ACCOUNT_TYPE_OU.keys(), help="Target account type for this conversion."
     )
 
-    _subcmd("delete", help="Delete a user account.")
+    delete_parser = _subcmd("delete", help="Delete a user account.")
+    delete_parser.add_argument(
+        "--force", action="store_true", default=False, help="Don't ask for confirmation before deletion."
+    )
 
     offboard_parser = _subcmd("offboard", help="Offboard a user account.")
     offboard_parser.add_argument("--alias", help="Account to assign username as an alias.")
+    offboard_parser.add_argument(
+        "--force", action="store_true", default=False, help="Don't ask for confirmation before offboarding."
+    )
 
     _subcmd("restore", help="Restore an email backup from a prior offboarding.")
 
-    _subcmd("signout", help="Signs a user out from all active sessions.")
+    signout_parser = _subcmd("signout", help="Signs a user out from all active sessions.")
+    signout_parser.add_argument(
+        "--force", action="store_true", default=False, help="Don't ask for confirmation before signout."
+    )
 
     if len(argv) == 0:
         argv = ["info"]
@@ -66,19 +75,19 @@ def main(argv=None):
     if args.command == "info":
         return info()
     elif args.command == "create":
-        return create(args.username, *extra)
+        return create(args, *extra)
     elif args.command == "convert":
-        return convert(args.username, args.account_type)
+        return convert(args)
     elif args.command == "delete":
-        return delete(args.username)
+        return delete(args)
     elif args.command == "init":
-        return init(args.username, gam=args.gam, gyb=args.gyb)
+        return init(args)
     elif args.command == "offboard":
-        return offboard(args.username, args.alias)
+        return offboard(args)
     elif args.command == "restore":
-        return restore(args.username)
+        return restore(args)
     elif args.command == "signout":
-        return signout(args.username)
+        return signout(args)
 
 
 if __name__ == "__main__":
