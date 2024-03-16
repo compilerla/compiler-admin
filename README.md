@@ -6,7 +6,7 @@
 |----------------------------------------- | -------: | -------: | -------: | -------: | ------: | --------: |
 | compiler\_admin/\_\_init\_\_.py          |        5 |        2 |        0 |        0 |     60% |       5-7 |
 | compiler\_admin/commands/\_\_init\_\_.py |        2 |        0 |        0 |        0 |    100% |           |
-| compiler\_admin/commands/convert.py      |       36 |        0 |       22 |        1 |     98% |    58->66 |
+| compiler\_admin/commands/convert.py      |       37 |        0 |       22 |        1 |     98% |    58->66 |
 | compiler\_admin/commands/create.py       |       13 |        0 |        2 |        0 |    100% |           |
 | compiler\_admin/commands/delete.py       |       10 |        0 |        2 |        0 |    100% |           |
 | compiler\_admin/commands/info.py         |        9 |        0 |        0 |        0 |    100% |           |
@@ -17,7 +17,7 @@
 | compiler\_admin/main.py                  |       54 |        1 |       22 |        2 |     96% |80->exit, 85 |
 | compiler\_admin/services/\_\_init\_\_.py |        0 |        0 |        0 |        0 |    100% |           |
 | compiler\_admin/services/google.py       |       58 |        0 |       18 |        0 |    100% |           |
-|                                **TOTAL** |  **278** |    **5** |   **92** |    **5** | **97%** |           |
+|                                **TOTAL** |  **279** |    **5** |   **92** |    **5** | **97%** |           |
 
 
 ## Setup coverage badge
