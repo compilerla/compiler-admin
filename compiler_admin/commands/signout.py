@@ -21,6 +21,12 @@ def signout(args: Namespace) -> int:
         print(f"User does not exist: {account}")
         return RESULT_FAILURE
 
+    if getattr(args, "force", False) is False:
+        cont = input(f"Signout account {account} from all active sessions? (Y/n)")
+        if not cont.lower().startswith("y"):
+            print("Aborting signout.")
+            return RESULT_SUCCESS
+
     print(f"User exists, signing out from all active sessions: {account}")
 
     res = CallGAMCommand(("user", account, "signout"))

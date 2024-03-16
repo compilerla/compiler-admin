@@ -196,7 +196,15 @@ def test_main_signout(mock_commands_signout):
 
     mock_commands_signout.assert_called_once()
     call_args = mock_commands_signout.call_args.args
-    assert Namespace(command="signout", username="username") in call_args
+    assert Namespace(command="signout", username="username", force=False) in call_args
+
+
+def test_main_signout_force(mock_commands_signout):
+    main(argv=["signout", "username", "--force"])
+
+    mock_commands_signout.assert_called_once()
+    call_args = mock_commands_signout.call_args.args
+    assert Namespace(command="signout", username="username", force=True) in call_args
 
 
 def test_main_signout_no_username(mock_commands_signout):

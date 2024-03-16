@@ -6,6 +6,20 @@ from compiler_admin.commands.signout import signout, __name__ as MODULE
 
 
 @pytest.fixture
+def mock_input_yes(mock_input):
+    fix = mock_input(MODULE)
+    fix.return_value = "y"
+    return fix
+
+
+@pytest.fixture
+def mock_input_no(mock_input):
+    fix = mock_input(MODULE)
+    fix.return_value = "n"
+    return fix
+
+
+@pytest.fixture
 def mock_google_user_exists(mock_google_user_exists):
     return mock_google_user_exists(MODULE)
 
@@ -22,7 +36,8 @@ def test_signout_user_username_required():
         signout(args)
 
 
-def test_signout_user_exists(mock_google_user_exists, mock_google_CallGAMCommand):
+@pytest.mark.usefixtures("mock_input_yes")
+def test_signout_confirm_yes(mock_google_user_exists, mock_google_CallGAMCommand):
     mock_google_user_exists.return_value = True
 
     args = Namespace(username="username")
@@ -34,6 +49,17 @@ def test_signout_user_exists(mock_google_user_exists, mock_google_CallGAMCommand
     assert "user" in call_args and "signout" in call_args
 
 
+@pytest.mark.usefixtures("mock_input_no")
+def test_signout_confirm_no(mock_google_user_exists, mock_google_CallGAMCommand):
+    mock_google_user_exists.return_value = True
+
+    args = Namespace(username="username")
+    res = signout(args)
+
+    assert res == RESULT_SUCCESS
+    mock_google_CallGAMCommand.assert_not_called()
+
+
 def test_signout_user_does_not_exist(mock_google_user_exists, mock_google_CallGAMCommand):
     mock_google_user_exists.return_value = False
 
@@ -41,4 +67,4 @@ def test_signout_user_does_not_exist(mock_google_user_exists, mock_google_CallGA
     res = signout(args)
 
     assert res == RESULT_FAILURE
-    assert mock_google_CallGAMCommand.call_count == 0
+    mock_google_CallGAMCommand.assert_not_called()

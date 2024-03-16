@@ -62,7 +62,10 @@ def main(argv=None):
 
     _subcmd("restore", help="Restore an email backup from a prior offboarding.")
 
-    _subcmd("signout", help="Signs a user out from all active sessions.")
+    signout_parser = _subcmd("signout", help="Signs a user out from all active sessions.")
+    signout_parser.add_argument(
+        "--force", action="store_true", default=False, help="Don't ask for confirmation before signout."
+    )
 
     if len(argv) == 0:
         argv = ["info"]
