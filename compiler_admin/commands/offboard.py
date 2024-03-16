@@ -39,6 +39,12 @@ def offboard(args: Namespace) -> int:
         print(f"Alias target user does not exist: {alias_account}")
         return RESULT_FAILURE
 
+    if getattr(args, "force", False) is False:
+        cont = input(f"Offboard account {account} {' (assigning alias to '+ alias_account +')' if alias else ''}? (Y/n)")
+        if not cont.lower().startswith("y"):
+            print("Aborting offboard.")
+            return RESULT_SUCCESS
+
     print(f"User exists, offboarding: {account}")
     res = RESULT_SUCCESS
 

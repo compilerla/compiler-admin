@@ -6,6 +6,20 @@ from compiler_admin.commands.offboard import offboard, __name__ as MODULE
 
 
 @pytest.fixture
+def mock_input_yes(mock_input):
+    fix = mock_input(MODULE)
+    fix.return_value = "y"
+    return fix
+
+
+@pytest.fixture
+def mock_input_no(mock_input):
+    fix = mock_input(MODULE)
+    fix.return_value = "n"
+    return fix
+
+
+@pytest.fixture
 def mock_NamedTemporaryFile(mock_NamedTemporaryFile):
     return mock_NamedTemporaryFile(MODULE, ["Overall Transfer Status: completed"])
 
@@ -42,7 +56,8 @@ def test_offboard_user_username_required():
         offboard(args)
 
 
-def test_offboard_user_exists(
+@pytest.mark.usefixtures("mock_input_yes")
+def test_offboard_confirm_yes(
     mock_google_user_exists,
     mock_google_CallGAMCommand,
     mock_google_CallGYBCommand,
@@ -62,6 +77,27 @@ def test_offboard_user_exists(
 
     mock_commands_signout.assert_called_once()
     mock_commands_delete.assert_called_once()
+
+
+@pytest.mark.usefixtures("mock_input_no")
+def test_offboard_confirm_no(
+    mock_google_user_exists,
+    mock_google_CallGAMCommand,
+    mock_google_CallGYBCommand,
+    mock_commands_signout,
+    mock_commands_delete,
+):
+    mock_google_user_exists.return_value = True
+
+    args = Namespace(username="username")
+    res = offboard(args)
+
+    assert res == RESULT_SUCCESS
+    mock_google_CallGAMCommand.assert_not_called()
+    mock_google_CallGYBCommand.assert_not_called()
+
+    mock_commands_signout.assert_not_called()
+    mock_commands_delete.assert_not_called()
 
 
 def test_offboard_user_does_not_exist(mock_google_user_exists, mock_google_CallGAMCommand):

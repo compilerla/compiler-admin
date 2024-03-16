@@ -56,6 +56,9 @@ def main(argv=None):
 
     offboard_parser = _subcmd("offboard", help="Offboard a user account.")
     offboard_parser.add_argument("--alias", help="Account to assign username as an alias.")
+    offboard_parser.add_argument(
+        "--force", action="store_true", default=False, help="Don't ask for confirmation before offboarding."
+    )
 
     _subcmd("restore", help="Restore an email backup from a prior offboarding.")
 

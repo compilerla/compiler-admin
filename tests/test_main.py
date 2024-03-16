@@ -152,7 +152,15 @@ def test_main_offboard(mock_commands_offboard):
 
     mock_commands_offboard.assert_called_once()
     call_args = mock_commands_offboard.call_args.args
-    assert Namespace(command="offboard", username="username", alias=None) in call_args
+    assert Namespace(command="offboard", username="username", alias=None, force=False) in call_args
+
+
+def test_main_offboard_force(mock_commands_offboard):
+    main(argv=["offboard", "username", "--force"])
+
+    mock_commands_offboard.assert_called_once()
+    call_args = mock_commands_offboard.call_args.args
+    assert Namespace(command="offboard", username="username", alias=None, force=True) in call_args
 
 
 def test_main_offboard_with_alias(mock_commands_offboard):
@@ -160,7 +168,7 @@ def test_main_offboard_with_alias(mock_commands_offboard):
 
     mock_commands_offboard.assert_called_once()
     call_args = mock_commands_offboard.call_args.args
-    assert Namespace(command="offboard", username="username", alias="anotheruser") in call_args
+    assert Namespace(command="offboard", username="username", alias="anotheruser", force=False) in call_args
 
 
 def test_main_offboard_no_username(mock_commands_offboard):
