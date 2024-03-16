@@ -6,8 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     USER=compiler
 
-RUN useradd --create-home --shell /bin/bash $USER && \
-    chown -R $USER /home/$USER
+RUN useradd --create-home --shell /bin/bash $USER
 
 USER $USER
 ENV PATH "$PATH:/home/$USER/.local/bin"
@@ -19,5 +18,9 @@ COPY .git .git
 COPY compiler_admin compiler_admin
 COPY pyproject.toml pyproject.toml
 RUN pip install -e .[dev,test]
+
+USER root
+RUN chown -R $USER /home/$USER
+USER $USER
 
 CMD ["sleep", "infinity"]
