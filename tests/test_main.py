@@ -1,3 +1,4 @@
+from argparse import Namespace
 import subprocess
 
 import pytest
@@ -53,7 +54,7 @@ def test_main_create(mock_commands_create):
 
     mock_commands_create.assert_called_once()
     call_args = mock_commands_create.call_args.args
-    assert "username" in call_args
+    assert Namespace(command="create", username="username") in call_args
 
 
 def test_main_create_no_username(mock_commands_create):
@@ -67,7 +68,7 @@ def test_main_convert(mock_commands_convert):
 
     mock_commands_convert.assert_called_once()
     call_args = mock_commands_convert.call_args.args
-    assert call_args == ("username", "contractor")
+    assert Namespace(command="convert", username="username", account_type="contractor") in call_args
 
 
 def test_main_convert_no_username(mock_commands_convert):
@@ -87,7 +88,7 @@ def test_main_delete(mock_commands_delete):
 
     mock_commands_delete.assert_called_once()
     call_args = mock_commands_delete.call_args.args
-    assert "username" in call_args
+    assert Namespace(command="delete", username="username") in call_args
 
 
 def test_main_delete_no_username(mock_commands_delete):
@@ -112,24 +113,24 @@ def test_main_init_default(mock_commands_init):
     main(argv=["init", "username"])
 
     mock_commands_init.assert_called_once()
-    assert mock_commands_init.call_args.args == ("username",)
-    assert mock_commands_init.call_args.kwargs == {"gam": False, "gyb": False}
+    call_args = mock_commands_init.call_args.args
+    assert Namespace(command="init", username="username", gam=False, gyb=False) in call_args
 
 
 def test_main_init_gam(mock_commands_init):
     main(argv=["init", "username", "--gam"])
 
     mock_commands_init.assert_called_once()
-    assert mock_commands_init.call_args.args == ("username",)
-    assert mock_commands_init.call_args.kwargs == {"gam": True, "gyb": False}
+    call_args = mock_commands_init.call_args.args
+    assert Namespace(command="init", username="username", gam=True, gyb=False) in call_args
 
 
 def test_main_init_gyb(mock_commands_init):
     main(argv=["init", "username", "--gyb"])
 
     mock_commands_init.assert_called_once()
-    assert mock_commands_init.call_args.args == ("username",)
-    assert mock_commands_init.call_args.kwargs == {"gam": False, "gyb": True}
+    call_args = mock_commands_init.call_args.args
+    assert Namespace(command="init", username="username", gam=False, gyb=True) in call_args
 
 
 def test_main_init_no_username(mock_commands_init):
@@ -143,14 +144,15 @@ def test_main_offboard(mock_commands_offboard):
 
     mock_commands_offboard.assert_called_once()
     call_args = mock_commands_offboard.call_args.args
-    assert "username" in call_args
+    assert Namespace(command="offboard", username="username", alias=None) in call_args
 
 
 def test_main_offboard_with_alias(mock_commands_offboard):
     main(argv=["offboard", "username", "--alias", "anotheruser"])
 
     mock_commands_offboard.assert_called_once()
-    assert mock_commands_offboard.call_args.args == ("username", "anotheruser")
+    call_args = mock_commands_offboard.call_args.args
+    assert Namespace(command="offboard", username="username", alias="anotheruser") in call_args
 
 
 def test_main_offboard_no_username(mock_commands_offboard):
@@ -164,7 +166,7 @@ def test_main_restore(mock_commands_restore):
 
     mock_commands_restore.assert_called_once()
     call_args = mock_commands_restore.call_args.args
-    assert "username" in call_args
+    assert Namespace(command="restore", username="username") in call_args
 
 
 def test_main_restore_no_username(mock_commands_restore):
@@ -178,7 +180,7 @@ def test_main_signout(mock_commands_signout):
 
     mock_commands_signout.assert_called_once()
     call_args = mock_commands_signout.call_args.args
-    assert "username" in call_args
+    assert Namespace(command="signout", username="username") in call_args
 
 
 def test_main_signout_no_username(mock_commands_signout):

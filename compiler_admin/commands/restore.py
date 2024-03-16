@@ -1,10 +1,11 @@
+from argparse import Namespace
 import pathlib
 
 from compiler_admin.commands import RESULT_SUCCESS, RESULT_FAILURE
 from compiler_admin.services.google import USER_ARCHIVE, CallGYBCommand, user_account_name
 
 
-def restore(username: str) -> int:
+def restore(args: Namespace) -> int:
     """Restore an email backup from a prior offboarding.
 
     Args:
@@ -12,7 +13,10 @@ def restore(username: str) -> int:
     Returns:
         A value indicating if the operation succeeded or failed.
     """
-    account = user_account_name(username)
+    if not hasattr(args, "username"):
+        raise ValueError("username is required")
+
+    account = user_account_name(args.username)
     backup_dir = f"GYB-GMail-Backup-{account}"
 
     if not pathlib.Path(backup_dir).exists():

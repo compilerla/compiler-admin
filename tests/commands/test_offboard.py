@@ -1,3 +1,4 @@
+from argparse import Namespace
 import pytest
 
 from compiler_admin.commands import RESULT_FAILURE, RESULT_SUCCESS
@@ -34,6 +35,13 @@ def mock_google_CallGYBCommand(mock_google_CallGYBCommand):
     return mock_google_CallGYBCommand(MODULE)
 
 
+def test_offboard_user_username_required():
+    args = Namespace()
+
+    with pytest.raises(ValueError, match="username is required"):
+        offboard(args)
+
+
 def test_offboard_user_exists(
     mock_google_user_exists,
     mock_google_CallGAMCommand,
@@ -44,7 +52,8 @@ def test_offboard_user_exists(
 ):
     mock_google_user_exists.return_value = True
 
-    res = offboard("username")
+    args = Namespace(username="username")
+    res = offboard(args)
 
     assert res == RESULT_SUCCESS
     assert mock_google_CallGAMCommand.call_count > 0
@@ -58,7 +67,8 @@ def test_offboard_user_exists(
 def test_offboard_user_does_not_exist(mock_google_user_exists, mock_google_CallGAMCommand):
     mock_google_user_exists.return_value = False
 
-    res = offboard("username")
+    args = Namespace(username="username")
+    res = offboard(args)
 
     assert res == RESULT_FAILURE
     assert mock_google_CallGAMCommand.call_count == 0
@@ -69,7 +79,8 @@ def test_offboard_alias_user_does_not_exist(mock_google_user_exists, mock_google
     # https://stackoverflow.com/a/24897297
     mock_google_user_exists.side_effect = [True, False]
 
-    res = offboard("username", "alias_username")
+    args = Namespace(username="username", alias="alias_username")
+    res = offboard(args)
 
     assert res == RESULT_FAILURE
     assert mock_google_user_exists.call_count == 2

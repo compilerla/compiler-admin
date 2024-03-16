@@ -66,19 +66,19 @@ def main(argv=None):
     if args.command == "info":
         return info()
     elif args.command == "create":
-        return create(args.username, *extra)
+        return create(args, *extra)
     elif args.command == "convert":
-        return convert(args.username, args.account_type)
+        return convert(args)
     elif args.command == "delete":
-        return delete(args.username)
+        return delete(args)
     elif args.command == "init":
-        return init(args.username, gam=args.gam, gyb=args.gyb)
+        return init(args)
     elif args.command == "offboard":
-        return offboard(args.username, args.alias)
+        return offboard(args)
     elif args.command == "restore":
-        return restore(args.username)
+        return restore(args)
     elif args.command == "signout":
-        return signout(args.username)
+        return signout(args)
 
 
 if __name__ == "__main__":

@@ -1,3 +1,4 @@
+from argparse import Namespace
 import os
 from pathlib import Path
 from shutil import rmtree
@@ -21,7 +22,7 @@ def _clean_config_dir(config_dir: Path) -> None:
             rmtree(path)
 
 
-def init(admin_user: str, gam: bool = False, gyb: bool = False) -> int:
+def init(args: Namespace) -> int:
     """Initialize a new GAM project.
 
     See https://github.com/taers232c/GAMADV-XTD3/wiki/How-to-Install-Advanced-GAM
@@ -36,9 +37,13 @@ def init(admin_user: str, gam: bool = False, gyb: bool = False) -> int:
     Returns:
         A value indicating if the operation succeeded or failed.
     """
+    if not hasattr(args, "admin_user"):
+        raise ValueError("admin_user is required")
+
+    admin_user = args.admin_user
     res = RESULT_SUCCESS
 
-    if gam:
+    if getattr(args, "gam", False):
         _clean_config_dir(GAM_CONFIG_PATH)
         # GAM is already installed via pyproject.toml
         res += CallGAMCommand(("config", "drive_dir", str(GAM_CONFIG_PATH), "verify"))
@@ -46,7 +51,7 @@ def init(admin_user: str, gam: bool = False, gyb: bool = False) -> int:
         res += CallGAMCommand(("oauth", "create"))
         res += CallGAMCommand(("user", admin_user, "check", "serviceaccount"))
 
-    if gyb:
+    if getattr(args, "gyb", False):
         _clean_config_dir(GYB_CONFIG_PATH)
         # download GYB installer to config directory
         gyb = GYB_CONFIG_PATH / "gyb-install.sh"

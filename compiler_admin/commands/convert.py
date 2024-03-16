@@ -1,3 +1,5 @@
+from argparse import Namespace
+
 from compiler_admin.commands import RESULT_SUCCESS, RESULT_FAILURE
 from compiler_admin.services.google import (
     GROUP_PARTNERS,
@@ -18,7 +20,7 @@ from compiler_admin.services.google import (
 ACCOUNT_TYPE_OU = {"contractor": OU_CONTRACTORS, "partner": OU_PARTNERS, "staff": OU_STAFF}
 
 
-def convert(username: str, account_type: str) -> int:
+def convert(args: Namespace) -> int:
     f"""Convert a user of one type to another.
     Args:
         username (str): The account to convert. Must exist already.
@@ -27,7 +29,13 @@ def convert(username: str, account_type: str) -> int:
     Returns:
         A value indicating if the operation succeeded or failed.
     """
-    account = user_account_name(username)
+    if not hasattr(args, "username"):
+        raise ValueError("username is required")
+    if not hasattr(args, "account_type"):
+        raise ValueError("account_type is required")
+
+    account = user_account_name(args.username)
+    account_type = args.account_type
 
     if not user_exists(account):
         print(f"User does not exist: {account}")
