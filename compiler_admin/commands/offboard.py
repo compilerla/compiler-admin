@@ -67,9 +67,9 @@ def offboard(args: Namespace) -> int:
 
     res += CallGAMCommand(("user", account, "deprovision", "popimap"))
 
-    res += signout(account)
+    res += signout(args)
 
-    res += delete(account)
+    res += delete(args)
 
     if alias_account:
         print(f"Adding an alias to account: {alias_account}")

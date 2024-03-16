@@ -76,7 +76,10 @@ def test_offboard_confirm_yes(
     mock_NamedTemporaryFile.assert_called_once()
 
     mock_commands_signout.assert_called_once()
+    assert args in mock_commands_signout.call_args.args
+
     mock_commands_delete.assert_called_once()
+    assert args in mock_commands_delete.call_args.args
 
 
 @pytest.mark.usefixtures("mock_input_no")
