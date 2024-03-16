@@ -11,7 +11,7 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
-    "advanced-gam-for-google-workspace @ git+https://github.com/taers232c/GAMADV-XTD3.git@v6.61.14#subdirectory=src"
+    "advanced-gam-for-google-workspace @ git+https://github.com/taers232c/GAMADV-XTD3.git@v6.71.15#subdirectory=src"
 ]
 
 [project.urls]
@@ -23,7 +23,8 @@ dev = [
     "black",
     "build",
     "flake8",
-    "pre-commit"
+    "pre-commit",
+    "setuptools_scm>=8"
 ]
 test = [
     "coverage",
@@ -35,7 +36,7 @@ test = [
 compiler-admin = "compiler_admin.main:main"
 
 [build-system]
-requires = ["setuptools>=64", "wheel", "setuptools-git-versioning<2"]
+requires = ["setuptools>=65", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [tool.black]
@@ -63,6 +64,5 @@ norecursedirs = [
     ".vscode",
 ]
 
-[tool.setuptools-git-versioning]
-enabled = true
-dev_template = "{tag}+{ccount}.{sha}"
+[tool.setuptools_scm]
+# intentionally left blank, but we need the section header to activate the tool
