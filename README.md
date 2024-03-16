@@ -10,14 +10,14 @@
 | compiler\_admin/commands/create.py       |       16 |        0 |        4 |        0 |    100% |           |
 | compiler\_admin/commands/delete.py       |       18 |        0 |        8 |        1 |     96% |    24->30 |
 | compiler\_admin/commands/info.py         |        9 |        0 |        0 |        0 |    100% |           |
-| compiler\_admin/commands/init.py         |       35 |        0 |       14 |        1 |     98% |    21->18 |
+| compiler\_admin/commands/init.py         |       36 |        0 |       14 |        1 |     98% |    21->18 |
 | compiler\_admin/commands/offboard.py     |       47 |        2 |       16 |        2 |     94% |42->48, 75-76 |
 | compiler\_admin/commands/restore.py      |       16 |        0 |        4 |        0 |    100% |           |
 | compiler\_admin/commands/signout.py      |       18 |        0 |        8 |        1 |     96% |    24->30 |
 | compiler\_admin/main.py                  |       57 |        1 |       22 |        2 |     96% |89->exit, 94 |
 | compiler\_admin/services/\_\_init\_\_.py |        0 |        0 |        0 |        0 |    100% |           |
 | compiler\_admin/services/google.py       |       58 |        0 |       18 |        0 |    100% |           |
-|                                **TOTAL** |  **324** |    **5** |  **120** |    **8** | **97%** |           |
+|                                **TOTAL** |  **325** |    **5** |  **120** |    **8** | **97%** |           |
 
 
 ## Setup coverage badge
