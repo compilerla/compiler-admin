@@ -28,7 +28,7 @@ def init(args: Namespace) -> int:
     See https://github.com/taers232c/GAMADV-XTD3/wiki/How-to-Install-Advanced-GAM
 
     Args:
-        admin_user (str): The Compiler admin with which to initialize a new project.
+        username (str): The Compiler admin with which to initialize a new project.
 
         gam (bool): If True, initialize a new GAM project.
 
@@ -37,10 +37,10 @@ def init(args: Namespace) -> int:
     Returns:
         A value indicating if the operation succeeded or failed.
     """
-    if not hasattr(args, "admin_user"):
-        raise ValueError("admin_user is required")
+    if not hasattr(args, "username"):
+        raise ValueError("username is required")
 
-    admin_user = args.admin_user
+    admin_user = args.username
     res = RESULT_SUCCESS
 
     if getattr(args, "gam", False):

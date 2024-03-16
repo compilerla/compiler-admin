@@ -55,12 +55,12 @@ def test_clean_config_dir(mocker, mock_GAM_CONFIG_PATH, mock_rmtree):
 def test_init_admin_user_required():
     args = Namespace()
 
-    with pytest.raises(ValueError, match="admin_user is required"):
+    with pytest.raises(ValueError, match="username is required"):
         init(args)
 
 
 def test_init_default(mock_clean_config_dir, mock_google_CallGAMCommand, mock_subprocess_call):
-    args = Namespace(admin_user="username")
+    args = Namespace(username="username")
     init(args)
 
     assert mock_clean_config_dir.call_count == 0
@@ -69,7 +69,7 @@ def test_init_default(mock_clean_config_dir, mock_google_CallGAMCommand, mock_su
 
 
 def test_init_gam(mock_GAM_CONFIG_PATH, mock_clean_config_dir, mock_google_CallGAMCommand):
-    args = Namespace(admin_user="username", gam=True, gyb=False)
+    args = Namespace(username="username", gam=True, gyb=False)
     init(args)
 
     mock_clean_config_dir.assert_called_once()
@@ -78,7 +78,7 @@ def test_init_gam(mock_GAM_CONFIG_PATH, mock_clean_config_dir, mock_google_CallG
 
 
 def test_init_gyb(mock_GYB_CONFIG_PATH, mock_clean_config_dir, mock_subprocess_call):
-    args = Namespace(admin_user="username", gam=False, gyb=True)
+    args = Namespace(username="username", gam=False, gyb=True)
     init(args)
 
     mock_clean_config_dir.assert_called_once()
