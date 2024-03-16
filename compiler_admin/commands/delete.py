@@ -21,6 +21,12 @@ def delete(args: Namespace) -> int:
         print(f"User does not exist: {account}")
         return RESULT_FAILURE
 
+    if getattr(args, "force", False) is False:
+        cont = input(f"Delete account {account}? (Y/n)")
+        if not cont.lower().startswith("y"):
+            print("Aborting delete.")
+            return RESULT_SUCCESS
+
     print(f"User exists, deleting: {account}")
 
     res = CallGAMCommand(("delete", "user", account, "noactionifalias"))

@@ -88,7 +88,15 @@ def test_main_delete(mock_commands_delete):
 
     mock_commands_delete.assert_called_once()
     call_args = mock_commands_delete.call_args.args
-    assert Namespace(command="delete", username="username") in call_args
+    assert Namespace(command="delete", username="username", force=False) in call_args
+
+
+def test_main_delete_force(mock_commands_delete):
+    main(argv=["delete", "username", "--force"])
+
+    mock_commands_delete.assert_called_once()
+    call_args = mock_commands_delete.call_args.args
+    assert Namespace(command="delete", username="username", force=True) in call_args
 
 
 def test_main_delete_no_username(mock_commands_delete):

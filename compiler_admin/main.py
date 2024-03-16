@@ -49,7 +49,10 @@ def main(argv=None):
         "account_type", choices=ACCOUNT_TYPE_OU.keys(), help="Target account type for this conversion."
     )
 
-    _subcmd("delete", help="Delete a user account.")
+    delete_parser = _subcmd("delete", help="Delete a user account.")
+    delete_parser.add_argument(
+        "--force", action="store_true", default=False, help="Don't ask for confirmation before deletion."
+    )
 
     offboard_parser = _subcmd("offboard", help="Offboard a user account.")
     offboard_parser.add_argument("--alias", help="Account to assign username as an alias.")

@@ -6,6 +6,20 @@ from compiler_admin.commands.delete import delete, __name__ as MODULE
 
 
 @pytest.fixture
+def mock_input_yes(mock_input):
+    fix = mock_input(MODULE)
+    fix.return_value = "y"
+    return fix
+
+
+@pytest.fixture
+def mock_input_no(mock_input):
+    fix = mock_input(MODULE)
+    fix.return_value = "n"
+    return fix
+
+
+@pytest.fixture
 def mock_google_user_exists(mock_google_user_exists):
     return mock_google_user_exists(MODULE)
 
@@ -22,7 +36,8 @@ def test_delete_user_username_required():
         delete(args)
 
 
-def test_delete_user_exists(mock_google_user_exists, mock_google_CallGAMCommand):
+@pytest.mark.usefixtures("mock_input_yes")
+def test_delete_confirm_yes(mock_google_user_exists, mock_google_CallGAMCommand):
     mock_google_user_exists.return_value = True
 
     args = Namespace(username="username")
@@ -34,6 +49,17 @@ def test_delete_user_exists(mock_google_user_exists, mock_google_CallGAMCommand)
     assert "delete" in call_args
     assert "user" in call_args
     assert "noactionifalias" in call_args
+
+
+@pytest.mark.usefixtures("mock_input_no")
+def test_delete_confirm_no(mock_google_user_exists, mock_google_CallGAMCommand):
+    mock_google_user_exists.return_value = True
+
+    args = Namespace(username="username")
+    res = delete(args)
+
+    assert res == RESULT_SUCCESS
+    mock_google_CallGAMCommand.assert_not_called()
 
 
 def test_delete_user_does_not_exist(mock_google_user_exists, mock_google_CallGAMCommand):
