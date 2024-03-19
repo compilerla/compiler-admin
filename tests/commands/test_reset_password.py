@@ -12,6 +12,11 @@ def mock_google_user_exists(mock_google_user_exists):
 
 
 @pytest.fixture
+def mock_commands_signout(mock_commands_signout):
+    return mock_commands_signout(MODULE)
+
+
+@pytest.fixture
 def mock_google_CallGAMCommand(mock_google_CallGAMCommand):
     return mock_google_CallGAMCommand(MODULE)
 
@@ -32,7 +37,7 @@ def test_reset_password_user_does_not_exist(mock_google_user_exists):
     assert res == RESULT_FAILURE
 
 
-def test_reset_password_user_exists(mock_google_user_exists, mock_google_CallGAMCommand):
+def test_reset_password_user_exists(mock_google_user_exists, mock_google_CallGAMCommand, mock_commands_signout):
     mock_google_user_exists.return_value = True
 
     args = Namespace(username="username")
@@ -45,8 +50,10 @@ def test_reset_password_user_exists(mock_google_user_exists, mock_google_CallGAM
     assert "update user" in call_args
     assert "password random changepassword" in call_args
 
+    mock_commands_signout.assert_called_once_with(args)
 
-def test_reset_password_notify(mock_google_user_exists, mock_google_CallGAMCommand):
+
+def test_reset_password_notify(mock_google_user_exists, mock_google_CallGAMCommand, mock_commands_signout):
     mock_google_user_exists.return_value = True
 
     args = Namespace(username="username", notify="notification@example.com")
@@ -59,3 +66,5 @@ def test_reset_password_notify(mock_google_user_exists, mock_google_CallGAMComma
     assert "update user" in call_args
     assert "password random changepassword" in call_args
     assert f"notify notification@example.com from {USER_HELLO}" in call_args
+
+    mock_commands_signout.assert_called_once_with(args)

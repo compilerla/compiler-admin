@@ -1,6 +1,7 @@
 from argparse import Namespace
 
 from compiler_admin.commands import RESULT_SUCCESS, RESULT_FAILURE
+from compiler_admin.commands.signout import signout
 from compiler_admin.services.google import USER_HELLO, CallGAMCommand, user_account_name, user_exists
 
 
@@ -34,5 +35,6 @@ def reset_password(args: Namespace) -> int:
     print(f"User exists, resetting password: {account}")
 
     res = CallGAMCommand(command)
+    res += signout(args)
 
     return RESULT_SUCCESS if res == RESULT_SUCCESS else RESULT_FAILURE
