@@ -1,7 +1,7 @@
 from argparse import Namespace
 
 from compiler_admin.commands import RESULT_SUCCESS, RESULT_FAILURE
-from compiler_admin.services.google import CallGAMCommand, user_account_name, user_exists
+from compiler_admin.services.google import USER_HELLO, CallGAMCommand, user_account_name, user_exists
 
 
 def reset_password(args: Namespace) -> int:
@@ -29,7 +29,7 @@ def reset_password(args: Namespace) -> int:
 
     notify = getattr(args, "notify", None)
     if notify:
-        command += ("notify", notify, "from", "hello@compiler.la")
+        command += ("notify", notify, "from", USER_HELLO)
 
     print(f"User exists, resetting password: {account}")
 

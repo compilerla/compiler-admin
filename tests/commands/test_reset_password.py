@@ -3,6 +3,7 @@ import pytest
 
 from compiler_admin.commands import RESULT_FAILURE, RESULT_SUCCESS
 from compiler_admin.commands.reset_password import reset_password, __name__ as MODULE
+from compiler_admin.services.google import USER_HELLO
 
 
 @pytest.fixture
@@ -57,4 +58,4 @@ def test_reset_password_notify(mock_google_user_exists, mock_google_CallGAMComma
     call_args = " ".join(mock_google_CallGAMCommand.call_args[0][0])
     assert "update user" in call_args
     assert "password random" in call_args
-    assert "notify notification@example.com from hello@compiler.la" in call_args
+    assert f"notify notification@example.com from {USER_HELLO}" in call_args
