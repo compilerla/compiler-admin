@@ -2,22 +2,23 @@
 
 [Full report](https://htmlpreview.github.io/?https://github.com/compilerla/compiler-admin/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
-| Name                                     |    Stmts |     Miss |   Branch |   BrPart |   Cover |   Missing |
-|----------------------------------------- | -------: | -------: | -------: | -------: | ------: | --------: |
-| compiler\_admin/\_\_init\_\_.py          |        5 |        2 |        0 |        0 |     60% |       5-7 |
-| compiler\_admin/commands/\_\_init\_\_.py |        2 |        0 |        0 |        0 |    100% |           |
-| compiler\_admin/commands/convert.py      |       43 |        0 |       26 |        1 |     99% |    66->74 |
-| compiler\_admin/commands/create.py       |       16 |        0 |        4 |        0 |    100% |           |
-| compiler\_admin/commands/delete.py       |       18 |        0 |        8 |        1 |     96% |    24->30 |
-| compiler\_admin/commands/info.py         |        9 |        0 |        0 |        0 |    100% |           |
-| compiler\_admin/commands/init.py         |       36 |        0 |       14 |        1 |     98% |    21->18 |
-| compiler\_admin/commands/offboard.py     |       47 |        2 |       16 |        2 |     94% |42->48, 75-76 |
-| compiler\_admin/commands/restore.py      |       16 |        0 |        4 |        0 |    100% |           |
-| compiler\_admin/commands/signout.py      |       18 |        0 |        8 |        1 |     96% |    24->30 |
-| compiler\_admin/main.py                  |       57 |        1 |       22 |        2 |     96% |89->exit, 94 |
-| compiler\_admin/services/\_\_init\_\_.py |        0 |        0 |        0 |        0 |    100% |           |
-| compiler\_admin/services/google.py       |       58 |        0 |       18 |        0 |    100% |           |
-|                                **TOTAL** |  **325** |    **5** |  **120** |    **8** | **97%** |           |
+| Name                                        |    Stmts |     Miss |   Branch |   BrPart |   Cover |   Missing |
+|-------------------------------------------- | -------: | -------: | -------: | -------: | ------: | --------: |
+| compiler\_admin/\_\_init\_\_.py             |        5 |        2 |        0 |        0 |     60% |       5-7 |
+| compiler\_admin/commands/\_\_init\_\_.py    |        2 |        0 |        0 |        0 |    100% |           |
+| compiler\_admin/commands/convert.py         |       43 |        0 |       26 |        1 |     99% |    66->74 |
+| compiler\_admin/commands/create.py          |       16 |        0 |        4 |        0 |    100% |           |
+| compiler\_admin/commands/delete.py          |       18 |        0 |        8 |        1 |     96% |    24->30 |
+| compiler\_admin/commands/info.py            |        9 |        0 |        0 |        0 |    100% |           |
+| compiler\_admin/commands/init.py            |       36 |        0 |       14 |        1 |     98% |    21->18 |
+| compiler\_admin/commands/offboard.py        |       47 |        2 |       16 |        2 |     94% |42->48, 75-76 |
+| compiler\_admin/commands/reset\_password.py |       19 |        0 |        6 |        0 |    100% |           |
+| compiler\_admin/commands/restore.py         |       16 |        0 |        4 |        0 |    100% |           |
+| compiler\_admin/commands/signout.py         |       18 |        0 |        8 |        1 |     96% |    24->30 |
+| compiler\_admin/main.py                     |       62 |        1 |       24 |        2 |     97% |95->exit, 100 |
+| compiler\_admin/services/\_\_init\_\_.py    |        0 |        0 |        0 |        0 |    100% |           |
+| compiler\_admin/services/google.py          |       59 |        0 |       18 |        0 |    100% |           |
+|                                   **TOTAL** |  **350** |    **5** |  **128** |    **8** | **97%** |           |
 
 
 ## Setup coverage badge
