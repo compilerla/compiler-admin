@@ -43,7 +43,8 @@ def main(argv=None):
     init_parser.add_argument("--gam", action="store_true", help="If provided, initialize a new GAM project.")
     init_parser.add_argument("--gyb", action="store_true", help="If provided, initialize a new GYB project.")
 
-    _subcmd("create", help="Create a new user in the Compiler domain.")
+    create_parser = _subcmd("create", help="Create a new user in the Compiler domain.")
+    create_parser.add_argument("--notify", help="An email address to send the newly created account info.")
 
     convert_parser = _subcmd("convert", help="Convert a user account to a new type.")
     convert_parser.add_argument(

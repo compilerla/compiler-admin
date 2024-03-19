@@ -59,7 +59,15 @@ def test_main_create(mock_commands_create):
 
     mock_commands_create.assert_called_once()
     call_args = mock_commands_create.call_args.args
-    assert Namespace(command="create", username="username") in call_args
+    assert Namespace(command="create", username="username", notify=None) in call_args
+
+
+def test_main_create_notify(mock_commands_create):
+    main(argv=["create", "username", "--notify", "notification"])
+
+    mock_commands_create.assert_called_once()
+    call_args = mock_commands_create.call_args.args
+    assert Namespace(command="create", username="username", notify="notification") in call_args
 
 
 def test_main_create_no_username(mock_commands_create):

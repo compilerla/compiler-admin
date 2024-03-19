@@ -30,7 +30,15 @@ def create(args: Namespace, *extra: Sequence[str]) -> int:
 
     print(f"User does not exist, continuing: {account}")
 
-    res = CallGAMCommand(("create", "user", account, "password", "random", "changepassword", *extra))
+    command = ("create", "user", account, "password", "random", "changepassword")
+
+    notify = getattr(args, "notify", None)
+    if notify:
+        command += ("notify", notify, "from", "hello@compiler.la")
+
+    command += (*extra,)
+
+    res = CallGAMCommand(command)
 
     res += add_user_to_group(account, GROUP_TEAM)
 
