@@ -63,13 +63,14 @@ Additionally, GYB is used for Gmail backup/restore. See the [GYB Wiki](https://g
 
 ```bash
 $ compiler-admin create -h
-usage: compiler-admin create [-h] username [OPTIONS]
+usage: compiler-admin create [-h] [--notify NOTIFY] username
 
 positional arguments:
-  username    The user's account name, sans domain.
+  username         A Compiler user account name, sans domain.
 
 options:
-  -h, --help  show this help message and exit
+  -h, --help       show this help message and exit
+  --notify NOTIFY  An email address to send the newly created account info.
 ```
 
 Additional options are passed through to GAM, see more about [GAM user create](https://github.com/taers232c/GAMADV-XTD3/wiki/Users#create-a-user)
