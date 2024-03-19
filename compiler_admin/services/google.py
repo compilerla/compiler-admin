@@ -38,6 +38,9 @@ def user_account_name(username: str) -> str:
 # Archive account
 USER_ARCHIVE = user_account_name("archive")
 
+# Hello account
+USER_HELLO = user_account_name("hello")
+
 # Groups
 GROUP_PARTNERS = user_account_name("partners")
 GROUP_STAFF = user_account_name("staff")

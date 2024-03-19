@@ -10,16 +10,17 @@ Built on top of [GAMADV-XTD3](https://github.com/taers232c/GAMADV-XTD3) and [GYB
 
 ```bash
 $ compiler-admin -h
-usage: compiler-admin [-h] [-v] {info,init,create,convert,delete,offboard,restore,signout} ...
+usage: compiler-admin [-h] [-v] {info,init,create,convert,delete,offboard,reset-password,restore,signout} ...
 
 positional arguments:
-  {info,init,create,convert,delete,offboard,restore,signout}
+  {info,init,create,convert,delete,offboard,reset-password,restore,signout}
     info                Print configuration and debugging information.
     init                Initialize a new admin project. This command should be run once before any others.
     create              Create a new user in the Compiler domain.
     convert             Convert a user account to a new type.
     delete              Delete a user account.
     offboard            Offboard a user account.
+    reset-password      Reset a user's password to a randomly generated string.
     restore             Restore an email backup from a prior offboarding.
     signout             Signs a user out from all active sessions.
 
