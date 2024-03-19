@@ -25,7 +25,7 @@ def reset_password(args: Namespace) -> int:
         print(f"User does not exist: {account}")
         return RESULT_FAILURE
 
-    command = ("update", "user", account, "password", "random")
+    command = ("update", "user", account, "password", "random", "changepassword")
 
     notify = getattr(args, "notify", None)
     if notify:

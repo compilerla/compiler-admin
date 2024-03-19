@@ -43,7 +43,7 @@ def test_reset_password_user_exists(mock_google_user_exists, mock_google_CallGAM
     mock_google_CallGAMCommand.assert_called_once()
     call_args = " ".join(mock_google_CallGAMCommand.call_args[0][0])
     assert "update user" in call_args
-    assert "password random" in call_args
+    assert "password random changepassword" in call_args
 
 
 def test_reset_password_notify(mock_google_user_exists, mock_google_CallGAMCommand):
@@ -57,5 +57,5 @@ def test_reset_password_notify(mock_google_user_exists, mock_google_CallGAMComma
     mock_google_CallGAMCommand.assert_called_once()
     call_args = " ".join(mock_google_CallGAMCommand.call_args[0][0])
     assert "update user" in call_args
-    assert "password random" in call_args
+    assert "password random changepassword" in call_args
     assert f"notify notification@example.com from {USER_HELLO}" in call_args
