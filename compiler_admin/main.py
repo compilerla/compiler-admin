@@ -8,6 +8,7 @@ from compiler_admin.commands.delete import delete
 from compiler_admin.commands.info import info
 from compiler_admin.commands.init import init
 from compiler_admin.commands.offboard import offboard
+from compiler_admin.commands.reset_password import reset_password
 from compiler_admin.commands.restore import restore
 from compiler_admin.commands.signout import signout
 
@@ -60,6 +61,9 @@ def main(argv=None):
         "--force", action="store_true", default=False, help="Don't ask for confirmation before offboarding."
     )
 
+    reset_parser = _subcmd("reset-password", help="Reset a user's password to a randomly generated string.")
+    reset_parser.add_argument("--notify", help="An email address to send the newly generated password.")
+
     _subcmd("restore", help="Restore an email backup from a prior offboarding.")
 
     signout_parser = _subcmd("signout", help="Signs a user out from all active sessions.")
@@ -86,6 +90,8 @@ def main(argv=None):
         return offboard(args)
     elif args.command == "restore":
         return restore(args)
+    elif args.command == "reset-password":
+        return reset_password(args)
     elif args.command == "signout":
         return signout(args)
 

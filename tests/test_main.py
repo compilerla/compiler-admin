@@ -40,6 +40,11 @@ def mock_commands_offboard(mock_commands_offboard):
 
 
 @pytest.fixture
+def mock_commands_reset_password(mock_commands_reset_password):
+    return mock_commands_reset_password(MODULE)
+
+
+@pytest.fixture
 def mock_commands_restore(mock_commands_restore):
     return mock_commands_restore(MODULE)
 
@@ -175,6 +180,28 @@ def test_main_offboard_no_username(mock_commands_offboard):
     with pytest.raises(SystemExit):
         main(argv=["offboard"])
         assert mock_commands_offboard.call_count == 0
+
+
+def test_main_reset_password(mock_commands_reset_password):
+    main(argv=["reset-password", "username"])
+
+    mock_commands_reset_password.assert_called_once()
+    call_args = mock_commands_reset_password.call_args.args
+    assert Namespace(command="reset-password", username="username", notify=None) in call_args
+
+
+def test_main_reset_password_notify(mock_commands_reset_password):
+    main(argv=["reset-password", "username", "--notify", "notification"])
+
+    mock_commands_reset_password.assert_called_once()
+    call_args = mock_commands_reset_password.call_args.args
+    assert Namespace(command="reset-password", username="username", notify="notification") in call_args
+
+
+def test_main_reset_password_no_username(mock_commands_reset_password):
+    with pytest.raises(SystemExit):
+        main(argv=["reset-password"])
+        assert mock_commands_reset_password.call_count == 0
 
 
 def test_main_restore(mock_commands_restore):
