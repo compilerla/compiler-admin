@@ -19,10 +19,12 @@
       "extensions": [
         "eamodio.gitlens",
         "esbenp.prettier-vscode",
+        "mechatroner.rainbow-csv",
         "mhutchie.git-graph",
         "ms-python.python",
         "ms-python.black-formatter",
         "ms-python.flake8",
+        "ms-toolsai.jupyter",
         "tamasfe.even-better-toml"
       ]
     }
