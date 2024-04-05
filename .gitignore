@@ -4,6 +4,9 @@ __pycache__
 !.config/README.md
 .coverage
 .downloads
+.env
 .pytest_cache
 *.csv
 *.egg-info
+notebooks/data/*
+!notebooks/data/harvest-sample.csv
