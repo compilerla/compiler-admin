@@ -10,3 +10,5 @@ __pycache__
 *.egg-info
 notebooks/data/*
 !notebooks/data/harvest-sample.csv
+!notebooks/data/toggl-sample.csv
+!notebooks/data/toggl-user-info-sample.json
