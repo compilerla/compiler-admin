@@ -50,11 +50,6 @@ def mock_subprocess_call(mocker):
     return mocker.patch(f"{MODULE}.subprocess.call")
 
 
-@pytest.fixture
-def mock_NamedTemporaryFile(mock_NamedTemporaryFile):
-    return mock_NamedTemporaryFile(MODULE, ["group"])
-
-
 def test_user_account_name_None():
     username = None
     account = user_account_name(username)
@@ -208,18 +203,20 @@ def test_user_in_group_user_does_not_exist(mock_google_user_exists, capfd):
     assert "User does not exist" in captured.out
 
 
-@pytest.mark.usefixtures("mock_NamedTemporaryFile", "mock_google_CallGAMCommand")
-def test_user_in_group_user_exists_in_group(mock_google_user_exists):
+@pytest.mark.usefixtures("mock_google_CallGAMCommand")
+def test_user_in_group_user_exists_in_group(mock_google_user_exists, mock_NamedTemporaryFile_with_readlines):
     mock_google_user_exists.return_value = True
+    mock_NamedTemporaryFile_with_readlines(MODULE, ["group"])
 
     res = user_in_group("username", "group")
 
     assert res is True
 
 
-@pytest.mark.usefixtures("mock_NamedTemporaryFile", "mock_google_CallGAMCommand")
-def test_user_in_group_user_exists_not_in_group(mock_google_user_exists):
+@pytest.mark.usefixtures("mock_google_CallGAMCommand")
+def test_user_in_group_user_exists_not_in_group(mock_google_user_exists, mock_NamedTemporaryFile_with_readlines):
     mock_google_user_exists.return_value = True
+    mock_NamedTemporaryFile_with_readlines(MODULE, ["group"])
 
     res = user_in_group("username", "nope")
 

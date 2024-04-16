@@ -137,7 +137,7 @@ def mock_google_user_is_staff(mock_module_name):
 
 
 @pytest.fixture
-def mock_NamedTemporaryFile(mocker):
+def mock_NamedTemporaryFile_with_readlines(mocker):
     """Fixture returns a function that patches NamedTemporaryFile in a given module.
 
     Optionally provide a value for GAM stdout.readlines().
