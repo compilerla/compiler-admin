@@ -3,6 +3,7 @@ from tempfile import TemporaryFile
 
 import pytest
 
+from compiler_admin import RESULT_SUCCESS, RESULT_FAILURE
 from compiler_admin.services.google import (
     DOMAIN,
     GAM,
@@ -19,6 +20,7 @@ from compiler_admin.services.google import (
     remove_user_from_group,
     user_exists,
     user_in_group,
+    user_info,
     user_is_partner,
     user_is_staff,
     __name__ as MODULE,
@@ -38,6 +40,11 @@ def mock_google_CallGAMCommand(mock_google_CallGAMCommand):
 @pytest.fixture
 def mock_google_user_exists(mock_google_user_exists):
     return mock_google_user_exists(MODULE)
+
+
+@pytest.fixture
+def mock_google_user_info(mock_google_user_info):
+    return mock_google_user_info(MODULE)
 
 
 @pytest.fixture
@@ -177,20 +184,37 @@ def test_user_exists_username_not_in_domain(capfd):
     assert "User not in domain" in captured.out
 
 
-def test_user_exists_user_exists(mock_google_CallGAMCommand):
-    mock_google_CallGAMCommand.return_value = 0
+def test_user_exists_user_exists(mock_google_user_info):
+    mock_google_user_info.return_value = {"First Name": "Test", "Last Name": "User"}
 
     res = user_exists(user_account_name("username"))
 
     assert res is True
 
 
-def test_user_exists_user_does_not_exists(mock_google_CallGAMCommand):
-    mock_google_CallGAMCommand.return_value = -1
+def test_user_exists_user_does_not_exist(mock_google_user_info):
+    mock_google_user_info.return_value = {}
 
     res = user_exists(user_account_name("username"))
 
     assert res is False
+
+
+def test_user_info_user_exists(mock_gam_CallGAMCommand, mock_NamedTemporaryFile_with_readlines):
+    mock_NamedTemporaryFile_with_readlines(MODULE, ["First Name:Test", "Last Name:User"])
+    mock_gam_CallGAMCommand.return_value = RESULT_SUCCESS
+
+    res = user_info(user_account_name("username"))
+
+    assert res == {"First Name": "Test", "Last Name": "User"}
+
+
+def test_user_info_user_does_not_exists(mock_gam_CallGAMCommand):
+    mock_gam_CallGAMCommand.return_value = RESULT_FAILURE
+
+    res = user_info(user_account_name("username"))
+
+    assert res == {}
 
 
 def test_user_in_group_user_does_not_exist(mock_google_user_exists, capfd):
