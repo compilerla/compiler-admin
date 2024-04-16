@@ -1,6 +1,6 @@
 from argparse import Namespace
 
-from compiler_admin.commands import RESULT_SUCCESS, RESULT_FAILURE
+from compiler_admin import RESULT_SUCCESS, RESULT_FAILURE
 from compiler_admin.services.google import (
     GROUP_PARTNERS,
     GROUP_STAFF,

@@ -1,7 +1,7 @@
 from argparse import Namespace
 import pathlib
 
-from compiler_admin.commands import RESULT_SUCCESS, RESULT_FAILURE
+from compiler_admin import RESULT_SUCCESS, RESULT_FAILURE
 from compiler_admin.services.google import USER_ARCHIVE, CallGYBCommand, user_account_name
 
 

@@ -1,6 +1,6 @@
 import pytest
 
-from compiler_admin.commands import RESULT_SUCCESS
+from compiler_admin import RESULT_SUCCESS
 
 
 @pytest.fixture
