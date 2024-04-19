@@ -11,7 +11,8 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
-    "advanced-gam-for-google-workspace @ git+https://github.com/taers232c/GAMADV-XTD3.git@v6.71.15#subdirectory=src"
+    "advanced-gam-for-google-workspace @ git+https://github.com/taers232c/GAMADV-XTD3.git@v6.71.15#subdirectory=src",
+    "pandas==2.2.2",
 ]
 
 [project.urls]
@@ -24,7 +25,6 @@ dev = [
     "build",
     "flake8",
     "ipykernel",
-    "pandas",
     "pre-commit",
     "setuptools_scm>=8"
 ]
