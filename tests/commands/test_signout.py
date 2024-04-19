@@ -1,7 +1,7 @@
 from argparse import Namespace
 import pytest
 
-from compiler_admin.commands import RESULT_FAILURE, RESULT_SUCCESS
+from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
 from compiler_admin.commands.signout import signout, __name__ as MODULE
 
 

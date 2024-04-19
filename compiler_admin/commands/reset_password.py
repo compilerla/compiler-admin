@@ -1,6 +1,6 @@
 from argparse import Namespace
 
-from compiler_admin.commands import RESULT_SUCCESS, RESULT_FAILURE
+from compiler_admin import RESULT_SUCCESS, RESULT_FAILURE
 from compiler_admin.commands.signout import signout
 from compiler_admin.services.google import USER_HELLO, CallGAMCommand, user_account_name, user_exists
 

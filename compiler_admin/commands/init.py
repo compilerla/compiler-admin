@@ -4,7 +4,7 @@ from pathlib import Path
 from shutil import rmtree
 import subprocess
 
-from compiler_admin.commands import RESULT_FAILURE, RESULT_SUCCESS
+from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
 from compiler_admin.services.google import USER_ARCHIVE, CallGAMCommand
 
 

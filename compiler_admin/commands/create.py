@@ -1,7 +1,7 @@
 from argparse import Namespace
 from typing import Sequence
 
-from compiler_admin.commands import RESULT_SUCCESS, RESULT_FAILURE
+from compiler_admin import RESULT_SUCCESS, RESULT_FAILURE
 from compiler_admin.services.google import GROUP_TEAM, add_user_to_group, CallGAMCommand, user_account_name, user_exists
 
 

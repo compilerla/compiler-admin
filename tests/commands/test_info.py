@@ -1,7 +1,6 @@
 import pytest
 
-from compiler_admin import __version__ as version
-from compiler_admin.commands import RESULT_SUCCESS
+from compiler_admin import __version__ as version, RESULT_SUCCESS
 from compiler_admin.commands.info import info, __name__ as MODULE
 from compiler_admin.services.google import DOMAIN
 

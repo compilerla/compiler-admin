@@ -4,6 +4,12 @@ __pycache__
 !.config/README.md
 .coverage
 .downloads
+.env
 .pytest_cache
 *.csv
 *.egg-info
+notebooks/data/*
+!notebooks/data/harvest-sample.csv
+!notebooks/data/toggl-project-info-sample.json
+!notebooks/data/toggl-sample.csv
+!notebooks/data/toggl-user-info-sample.json

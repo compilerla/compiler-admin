@@ -1,6 +1,6 @@
 import pytest
 
-from compiler_admin.commands import RESULT_SUCCESS
+from compiler_admin import RESULT_SUCCESS
 
 
 @pytest.fixture
@@ -119,6 +119,12 @@ def mock_google_user_exists(mock_module_name):
 
 
 @pytest.fixture
+def mock_google_user_info(mock_module_name):
+    """Fixture returns a function that patches the user_info function from a given module."""
+    return mock_module_name("user_info")
+
+
+@pytest.fixture
 def mock_google_user_in_group(mock_module_name):
     """Fixture returns a function that patches the user_in_group function from a given module."""
     return mock_module_name("user_in_group")
@@ -137,7 +143,7 @@ def mock_google_user_is_staff(mock_module_name):
 
 
 @pytest.fixture
-def mock_NamedTemporaryFile(mocker):
+def mock_NamedTemporaryFile_with_readlines(mocker):
     """Fixture returns a function that patches NamedTemporaryFile in a given module.
 
     Optionally provide a value for GAM stdout.readlines().

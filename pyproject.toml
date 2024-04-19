@@ -23,6 +23,8 @@ dev = [
     "black",
     "build",
     "flake8",
+    "ipykernel",
+    "pandas",
     "pre-commit",
     "setuptools_scm>=8"
 ]
@@ -63,6 +65,9 @@ norecursedirs = [
     ".pytest_cache",
     ".vscode",
 ]
+
+[tool.setuptools]
+packages = ["compiler_admin"]
 
 [tool.setuptools_scm]
 # intentionally left blank, but we need the section header to activate the tool

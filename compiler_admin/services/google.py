@@ -3,6 +3,8 @@ import sys
 from tempfile import NamedTemporaryFile
 from typing import Any, Sequence, IO
 
+from compiler_admin import RESULT_SUCCESS
+
 # import and alias CallGAMCommand so we can simplify usage in this app
 from gam import CallGAMCommand as __CallGAMCommand, initializeLogging
 
@@ -96,9 +98,38 @@ def user_exists(username: str) -> bool:
         print(f"User not in domain: {username}")
         return False
 
-    res = CallGAMCommand(("info", "user", username, "quick"))
+    info = user_info(username)
 
-    return res == 0
+    return info != {}
+
+
+def user_info(username: str) -> dict:
+    """Get a dict of basic user information.
+
+    Args:
+        username (str): The user@compiler.la to get.
+    Returns:
+        A dict of user information
+    """
+    if not str(username).endswith(DOMAIN):
+        print(f"User not in domain: {username}")
+        return {}
+
+    with NamedTemporaryFile("w+") as stdout:
+        res = CallGAMCommand(("info", "user", username, "quick"), stdout=stdout.name)
+        if res != RESULT_SUCCESS:
+            # user doesn't exist
+            return {}
+        # user exists, read data
+        lines = stdout.readlines()
+        # split on newline and filter out lines that aren't line "Key:Value" and empty value lines like "Key:<empty>"
+        lines = [L.strip() for L in lines if len(L.split(":")) == 2 and L.split(":")[1].strip()]
+        # make a map by splitting the lines, trimming key and value
+        info = {}
+        for line in lines:
+            k, v = line.split(":")
+            info[k.strip()] = v.strip()
+        return info
 
 
 def user_in_group(username: str, group: str) -> bool:

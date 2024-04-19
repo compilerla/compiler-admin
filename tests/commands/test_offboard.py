@@ -1,7 +1,7 @@
 from argparse import Namespace
 import pytest
 
-from compiler_admin.commands import RESULT_FAILURE, RESULT_SUCCESS
+from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
 from compiler_admin.commands.offboard import offboard, __name__ as MODULE
 
 
@@ -20,8 +20,8 @@ def mock_input_no(mock_input):
 
 
 @pytest.fixture
-def mock_NamedTemporaryFile(mock_NamedTemporaryFile):
-    return mock_NamedTemporaryFile(MODULE, ["Overall Transfer Status: completed"])
+def mock_NamedTemporaryFile(mock_NamedTemporaryFile_with_readlines):
+    return mock_NamedTemporaryFile_with_readlines(MODULE, ["Overall Transfer Status: completed"])
 
 
 @pytest.fixture
