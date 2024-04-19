@@ -4,12 +4,12 @@
 
 | Name                                        |    Stmts |     Miss |   Branch |   BrPart |   Cover |   Missing |
 |-------------------------------------------- | -------: | -------: | -------: | -------: | ------: | --------: |
-| compiler\_admin/\_\_init\_\_.py             |        5 |        2 |        0 |        0 |     60% |       5-7 |
-| compiler\_admin/commands/\_\_init\_\_.py    |        2 |        0 |        0 |        0 |    100% |           |
+| compiler\_admin/\_\_init\_\_.py             |        7 |        2 |        0 |        0 |     71% |      8-10 |
+| compiler\_admin/commands/\_\_init\_\_.py    |        0 |        0 |        0 |        0 |    100% |           |
 | compiler\_admin/commands/convert.py         |       43 |        0 |       26 |        1 |     99% |    66->74 |
 | compiler\_admin/commands/create.py          |       21 |        0 |        6 |        0 |    100% |           |
 | compiler\_admin/commands/delete.py          |       18 |        0 |        8 |        1 |     96% |    24->30 |
-| compiler\_admin/commands/info.py            |        9 |        0 |        0 |        0 |    100% |           |
+| compiler\_admin/commands/info.py            |        8 |        0 |        0 |        0 |    100% |           |
 | compiler\_admin/commands/init.py            |       36 |        0 |       14 |        1 |     98% |    21->18 |
 | compiler\_admin/commands/offboard.py        |       47 |        2 |       16 |        2 |     94% |42->48, 75-76 |
 | compiler\_admin/commands/reset\_password.py |       19 |        0 |        6 |        0 |    100% |           |
@@ -17,8 +17,8 @@
 | compiler\_admin/commands/signout.py         |       18 |        0 |        8 |        1 |     96% |    24->30 |
 | compiler\_admin/main.py                     |       63 |        1 |       24 |        2 |     97% |96->exit, 101 |
 | compiler\_admin/services/\_\_init\_\_.py    |        0 |        0 |        0 |        0 |    100% |           |
-| compiler\_admin/services/google.py          |       59 |        0 |       18 |        0 |    100% |           |
-|                                   **TOTAL** |  **356** |    **5** |  **130** |    **8** | **97%** |           |
+| compiler\_admin/services/google.py          |       75 |        2 |       26 |        1 |     97% |   115-116 |
+|                                   **TOTAL** |  **371** |    **7** |  **138** |    **9** | **97%** |           |
 
 
 ## Setup coverage badge
