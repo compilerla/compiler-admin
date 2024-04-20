@@ -83,6 +83,12 @@ def mock_commands_signout(mock_module_name):
 
 
 @pytest.fixture
+def mock_commands_user(mock_module_name):
+    """Fixture returns a function that patches the user command function in a given module."""
+    return mock_module_name("user")
+
+
+@pytest.fixture
 def mock_google_CallGAMCommand(mock_module_name):
     """Fixture returns a function that patches the CallGAMCommand function from a given module."""
     return mock_module_name("CallGAMCommand")
