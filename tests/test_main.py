@@ -28,7 +28,9 @@ def test_main_user_create(mock_commands_user):
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
-    assert Namespace(command="user", subcommand="create", username="username", notify=None) in call_args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="create", username="username", notify=None) in call_args
+    )
 
 
 def test_main_user_create_notify(mock_commands_user):
@@ -36,7 +38,10 @@ def test_main_user_create_notify(mock_commands_user):
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
-    assert Namespace(command="user", subcommand="create", username="username", notify="notification") in call_args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="create", username="username", notify="notification")
+        in call_args
+    )
 
 
 def test_main_user_create_extras(mock_commands_user):
@@ -44,7 +49,9 @@ def test_main_user_create_extras(mock_commands_user):
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
-    assert Namespace(command="user", subcommand="create", username="username", notify=None) in call_args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="create", username="username", notify=None) in call_args
+    )
     assert "extra1" in call_args
     assert "extra2" in call_args
 
@@ -60,7 +67,12 @@ def test_main_user_convert(mock_commands_user):
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
-    assert Namespace(command="user", subcommand="convert", username="username", account_type="contractor") in call_args
+    assert (
+        Namespace(
+            func=mock_commands_user, command="user", subcommand="convert", username="username", account_type="contractor"
+        )
+        in call_args
+    )
 
 
 def test_main_user_convert_no_username(mock_commands_user):
@@ -80,7 +92,9 @@ def test_main_user_delete(mock_commands_user):
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
-    assert Namespace(command="user", subcommand="delete", username="username", force=False) in call_args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="delete", username="username", force=False) in call_args
+    )
 
 
 def test_main_user_delete_force(mock_commands_user):
@@ -88,7 +102,9 @@ def test_main_user_delete_force(mock_commands_user):
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
-    assert Namespace(command="user", subcommand="delete", username="username", force=True) in call_args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="delete", username="username", force=True) in call_args
+    )
 
 
 def test_main_user_delete_no_username(mock_commands_user):
@@ -114,7 +130,7 @@ def test_main_init_default(mock_commands_init):
 
     mock_commands_init.assert_called_once()
     call_args = mock_commands_init.call_args.args
-    assert Namespace(command="init", username="username", gam=False, gyb=False) in call_args
+    assert Namespace(func=mock_commands_init, command="init", username="username", gam=False, gyb=False) in call_args
 
 
 def test_main_init_gam(mock_commands_init):
@@ -122,7 +138,7 @@ def test_main_init_gam(mock_commands_init):
 
     mock_commands_init.assert_called_once()
     call_args = mock_commands_init.call_args.args
-    assert Namespace(command="init", username="username", gam=True, gyb=False) in call_args
+    assert Namespace(func=mock_commands_init, command="init", username="username", gam=True, gyb=False) in call_args
 
 
 def test_main_init_gyb(mock_commands_init):
@@ -130,7 +146,7 @@ def test_main_init_gyb(mock_commands_init):
 
     mock_commands_init.assert_called_once()
     call_args = mock_commands_init.call_args.args
-    assert Namespace(command="init", username="username", gam=False, gyb=True) in call_args
+    assert Namespace(func=mock_commands_init, command="init", username="username", gam=False, gyb=True) in call_args
 
 
 def test_main_init_no_username(mock_commands_init):
@@ -144,7 +160,10 @@ def test_main_user_offboard(mock_commands_user):
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
-    assert Namespace(command="user", subcommand="offboard", username="username", alias=None, force=False) in call_args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="offboard", username="username", alias=None, force=False)
+        in call_args
+    )
 
 
 def test_main_user_offboard_force(mock_commands_user):
@@ -152,7 +171,10 @@ def test_main_user_offboard_force(mock_commands_user):
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
-    assert Namespace(command="user", subcommand="offboard", username="username", alias=None, force=True) in call_args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="offboard", username="username", alias=None, force=True)
+        in call_args
+    )
 
 
 def test_main_user_offboard_with_alias(mock_commands_user):
@@ -160,7 +182,17 @@ def test_main_user_offboard_with_alias(mock_commands_user):
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
-    assert Namespace(command="user", subcommand="offboard", username="username", alias="anotheruser", force=False) in call_args
+    assert (
+        Namespace(
+            func=mock_commands_user,
+            command="user",
+            subcommand="offboard",
+            username="username",
+            alias="anotheruser",
+            force=False,
+        )
+        in call_args
+    )
 
 
 def test_main_user_offboard_no_username(mock_commands_user):
@@ -174,7 +206,10 @@ def test_main_user_reset_password(mock_commands_user):
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
-    assert Namespace(command="user", subcommand="reset-password", username="username", notify=None) in call_args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="reset-password", username="username", notify=None)
+        in call_args
+    )
 
 
 def test_main_user_reset_password_notify(mock_commands_user):
@@ -182,7 +217,12 @@ def test_main_user_reset_password_notify(mock_commands_user):
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
-    assert Namespace(command="user", subcommand="reset-password", username="username", notify="notification") in call_args
+    assert (
+        Namespace(
+            func=mock_commands_user, command="user", subcommand="reset-password", username="username", notify="notification"
+        )
+        in call_args
+    )
 
 
 def test_main_user_reset_password_no_username(mock_commands_user):
@@ -196,7 +236,7 @@ def test_main_user_restore(mock_commands_user):
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
-    assert Namespace(command="user", subcommand="restore", username="username") in call_args
+    assert Namespace(func=mock_commands_user, command="user", subcommand="restore", username="username") in call_args
 
 
 def test_main_user_restore_no_username(mock_commands_user):
@@ -210,7 +250,9 @@ def test_main_user_signout(mock_commands_user):
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
-    assert Namespace(command="user", subcommand="signout", username="username", force=False) in call_args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="signout", username="username", force=False) in call_args
+    )
 
 
 def test_main_user_signout_force(mock_commands_user):
@@ -218,7 +260,9 @@ def test_main_user_signout_force(mock_commands_user):
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
-    assert Namespace(command="user", subcommand="signout", username="username", force=True) in call_args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="signout", username="username", force=True) in call_args
+    )
 
 
 def test_main_user_signout_no_username(mock_commands_user):

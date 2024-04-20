@@ -37,15 +37,18 @@ def main(argv=None):
 
     cmd_parsers = parser.add_subparsers(dest="command", help="The command to run")
 
-    cmd_parsers.add_parser("info", help="Print configuration and debugging information.")
+    info_cmd = add_sub_cmd(cmd_parsers, "info", help="Print configuration and debugging information.")
+    info_cmd.set_defaults(func=info)
 
     init_cmd = add_sub_cmd_username(
         cmd_parsers, "init", help="Initialize a new admin project. This command should be run once before any others."
     )
     init_cmd.add_argument("--gam", action="store_true", help="If provided, initialize a new GAM project.")
     init_cmd.add_argument("--gyb", action="store_true", help="If provided, initialize a new GYB project.")
+    init_cmd.set_defaults(func=init)
 
     user_cmd = add_sub_cmd(cmd_parsers, "user", help="Work with users in the Compiler org.")
+    user_cmd.set_defaults(func=user)
     user_subcmds = user_cmd.add_subparsers(dest="subcommand", help="The user command to run.")
 
     user_create = add_sub_cmd_username(user_subcmds, "create", help="Create a new user in the Compiler domain.")
@@ -78,12 +81,10 @@ def main(argv=None):
 
     args, extra = parser.parse_known_args(argv)
 
-    if args.command == "info":
-        return info()
-    if args.command == "init":
-        return init(args)
-    elif args.command == "user":
-        return user(args, *extra)
+    if args.func:
+        return args.func(args, *extra)
+    else:
+        raise ValueError("Unrecognized command")
 
 
 if __name__ == "__main__":
