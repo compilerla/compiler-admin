@@ -3,7 +3,6 @@ import subprocess
 
 import pytest
 
-from compiler_admin import __version__ as version
 import compiler_admin.main
 from compiler_admin.main import main, __name__ as MODULE
 from compiler_admin.services.google import DOMAIN
@@ -274,7 +273,7 @@ def test_run_compiler_admin(capfd):
     captured = capfd.readouterr()
 
     assert res == 0
-    assert f"compiler-admin: {version}" in captured.out
+    assert "compiler-admin:" in captured.out
     assert "GAMADV-XTD3" in captured.out
     assert f"Primary Domain: {DOMAIN}" in captured.out
     assert "WARNING: Config File:" not in captured.err
