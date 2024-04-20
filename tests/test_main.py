@@ -1,5 +1,6 @@
 from argparse import Namespace
 import subprocess
+import sys
 
 import pytest
 
@@ -16,6 +17,11 @@ def mock_commands_info(mock_commands_info):
 @pytest.fixture
 def mock_commands_init(mock_commands_init):
     return mock_commands_init(MODULE)
+
+
+@pytest.fixture
+def mock_commands_time(mock_commands_time):
+    return mock_commands_time(MODULE)
 
 
 @pytest.fixture
@@ -63,6 +69,73 @@ def test_main_init_no_username(mock_commands_init):
     with pytest.raises(SystemExit):
         main(argv=["init"])
         assert mock_commands_init.call_count == 0
+
+
+def test_main_time_convert_default(mock_commands_time):
+    main(argv=["time", "convert"])
+
+    mock_commands_time.assert_called_once()
+    call_args = mock_commands_time.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_time, command="time", subcommand="convert", client=None, input=sys.stdin, output=sys.stdout
+        )
+        in call_args
+    )
+
+
+def test_main_time_convert_client(mock_commands_time):
+    main(argv=["time", "convert", "--client", "client123"])
+
+    mock_commands_time.assert_called_once()
+    call_args = mock_commands_time.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_time,
+            command="time",
+            subcommand="convert",
+            client="client123",
+            input=sys.stdin,
+            output=sys.stdout,
+        )
+        in call_args
+    )
+
+
+def test_main_time_convert_input(mock_commands_time):
+    main(argv=["time", "convert", "--input", "file.csv"])
+
+    mock_commands_time.assert_called_once()
+    call_args = mock_commands_time.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_time,
+            command="time",
+            subcommand="convert",
+            client=None,
+            input="file.csv",
+            output=sys.stdout,
+        )
+        in call_args
+    )
+
+
+def test_main_time_convert_output(mock_commands_time):
+    main(argv=["time", "convert", "--output", "file.csv"])
+
+    mock_commands_time.assert_called_once()
+    call_args = mock_commands_time.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_time,
+            command="time",
+            subcommand="convert",
+            client=None,
+            input=sys.stdin,
+            output="file.csv",
+        )
+        in call_args
+    )
 
 
 def test_main_user_create(mock_commands_user):

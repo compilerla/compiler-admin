@@ -83,6 +83,12 @@ def mock_commands_signout(mock_module_name):
 
 
 @pytest.fixture
+def mock_commands_time(mock_module_name):
+    """Fixture returns a function that patches the time command function in a given module."""
+    return mock_module_name("time")
+
+
+@pytest.fixture
 def mock_commands_user(mock_module_name):
     """Fixture returns a function that patches the user command function in a given module."""
     return mock_module_name("user")
@@ -167,3 +173,13 @@ def mock_NamedTemporaryFile_with_readlines(mocker):
         return patched
 
     return _mock_NamedTemporaryFile
+
+
+@pytest.fixture
+def harvest_file():
+    return "notebooks/data/harvest-sample.csv"
+
+
+@pytest.fixture
+def toggl_file():
+    return "notebooks/data/toggl-sample.csv"

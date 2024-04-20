@@ -52,7 +52,14 @@ def main(argv=None):
     time_cmd.set_defaults(func=time)
     time_subcmds = time_cmd.add_subparsers("subcommand", help="The time command to run.")
 
-    add_sub_cmd(time_subcmds, "convert", help="Convert a time report from one format into another.")
+    time_convert = add_sub_cmd(time_subcmds, "convert", help="Convert a time report from one format into another.")
+    time_convert.add_argument(
+        "--input", default=sys.stdin, help="The path to the source data for conversion. Defaults to stdin."
+    )
+    time_convert.add_argument(
+        "--output", default=sys.stdout, help="The path to the file where converted data should be written. Defaults to stdout."
+    )
+    time_convert.add_argument("--client", default=None, help="The name of the client to use in converted data.")
 
     user_cmd = add_sub_cmd(cmd_parsers, "user", help="Work with users in the Compiler org.")
     user_cmd.set_defaults(func=user)

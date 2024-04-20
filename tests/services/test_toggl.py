@@ -57,16 +57,6 @@ def mock_google_user_info(mocker):
     return mocker.patch(f"{MODULE}.google_user_info")
 
 
-@pytest.fixture
-def source_data():
-    return "notebooks/data/toggl-sample.csv"
-
-
-@pytest.fixture
-def sample_transformed_data():
-    return "notebooks/data/harvest-sample.csv"
-
-
 def test_harvest_client_name(monkeypatch):
     assert _harvest_client_name() == "Test_Client"
 
@@ -184,16 +174,16 @@ def test_str_timedelta():
     assert result.total_seconds() == (1 * 60 * 60) + (30 * 60) + 15
 
 
-def test_convert_to_harvest_mocked(source_data, spy_files, mock_harvest_client_name, mock_google_user_info):
+def test_convert_to_harvest_mocked(toggl_file, spy_files, mock_harvest_client_name, mock_google_user_info):
     mock_google_user_info.return_value = {}
 
-    convert_to_harvest(source_data, None, None)
+    convert_to_harvest(toggl_file, client_name=None)
 
     mock_harvest_client_name.assert_called_once()
 
     spy_files.read_csv.assert_called_once()
     call_args = spy_files.read_csv.call_args
-    assert (source_data,) in call_args
+    assert (toggl_file,) in call_args
     assert call_args.kwargs["usecols"] == INPUT_COLUMNS
     assert call_args.kwargs["parse_dates"] == ["Start date"]
     assert call_args.kwargs["cache_dates"] is True
@@ -204,12 +194,12 @@ def test_convert_to_harvest_mocked(source_data, spy_files, mock_harvest_client_n
     assert call_args.kwargs["columns"] == OUTPUT_COLUMNS
 
 
-def test_convert_to_harvest_sample(source_data, sample_transformed_data, mock_google_user_info):
+def test_convert_to_harvest_sample(toggl_file, harvest_file, mock_google_user_info):
     mock_google_user_info.return_value = {}
     output = None
 
     with StringIO() as output_data:
-        convert_to_harvest(source_data, output_data, "Test Client 123")
+        convert_to_harvest(toggl_file, output_data, "Test Client 123")
         output = output_data.getvalue()
 
     assert output
@@ -217,7 +207,7 @@ def test_convert_to_harvest_sample(source_data, sample_transformed_data, mock_go
     assert ",".join(OUTPUT_COLUMNS) in output
 
     order = ["Date", "First Name", "Hours"]
-    sample_output_df = pd.read_csv(sample_transformed_data).sort_values(order)
+    sample_output_df = pd.read_csv(harvest_file).sort_values(order)
     output_df = pd.read_csv(StringIO(output)).sort_values(order)
 
     assert set(output_df.columns.to_list()) <= set(sample_output_df.columns.to_list())
