@@ -4,6 +4,7 @@ import sys
 from compiler_admin import __version__ as version
 from compiler_admin.commands.info import info
 from compiler_admin.commands.init import init
+from compiler_admin.commands.time import time
 from compiler_admin.commands.user import user
 from compiler_admin.commands.user.convert import ACCOUNT_TYPE_OU
 
@@ -46,6 +47,12 @@ def main(argv=None):
     init_cmd.add_argument("--gam", action="store_true", help="If provided, initialize a new GAM project.")
     init_cmd.add_argument("--gyb", action="store_true", help="If provided, initialize a new GYB project.")
     init_cmd.set_defaults(func=init)
+
+    time_cmd = add_sub_cmd(cmd_parsers, "time", help="Work with Compiler time entries")
+    time_cmd.set_defaults(func=time)
+    time_subcmds = time_cmd.add_subparsers("subcommand", help="The time command to run.")
+
+    add_sub_cmd(time_subcmds, "convert", help="Convert a time report from one format into another.")
 
     user_cmd = add_sub_cmd(cmd_parsers, "user", help="Work with users in the Compiler org.")
     user_cmd.set_defaults(func=user)
