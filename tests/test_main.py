@@ -23,6 +23,48 @@ def mock_commands_user(mock_commands_user):
     return mock_commands_user(MODULE)
 
 
+def test_main_info(mock_commands_info):
+    main(argv=["info"])
+
+    mock_commands_info.assert_called_once()
+
+
+def test_main_info_default(mock_commands_info):
+    main(argv=[])
+
+    mock_commands_info.assert_called_once()
+
+
+def test_main_init_default(mock_commands_init):
+    main(argv=["init", "username"])
+
+    mock_commands_init.assert_called_once()
+    call_args = mock_commands_init.call_args.args
+    assert Namespace(func=mock_commands_init, command="init", username="username", gam=False, gyb=False) in call_args
+
+
+def test_main_init_gam(mock_commands_init):
+    main(argv=["init", "username", "--gam"])
+
+    mock_commands_init.assert_called_once()
+    call_args = mock_commands_init.call_args.args
+    assert Namespace(func=mock_commands_init, command="init", username="username", gam=True, gyb=False) in call_args
+
+
+def test_main_init_gyb(mock_commands_init):
+    main(argv=["init", "username", "--gyb"])
+
+    mock_commands_init.assert_called_once()
+    call_args = mock_commands_init.call_args.args
+    assert Namespace(func=mock_commands_init, command="init", username="username", gam=False, gyb=True) in call_args
+
+
+def test_main_init_no_username(mock_commands_init):
+    with pytest.raises(SystemExit):
+        main(argv=["init"])
+        assert mock_commands_init.call_count == 0
+
+
 def test_main_user_create(mock_commands_user):
     main(argv=["user", "create", "username"])
 
@@ -111,48 +153,6 @@ def test_main_user_delete_no_username(mock_commands_user):
     with pytest.raises(SystemExit):
         main(argv=["user", "delete"])
         assert mock_commands_user.call_count == 0
-
-
-def test_main_info(mock_commands_info):
-    main(argv=["info"])
-
-    mock_commands_info.assert_called_once()
-
-
-def test_main_info_default(mock_commands_info):
-    main(argv=[])
-
-    mock_commands_info.assert_called_once()
-
-
-def test_main_init_default(mock_commands_init):
-    main(argv=["init", "username"])
-
-    mock_commands_init.assert_called_once()
-    call_args = mock_commands_init.call_args.args
-    assert Namespace(func=mock_commands_init, command="init", username="username", gam=False, gyb=False) in call_args
-
-
-def test_main_init_gam(mock_commands_init):
-    main(argv=["init", "username", "--gam"])
-
-    mock_commands_init.assert_called_once()
-    call_args = mock_commands_init.call_args.args
-    assert Namespace(func=mock_commands_init, command="init", username="username", gam=True, gyb=False) in call_args
-
-
-def test_main_init_gyb(mock_commands_init):
-    main(argv=["init", "username", "--gyb"])
-
-    mock_commands_init.assert_called_once()
-    call_args = mock_commands_init.call_args.args
-    assert Namespace(func=mock_commands_init, command="init", username="username", gam=False, gyb=True) in call_args
-
-
-def test_main_init_no_username(mock_commands_init):
-    with pytest.raises(SystemExit):
-        main(argv=["init"])
-        assert mock_commands_init.call_count == 0
 
 
 def test_main_user_offboard(mock_commands_user):
