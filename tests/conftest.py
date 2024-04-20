@@ -30,55 +30,55 @@ def mock_input(mock_module_name):
 
 @pytest.fixture
 def mock_commands_create(mock_module_name):
-    """Fixture returns a function that patches commands.create in a given module."""
+    """Fixture returns a function that patches the create function in a given module."""
     return mock_module_name("create")
 
 
 @pytest.fixture
 def mock_commands_convert(mock_module_name):
-    """Fixture returns a function that patches commands.convert in a given module."""
+    """Fixture returns a function that patches the convert command function in a given module."""
     return mock_module_name("convert")
 
 
 @pytest.fixture
 def mock_commands_delete(mock_module_name):
-    """Fixture returns a function that patches commands.delete in a given module."""
+    """Fixture returns a function that patches the delete command function in a given module."""
     return mock_module_name("delete")
 
 
 @pytest.fixture
 def mock_commands_info(mock_module_name):
-    """Fixture returns a function that patches commands.info in a given module."""
+    """Fixture returns a function that patches the info command function in a given module."""
     return mock_module_name("info")
 
 
 @pytest.fixture
 def mock_commands_init(mock_module_name):
-    """Fixture returns a function that patches commands.init in a given module."""
+    """Fixture returns a function that patches the init command function in a given module."""
     return mock_module_name("init")
 
 
 @pytest.fixture
 def mock_commands_offboard(mock_module_name):
-    """Fixture returns a function that patches commands.offboard in a given module."""
+    """Fixture returns a function that patches the offboard command function in a given module."""
     return mock_module_name("offboard")
 
 
 @pytest.fixture
 def mock_commands_reset_password(mock_module_name):
-    """Fixture returns a function that patches commands.reset_password in a given module."""
+    """Fixture returns a function that patches the reset_password command function in a given module."""
     return mock_module_name("reset_password")
 
 
 @pytest.fixture
 def mock_commands_restore(mock_module_name):
-    """Fixture returns a function that patches commands.restore in a given module."""
+    """Fixture returns a function that patches the restore command function in a given module."""
     return mock_module_name("restore")
 
 
 @pytest.fixture
 def mock_commands_signout(mock_module_name):
-    """Fixture returns a function that patches commands.signout in a given module."""
+    """Fixture returns a function that patches the signout command function in a given module."""
     return mock_module_name("signout")
 
 
