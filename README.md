@@ -10,23 +10,17 @@ Built on top of [GAMADV-XTD3](https://github.com/taers232c/GAMADV-XTD3) and [GYB
 
 ```bash
 $ compiler-admin -h
-usage: compiler-admin [-h] [-v] {info,init,create,convert,delete,offboard,reset-password,restore,signout} ...
+usage: compiler-admin [-h] [-v] {info,init,user} ...
 
 positional arguments:
-  {info,init,create,convert,delete,offboard,reset-password,restore,signout}
-    info                Print configuration and debugging information.
-    init                Initialize a new admin project. This command should be run once before any others.
-    create              Create a new user in the Compiler domain.
-    convert             Convert a user account to a new type.
-    delete              Delete a user account.
-    offboard            Offboard a user account.
-    reset-password      Reset a user's password to a randomly generated string.
-    restore             Restore an email backup from a prior offboarding.
-    signout             Signs a user out from all active sessions.
+  {info,init,user}  The command to run
+    info            Print configuration and debugging information.
+    init            Initialize a new admin project. This command should be run once before any others.
+    user            Work with users in the Compiler org.
 
 options:
-  -h, --help            show this help message and exit
-  -v, --version         show program's version number and exit
+  -h, --help        show this help message and exit
+  -v, --version     show program's version number and exit
 ```
 
 ## Getting started
@@ -60,11 +54,34 @@ The `init` commands follows the steps in the [GAMADV-XTD3 Wiki](https://github.c
 
 Additionally, GYB is used for Gmail backup/restore. See the [GYB Wiki](https://github.com/GAM-team/got-your-back/wiki) for more information.
 
-## Creating a user
+## Working with users
+
+The following commands are available to work with users in the Compiler domain:
 
 ```bash
-$ compiler-admin create -h
-usage: compiler-admin create [-h] [--notify NOTIFY] username
+$ compiler-admin user -h
+usage: compiler-admin user [-h] {create,convert,delete,offboard,reset-password,restore,signout} ...
+
+positional arguments:
+  {create,convert,delete,offboard,reset-password,restore,signout}
+                        The user command to run.
+    create              Create a new user in the Compiler domain.
+    convert             Convert a user account to a new type.
+    delete              Delete a user account.
+    offboard            Offboard a user account.
+    reset-password      Reset a user's password to a randomly generated string.
+    restore             Restore an email backup from a prior offboarding.
+    signout             Signs a user out from all active sessions.
+
+options:
+  -h, --help            show this help message and exit
+```
+
+### Creating a user
+
+```bash
+$ compiler-admin user create -h
+usage: compiler-admin user create [-h] [--notify NOTIFY] username
 
 positional arguments:
   username         A Compiler user account name, sans domain.
@@ -76,11 +93,11 @@ options:
 
 Additional options are passed through to GAM, see more about [GAM user create](https://github.com/taers232c/GAMADV-XTD3/wiki/Users#create-a-user)
 
-## Convert a user
+### Convert a user
 
 ```bash
-$ compiler-admin convert -h
-usage: compiler-admin convert [-h] username {contractor,partner,staff}
+$ compiler-admin user convert -h
+usage: compiler-admin user convert [-h] username {contractor,partner,staff}
 
 positional arguments:
   username              A Compiler user account name, sans domain.
@@ -91,11 +108,11 @@ options:
   -h, --help            show this help message and exit
 ```
 
-## Offboarding a user
+### Offboarding a user
 
 ```bash
-$ compiler-admin offboard -h
-usage: compiler-admin offboard [-h] [--alias ALIAS] [--force] username
+$ compiler-admin user offboard -h
+usage: compiler-admin user offboard [-h] [--alias ALIAS] [--force] username
 
 positional arguments:
   username       A Compiler user account name, sans domain.
@@ -108,13 +125,13 @@ options:
 
 This script creates a local backup of `USER`'s inbox, see [Restore](#restore-an-email-backup)
 
-## Restore an email backup
+### Restore an email backup
 
 Retore a backup from a prior [Offboarding](#offboarding-a-user) into the `archive@compiler.la` account.
 
 ```bash
-$ compiler-admin restore -h
-usage: compiler-admin restore [-h] username
+$ compiler-admin user restore -h
+usage: compiler-admin user restore [-h] username
 
 positional arguments:
   username    The user's account name, sans domain.
