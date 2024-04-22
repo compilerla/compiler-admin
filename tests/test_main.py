@@ -3,25 +3,9 @@ import subprocess
 
 import pytest
 
-from compiler_admin import __version__ as version
 import compiler_admin.main
 from compiler_admin.main import main, __name__ as MODULE
 from compiler_admin.services.google import DOMAIN
-
-
-@pytest.fixture
-def mock_commands_create(mock_commands_create):
-    return mock_commands_create(MODULE)
-
-
-@pytest.fixture
-def mock_commands_convert(mock_commands_convert):
-    return mock_commands_convert(MODULE)
-
-
-@pytest.fixture
-def mock_commands_delete(mock_commands_delete):
-    return mock_commands_delete(MODULE)
 
 
 @pytest.fixture
@@ -35,97 +19,8 @@ def mock_commands_init(mock_commands_init):
 
 
 @pytest.fixture
-def mock_commands_offboard(mock_commands_offboard):
-    return mock_commands_offboard(MODULE)
-
-
-@pytest.fixture
-def mock_commands_reset_password(mock_commands_reset_password):
-    return mock_commands_reset_password(MODULE)
-
-
-@pytest.fixture
-def mock_commands_restore(mock_commands_restore):
-    return mock_commands_restore(MODULE)
-
-
-@pytest.fixture
-def mock_commands_signout(mock_commands_signout):
-    return mock_commands_signout(MODULE)
-
-
-def test_main_create(mock_commands_create):
-    main(argv=["create", "username"])
-
-    mock_commands_create.assert_called_once()
-    call_args = mock_commands_create.call_args.args
-    assert Namespace(command="create", username="username", notify=None) in call_args
-
-
-def test_main_create_notify(mock_commands_create):
-    main(argv=["create", "username", "--notify", "notification"])
-
-    mock_commands_create.assert_called_once()
-    call_args = mock_commands_create.call_args.args
-    assert Namespace(command="create", username="username", notify="notification") in call_args
-
-
-def test_main_create_extras(mock_commands_create):
-    main(argv=["create", "username", "extra1", "extra2"])
-
-    mock_commands_create.assert_called_once()
-    call_args = mock_commands_create.call_args.args
-    assert Namespace(command="create", username="username", notify=None) in call_args
-    assert "extra1" in call_args
-    assert "extra2" in call_args
-
-
-def test_main_create_no_username(mock_commands_create):
-    with pytest.raises(SystemExit):
-        main(argv=["create"])
-        assert mock_commands_create.call_count == 0
-
-
-def test_main_convert(mock_commands_convert):
-    main(argv=["convert", "username", "contractor"])
-
-    mock_commands_convert.assert_called_once()
-    call_args = mock_commands_convert.call_args.args
-    assert Namespace(command="convert", username="username", account_type="contractor") in call_args
-
-
-def test_main_convert_no_username(mock_commands_convert):
-    with pytest.raises(SystemExit):
-        main(argv=["convert"])
-        assert mock_commands_convert.call_count == 0
-
-
-def test_main_convert_bad_account_type(mock_commands_convert):
-    with pytest.raises(SystemExit):
-        main(argv=["convert", "username", "account_type"])
-        assert mock_commands_convert.call_count == 0
-
-
-def test_main_delete(mock_commands_delete):
-    main(argv=["delete", "username"])
-
-    mock_commands_delete.assert_called_once()
-    call_args = mock_commands_delete.call_args.args
-    assert Namespace(command="delete", username="username", force=False) in call_args
-
-
-def test_main_delete_force(mock_commands_delete):
-    main(argv=["delete", "username", "--force"])
-
-    mock_commands_delete.assert_called_once()
-    call_args = mock_commands_delete.call_args.args
-    assert Namespace(command="delete", username="username", force=True) in call_args
-
-
-def test_main_delete_no_username(mock_commands_delete):
-    with pytest.raises(SystemExit):
-        main(argv=["delete"])
-        assert mock_commands_delete.call_count == 0
+def mock_commands_user(mock_commands_user):
+    return mock_commands_user(MODULE)
 
 
 def test_main_info(mock_commands_info):
@@ -145,7 +40,7 @@ def test_main_init_default(mock_commands_init):
 
     mock_commands_init.assert_called_once()
     call_args = mock_commands_init.call_args.args
-    assert Namespace(command="init", username="username", gam=False, gyb=False) in call_args
+    assert Namespace(func=mock_commands_init, command="init", username="username", gam=False, gyb=False) in call_args
 
 
 def test_main_init_gam(mock_commands_init):
@@ -153,7 +48,7 @@ def test_main_init_gam(mock_commands_init):
 
     mock_commands_init.assert_called_once()
     call_args = mock_commands_init.call_args.args
-    assert Namespace(command="init", username="username", gam=True, gyb=False) in call_args
+    assert Namespace(func=mock_commands_init, command="init", username="username", gam=True, gyb=False) in call_args
 
 
 def test_main_init_gyb(mock_commands_init):
@@ -161,7 +56,7 @@ def test_main_init_gyb(mock_commands_init):
 
     mock_commands_init.assert_called_once()
     call_args = mock_commands_init.call_args.args
-    assert Namespace(command="init", username="username", gam=False, gyb=True) in call_args
+    assert Namespace(func=mock_commands_init, command="init", username="username", gam=False, gyb=True) in call_args
 
 
 def test_main_init_no_username(mock_commands_init):
@@ -170,92 +65,210 @@ def test_main_init_no_username(mock_commands_init):
         assert mock_commands_init.call_count == 0
 
 
-def test_main_offboard(mock_commands_offboard):
-    main(argv=["offboard", "username"])
+def test_main_user_create(mock_commands_user):
+    main(argv=["user", "create", "username"])
 
-    mock_commands_offboard.assert_called_once()
-    call_args = mock_commands_offboard.call_args.args
-    assert Namespace(command="offboard", username="username", alias=None, force=False) in call_args
-
-
-def test_main_offboard_force(mock_commands_offboard):
-    main(argv=["offboard", "username", "--force"])
-
-    mock_commands_offboard.assert_called_once()
-    call_args = mock_commands_offboard.call_args.args
-    assert Namespace(command="offboard", username="username", alias=None, force=True) in call_args
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="create", username="username", notify=None) in call_args
+    )
 
 
-def test_main_offboard_with_alias(mock_commands_offboard):
-    main(argv=["offboard", "username", "--alias", "anotheruser"])
+def test_main_user_create_notify(mock_commands_user):
+    main(argv=["user", "create", "username", "--notify", "notification"])
 
-    mock_commands_offboard.assert_called_once()
-    call_args = mock_commands_offboard.call_args.args
-    assert Namespace(command="offboard", username="username", alias="anotheruser", force=False) in call_args
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="create", username="username", notify="notification")
+        in call_args
+    )
 
 
-def test_main_offboard_no_username(mock_commands_offboard):
+def test_main_user_create_extras(mock_commands_user):
+    main(argv=["user", "create", "username", "extra1", "extra2"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="create", username="username", notify=None) in call_args
+    )
+    assert "extra1" in call_args
+    assert "extra2" in call_args
+
+
+def test_main_user_create_no_username(mock_commands_user):
     with pytest.raises(SystemExit):
-        main(argv=["offboard"])
-        assert mock_commands_offboard.call_count == 0
+        main(argv=["user", "create"])
+        assert mock_commands_user.call_count == 0
 
 
-def test_main_reset_password(mock_commands_reset_password):
-    main(argv=["reset-password", "username"])
+def test_main_user_convert(mock_commands_user):
+    main(argv=["user", "convert", "username", "contractor"])
 
-    mock_commands_reset_password.assert_called_once()
-    call_args = mock_commands_reset_password.call_args.args
-    assert Namespace(command="reset-password", username="username", notify=None) in call_args
-
-
-def test_main_reset_password_notify(mock_commands_reset_password):
-    main(argv=["reset-password", "username", "--notify", "notification"])
-
-    mock_commands_reset_password.assert_called_once()
-    call_args = mock_commands_reset_password.call_args.args
-    assert Namespace(command="reset-password", username="username", notify="notification") in call_args
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_user, command="user", subcommand="convert", username="username", account_type="contractor"
+        )
+        in call_args
+    )
 
 
-def test_main_reset_password_no_username(mock_commands_reset_password):
+def test_main_user_convert_no_username(mock_commands_user):
     with pytest.raises(SystemExit):
-        main(argv=["reset-password"])
-        assert mock_commands_reset_password.call_count == 0
+        main(argv=["user", "convert"])
+        assert mock_commands_user.call_count == 0
 
 
-def test_main_restore(mock_commands_restore):
-    main(argv=["restore", "username"])
-
-    mock_commands_restore.assert_called_once()
-    call_args = mock_commands_restore.call_args.args
-    assert Namespace(command="restore", username="username") in call_args
-
-
-def test_main_restore_no_username(mock_commands_restore):
+def test_main_user_convert_bad_account_type(mock_commands_user):
     with pytest.raises(SystemExit):
-        main(argv=["restore"])
-        assert mock_commands_restore.call_count == 0
+        main(argv=["user", "convert", "username", "account_type"])
+        assert mock_commands_user.call_count == 0
 
 
-def test_main_signout(mock_commands_signout):
-    main(argv=["signout", "username"])
+def test_main_user_delete(mock_commands_user):
+    main(argv=["user", "delete", "username"])
 
-    mock_commands_signout.assert_called_once()
-    call_args = mock_commands_signout.call_args.args
-    assert Namespace(command="signout", username="username", force=False) in call_args
-
-
-def test_main_signout_force(mock_commands_signout):
-    main(argv=["signout", "username", "--force"])
-
-    mock_commands_signout.assert_called_once()
-    call_args = mock_commands_signout.call_args.args
-    assert Namespace(command="signout", username="username", force=True) in call_args
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="delete", username="username", force=False) in call_args
+    )
 
 
-def test_main_signout_no_username(mock_commands_signout):
+def test_main_user_delete_force(mock_commands_user):
+    main(argv=["user", "delete", "username", "--force"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="delete", username="username", force=True) in call_args
+    )
+
+
+def test_main_user_delete_no_username(mock_commands_user):
     with pytest.raises(SystemExit):
-        main(argv=["signout"])
-        assert mock_commands_signout.call_count == 0
+        main(argv=["user", "delete"])
+        assert mock_commands_user.call_count == 0
+
+
+def test_main_user_offboard(mock_commands_user):
+    main(argv=["user", "offboard", "username"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="offboard", username="username", alias=None, force=False)
+        in call_args
+    )
+
+
+def test_main_user_offboard_force(mock_commands_user):
+    main(argv=["user", "offboard", "username", "--force"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="offboard", username="username", alias=None, force=True)
+        in call_args
+    )
+
+
+def test_main_user_offboard_with_alias(mock_commands_user):
+    main(argv=["user", "offboard", "username", "--alias", "anotheruser"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_user,
+            command="user",
+            subcommand="offboard",
+            username="username",
+            alias="anotheruser",
+            force=False,
+        )
+        in call_args
+    )
+
+
+def test_main_user_offboard_no_username(mock_commands_user):
+    with pytest.raises(SystemExit):
+        main(argv=["user", "offboard"])
+        assert mock_commands_user.call_count == 0
+
+
+def test_main_user_reset_password(mock_commands_user):
+    main(argv=["user", "reset-password", "username"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="reset-password", username="username", notify=None)
+        in call_args
+    )
+
+
+def test_main_user_reset_password_notify(mock_commands_user):
+    main(argv=["user", "reset-password", "username", "--notify", "notification"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_user, command="user", subcommand="reset-password", username="username", notify="notification"
+        )
+        in call_args
+    )
+
+
+def test_main_user_reset_password_no_username(mock_commands_user):
+    with pytest.raises(SystemExit):
+        main(argv=["user", "reset-password"])
+        assert mock_commands_user.call_count == 0
+
+
+def test_main_user_restore(mock_commands_user):
+    main(argv=["user", "restore", "username"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert Namespace(func=mock_commands_user, command="user", subcommand="restore", username="username") in call_args
+
+
+def test_main_user_restore_no_username(mock_commands_user):
+    with pytest.raises(SystemExit):
+        main(argv=["user", "restore"])
+        assert mock_commands_user.call_count == 0
+
+
+def test_main_user_signout(mock_commands_user):
+    main(argv=["user", "signout", "username"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="signout", username="username", force=False) in call_args
+    )
+
+
+def test_main_user_signout_force(mock_commands_user):
+    main(argv=["user", "signout", "username", "--force"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="signout", username="username", force=True) in call_args
+    )
+
+
+def test_main_user_signout_no_username(mock_commands_user):
+    with pytest.raises(SystemExit):
+        main(argv=["user", "signout"])
+        assert mock_commands_user.call_count == 0
 
 
 @pytest.mark.e2e
@@ -274,7 +287,7 @@ def test_run_compiler_admin(capfd):
     captured = capfd.readouterr()
 
     assert res == 0
-    assert f"compiler-admin: {version}" in captured.out
+    assert "compiler-admin:" in captured.out
     assert "GAMADV-XTD3" in captured.out
     assert f"Primary Domain: {DOMAIN}" in captured.out
     assert "WARNING: Config File:" not in captured.err

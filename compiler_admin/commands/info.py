@@ -2,7 +2,7 @@ from compiler_admin import __version__ as version, RESULT_SUCCESS, RESULT_FAILUR
 from compiler_admin.services.google import CallGAMCommand, CallGYBCommand
 
 
-def info() -> int:
+def info(*args, **kwargs) -> int:
     """Print information about this package and the GAM environment.
 
     Returns:

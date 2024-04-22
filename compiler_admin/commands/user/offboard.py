@@ -2,8 +2,8 @@ from argparse import Namespace
 from tempfile import NamedTemporaryFile
 
 from compiler_admin import RESULT_SUCCESS, RESULT_FAILURE
-from compiler_admin.commands.delete import delete
-from compiler_admin.commands.signout import signout
+from compiler_admin.commands.user.delete import delete
+from compiler_admin.commands.user.signout import signout
 from compiler_admin.services.google import (
     USER_ARCHIVE,
     CallGAMCommand,

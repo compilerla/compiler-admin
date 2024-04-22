@@ -1,21 +1,31 @@
-import argparse
+from argparse import ArgumentParser, _SubParsersAction
 import sys
 
 from compiler_admin import __version__ as version
-from compiler_admin.commands.create import create
-from compiler_admin.commands.convert import ACCOUNT_TYPE_OU, convert
-from compiler_admin.commands.delete import delete
 from compiler_admin.commands.info import info
 from compiler_admin.commands.init import init
-from compiler_admin.commands.offboard import offboard
-from compiler_admin.commands.reset_password import reset_password
-from compiler_admin.commands.restore import restore
-from compiler_admin.commands.signout import signout
+from compiler_admin.commands.user import user
+from compiler_admin.commands.user.convert import ACCOUNT_TYPE_OU
+
+
+def add_sub_cmd(cmd: _SubParsersAction, subcmd, help) -> ArgumentParser:
+    """Helper creates a new subcommand parser."""
+    return cmd.add_parser(subcmd, help=help)
+
+
+def add_sub_cmd_username(cmd: _SubParsersAction, subcmd, help) -> ArgumentParser:
+    """Helper creates a new subcommand parser with a required username arg."""
+    return add_username_arg(add_sub_cmd(cmd, subcmd, help=help))
+
+
+def add_username_arg(cmd: ArgumentParser) -> ArgumentParser:
+    cmd.add_argument("username", help="A Compiler user account name, sans domain.")
+    return cmd
 
 
 def main(argv=None):
     argv = argv if argv is not None else sys.argv[1:]
-    parser = argparse.ArgumentParser(prog="compiler-admin")
+    parser = ArgumentParser(prog="compiler-admin")
 
     # https://stackoverflow.com/a/8521644/812183
     parser.add_argument(
@@ -25,76 +35,56 @@ def main(argv=None):
         version=f"%(prog)s {version}",
     )
 
-    subparsers = parser.add_subparsers(dest="command")
+    cmd_parsers = parser.add_subparsers(dest="command", help="The command to run")
 
-    def _subcmd(name, help, add_username_arg=True) -> argparse.ArgumentParser:
-        """Helper creates a new subcommand parser."""
-        parser = subparsers.add_parser(name, help=help)
-        if add_username_arg is True:
-            parser.add_argument("username", help="A Compiler user account name, sans domain.")
-        return parser
+    info_cmd = add_sub_cmd(cmd_parsers, "info", help="Print configuration and debugging information.")
+    info_cmd.set_defaults(func=info)
 
-    _subcmd("info", help="Print configuration and debugging information.", add_username_arg=False)
-
-    init_parser = _subcmd(
-        "init",
-        help="Initialize a new admin project. This command should be run once before any others.",
+    init_cmd = add_sub_cmd_username(
+        cmd_parsers, "init", help="Initialize a new admin project. This command should be run once before any others."
     )
-    init_parser.add_argument("--gam", action="store_true", help="If provided, initialize a new GAM project.")
-    init_parser.add_argument("--gyb", action="store_true", help="If provided, initialize a new GYB project.")
+    init_cmd.add_argument("--gam", action="store_true", help="If provided, initialize a new GAM project.")
+    init_cmd.add_argument("--gyb", action="store_true", help="If provided, initialize a new GYB project.")
+    init_cmd.set_defaults(func=init)
 
-    create_parser = _subcmd("create", help="Create a new user in the Compiler domain.")
-    create_parser.add_argument("--notify", help="An email address to send the newly created account info.")
+    user_cmd = add_sub_cmd(cmd_parsers, "user", help="Work with users in the Compiler org.")
+    user_cmd.set_defaults(func=user)
+    user_subcmds = user_cmd.add_subparsers(dest="subcommand", help="The user command to run.")
 
-    convert_parser = _subcmd("convert", help="Convert a user account to a new type.")
-    convert_parser.add_argument(
-        "account_type", choices=ACCOUNT_TYPE_OU.keys(), help="Target account type for this conversion."
-    )
+    user_create = add_sub_cmd_username(user_subcmds, "create", help="Create a new user in the Compiler domain.")
+    user_create.add_argument("--notify", help="An email address to send the newly created account info.")
 
-    delete_parser = _subcmd("delete", help="Delete a user account.")
-    delete_parser.add_argument(
-        "--force", action="store_true", default=False, help="Don't ask for confirmation before deletion."
-    )
+    user_convert = add_sub_cmd_username(user_subcmds, "convert", help="Convert a user account to a new type.")
+    user_convert.add_argument("account_type", choices=ACCOUNT_TYPE_OU.keys(), help="Target account type for this conversion.")
 
-    offboard_parser = _subcmd("offboard", help="Offboard a user account.")
-    offboard_parser.add_argument("--alias", help="Account to assign username as an alias.")
-    offboard_parser.add_argument(
+    user_delete = add_sub_cmd_username(user_subcmds, "delete", help="Delete a user account.")
+    user_delete.add_argument("--force", action="store_true", default=False, help="Don't ask for confirmation before deletion.")
+
+    user_offboard = add_sub_cmd_username(user_subcmds, "offboard", help="Offboard a user account.")
+    user_offboard.add_argument("--alias", help="Account to assign username as an alias.")
+    user_offboard.add_argument(
         "--force", action="store_true", default=False, help="Don't ask for confirmation before offboarding."
     )
 
-    reset_parser = _subcmd("reset-password", help="Reset a user's password to a randomly generated string.")
-    reset_parser.add_argument("--notify", help="An email address to send the newly generated password.")
-
-    _subcmd("restore", help="Restore an email backup from a prior offboarding.")
-
-    signout_parser = _subcmd("signout", help="Signs a user out from all active sessions.")
-    signout_parser.add_argument(
-        "--force", action="store_true", default=False, help="Don't ask for confirmation before signout."
+    user_reset = add_sub_cmd_username(
+        user_subcmds, "reset-password", help="Reset a user's password to a randomly generated string."
     )
+    user_reset.add_argument("--notify", help="An email address to send the newly generated password.")
+
+    add_sub_cmd_username(user_subcmds, "restore", help="Restore an email backup from a prior offboarding.")
+
+    user_signout = add_sub_cmd_username(user_subcmds, "signout", help="Signs a user out from all active sessions.")
+    user_signout.add_argument("--force", action="store_true", default=False, help="Don't ask for confirmation before signout.")
 
     if len(argv) == 0:
         argv = ["info"]
 
     args, extra = parser.parse_known_args(argv)
 
-    if args.command == "info":
-        return info()
-    elif args.command == "create":
-        return create(args, *extra)
-    elif args.command == "convert":
-        return convert(args)
-    elif args.command == "delete":
-        return delete(args)
-    elif args.command == "init":
-        return init(args)
-    elif args.command == "offboard":
-        return offboard(args)
-    elif args.command == "restore":
-        return restore(args)
-    elif args.command == "reset-password":
-        return reset_password(args)
-    elif args.command == "signout":
-        return signout(args)
+    if args.func:
+        return args.func(args, *extra)
+    else:
+        raise ValueError("Unrecognized command")
 
 
 if __name__ == "__main__":

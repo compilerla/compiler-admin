@@ -22,7 +22,7 @@ def _clean_config_dir(config_dir: Path) -> None:
             rmtree(path)
 
 
-def init(args: Namespace) -> int:
+def init(args: Namespace, *extras) -> int:
     """Initialize a new GAM project.
 
     See https://github.com/taers232c/GAMADV-XTD3/wiki/How-to-Install-Advanced-GAM

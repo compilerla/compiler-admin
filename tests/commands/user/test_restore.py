@@ -2,7 +2,7 @@ from argparse import Namespace
 import pytest
 
 from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
-from compiler_admin.commands.restore import restore, __name__ as MODULE
+from compiler_admin.commands.user.restore import restore, __name__ as MODULE
 
 
 @pytest.fixture

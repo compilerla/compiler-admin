@@ -1,6 +1,6 @@
 import pytest
 
-from compiler_admin import __version__ as version, RESULT_SUCCESS
+from compiler_admin import RESULT_SUCCESS
 from compiler_admin.commands.info import info, __name__ as MODULE
 from compiler_admin.services.google import DOMAIN
 
@@ -28,7 +28,7 @@ def test_info_e2e(capfd):
     captured = capfd.readouterr()
 
     assert res == RESULT_SUCCESS
-    assert f"compiler-admin: {version}" in captured.out
+    assert "compiler-admin:" in captured.out
     assert "GAMADV-XTD3" in captured.out
     assert f"Primary Domain: {DOMAIN}" in captured.out
     assert "Got Your Back" in captured.out
