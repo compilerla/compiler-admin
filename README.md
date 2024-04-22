@@ -2,23 +2,24 @@
 
 [Full report](https://htmlpreview.github.io/?https://github.com/compilerla/compiler-admin/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
-| Name                                        |    Stmts |     Miss |   Branch |   BrPart |   Cover |   Missing |
-|-------------------------------------------- | -------: | -------: | -------: | -------: | ------: | --------: |
-| compiler\_admin/\_\_init\_\_.py             |        7 |        2 |        0 |        0 |     71% |      8-10 |
-| compiler\_admin/commands/\_\_init\_\_.py    |        0 |        0 |        0 |        0 |    100% |           |
-| compiler\_admin/commands/convert.py         |       43 |        0 |       26 |        1 |     99% |    66->74 |
-| compiler\_admin/commands/create.py          |       21 |        0 |        6 |        0 |    100% |           |
-| compiler\_admin/commands/delete.py          |       18 |        0 |        8 |        1 |     96% |    24->30 |
-| compiler\_admin/commands/info.py            |        8 |        0 |        0 |        0 |    100% |           |
-| compiler\_admin/commands/init.py            |       36 |        0 |       14 |        1 |     98% |    21->18 |
-| compiler\_admin/commands/offboard.py        |       47 |        2 |       16 |        2 |     94% |42->48, 75-76 |
-| compiler\_admin/commands/reset\_password.py |       19 |        0 |        6 |        0 |    100% |           |
-| compiler\_admin/commands/restore.py         |       16 |        0 |        4 |        0 |    100% |           |
-| compiler\_admin/commands/signout.py         |       18 |        0 |        8 |        1 |     96% |    24->30 |
-| compiler\_admin/main.py                     |       63 |        1 |       24 |        2 |     97% |96->exit, 101 |
-| compiler\_admin/services/\_\_init\_\_.py    |        0 |        0 |        0 |        0 |    100% |           |
-| compiler\_admin/services/google.py          |       75 |        2 |       26 |        1 |     97% |   115-116 |
-|                                   **TOTAL** |  **371** |    **7** |  **138** |    **9** | **97%** |           |
+| Name                                             |    Stmts |     Miss |   Branch |   BrPart |   Cover |   Missing |
+|------------------------------------------------- | -------: | -------: | -------: | -------: | ------: | --------: |
+| compiler\_admin/\_\_init\_\_.py                  |        7 |        2 |        0 |        0 |     71% |      8-10 |
+| compiler\_admin/commands/\_\_init\_\_.py         |        0 |        0 |        0 |        0 |    100% |           |
+| compiler\_admin/commands/info.py                 |        8 |        0 |        0 |        0 |    100% |           |
+| compiler\_admin/commands/init.py                 |       36 |        0 |       14 |        1 |     98% |    21->18 |
+| compiler\_admin/commands/user/\_\_init\_\_.py    |       12 |        3 |        2 |        0 |     64% |     15-18 |
+| compiler\_admin/commands/user/convert.py         |       43 |        0 |       26 |        1 |     99% |    66->74 |
+| compiler\_admin/commands/user/create.py          |       21 |        0 |        6 |        0 |    100% |           |
+| compiler\_admin/commands/user/delete.py          |       18 |        0 |        8 |        1 |     96% |    24->30 |
+| compiler\_admin/commands/user/offboard.py        |       47 |        2 |       16 |        2 |     94% |42->48, 75-76 |
+| compiler\_admin/commands/user/reset\_password.py |       19 |        0 |        6 |        0 |    100% |           |
+| compiler\_admin/commands/user/restore.py         |       16 |        0 |        4 |        0 |    100% |           |
+| compiler\_admin/commands/user/signout.py         |       18 |        0 |        8 |        1 |     96% |    24->30 |
+| compiler\_admin/main.py                          |       50 |        2 |        6 |        2 |     93% |    87, 91 |
+| compiler\_admin/services/\_\_init\_\_.py         |        0 |        0 |        0 |        0 |    100% |           |
+| compiler\_admin/services/google.py               |       75 |        2 |       26 |        1 |     97% |   115-116 |
+|                                        **TOTAL** |  **370** |   **11** |  **122** |    **9** | **96%** |           |
 
 
 ## Setup coverage badge
