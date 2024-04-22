@@ -9,6 +9,11 @@ from compiler_admin.commands.user import user
 from compiler_admin.commands.user.convert import ACCOUNT_TYPE_OU
 
 
+def add_sub_cmd_parser(parser: ArgumentParser, dest="subcommand", help=None):
+    """Helper adds a subparser for the given dest."""
+    return parser.add_subparsers(dest=dest, help=help)
+
+
 def add_sub_cmd(cmd: _SubParsersAction, subcmd, help) -> ArgumentParser:
     """Helper creates a new subcommand parser."""
     return cmd.add_parser(subcmd, help=help)
@@ -36,7 +41,7 @@ def main(argv=None):
         version=f"%(prog)s {version}",
     )
 
-    cmd_parsers = parser.add_subparsers(dest="command", help="The command to run")
+    cmd_parsers = add_sub_cmd_parser(parser, dest="command", help="The command to run")
 
     info_cmd = add_sub_cmd(cmd_parsers, "info", help="Print configuration and debugging information.")
     info_cmd.set_defaults(func=info)
@@ -50,7 +55,7 @@ def main(argv=None):
 
     time_cmd = add_sub_cmd(cmd_parsers, "time", help="Work with Compiler time entries")
     time_cmd.set_defaults(func=time)
-    time_subcmds = time_cmd.add_subparsers("subcommand", help="The time command to run.")
+    time_subcmds = add_sub_cmd_parser(time_cmd, help="The time command to run.")
 
     time_convert = add_sub_cmd(time_subcmds, "convert", help="Convert a time report from one format into another.")
     time_convert.add_argument(
@@ -63,7 +68,7 @@ def main(argv=None):
 
     user_cmd = add_sub_cmd(cmd_parsers, "user", help="Work with users in the Compiler org.")
     user_cmd.set_defaults(func=user)
-    user_subcmds = user_cmd.add_subparsers(dest="subcommand", help="The user command to run.")
+    user_subcmds = add_sub_cmd_parser(user_cmd, help="The user command to run.")
 
     user_create = add_sub_cmd_username(user_subcmds, "create", help="Create a new user in the Compiler domain.")
     user_create.add_argument("--notify", help="An email address to send the newly created account info.")
