@@ -41,7 +41,7 @@ def setup_init_command(cmd_parsers: _SubParsersAction):
 
 
 def setup_time_command(cmd_parsers: _SubParsersAction):
-    time_cmd = add_sub_cmd(cmd_parsers, "time", help="Work with Compiler time entries")
+    time_cmd = add_sub_cmd(cmd_parsers, "time", help="Work with Compiler time entries.")
     time_cmd.set_defaults(func=time)
     time_subcmds = add_sub_cmd_parser(time_cmd, help="The time command to run.")
 

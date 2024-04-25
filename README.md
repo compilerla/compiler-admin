@@ -10,17 +10,19 @@ Built on top of [GAMADV-XTD3](https://github.com/taers232c/GAMADV-XTD3) and [GYB
 
 ```bash
 $ compiler-admin -h
-usage: compiler-admin [-h] [-v] {info,init,user} ...
+usage: compiler-admin [-h] [-v] {info,init,time,user} ...
 
 positional arguments:
-  {info,init,user}  The command to run
-    info            Print configuration and debugging information.
-    init            Initialize a new admin project. This command should be run once before any others.
-    user            Work with users in the Compiler org.
+  {info,init,time,user}
+                        The command to run
+    info                Print configuration and debugging information.
+    init                Initialize a new admin project. This command should be run once before any others.
+    time                Work with Compiler time entries.
+    user                Work with users in the Compiler org.
 
 options:
-  -h, --help        show this help message and exit
-  -v, --version     show program's version number and exit
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
 ```
 
 ## Getting started
@@ -53,6 +55,37 @@ options:
 The `init` commands follows the steps in the [GAMADV-XTD3 Wiki](https://github.com/taers232c/GAMADV-XTD3/wiki/#requirements).
 
 Additionally, GYB is used for Gmail backup/restore. See the [GYB Wiki](https://github.com/GAM-team/got-your-back/wiki) for more information.
+
+## Working with time entires
+
+The `time` command provides an interface for working with time entries from Compiler's various systems:
+
+```bash
+$ compiler-admin time -h
+usage: compiler-admin time [-h] {convert} ...
+
+positional arguments:
+  {convert}   The time command to run.
+    convert   Convert a time report from one format into another.
+
+options:
+  -h, --help  show this help message and exit
+```
+
+### Converting an hours report
+
+With a CSV exported from either Harvest or Toggl, use this command to convert to the opposite format:
+
+```bash
+$ compiler-admin time convert -h
+usage: compiler-admin time convert [-h] [--input INPUT] [--output OUTPUT] [--client CLIENT]
+
+options:
+  -h, --help       show this help message and exit
+  --input INPUT    The path to the source data for conversion. Defaults to stdin.
+  --output OUTPUT  The path to the file where converted data should be written. Defaults to stdout.
+  --client CLIENT  The name of the client to use in converted data.
+```
 
 ## Working with users
 
