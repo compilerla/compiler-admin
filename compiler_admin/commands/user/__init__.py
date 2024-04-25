@@ -15,4 +15,4 @@ def user(args: Namespace, *extra):
     if args.subcommand in locals():
         locals()[args.subcommand](args, *extra)
     else:
-        raise ValueError(f"Unknown user subcommand: {args.subcommand}")
+        raise NotImplementedError(f"Unknown user subcommand: {args.subcommand}")
