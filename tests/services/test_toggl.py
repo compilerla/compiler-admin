@@ -206,7 +206,7 @@ def test_convert_to_harvest_sample(toggl_file, harvest_file, mock_google_user_in
     assert isinstance(output, str)
     assert ",".join(OUTPUT_COLUMNS) in output
 
-    order = ["Date", "First Name", "Hours"]
+    order = ["Date", "First name", "Hours"]
     sample_output_df = pd.read_csv(harvest_file).sort_values(order)
     output_df = pd.read_csv(StringIO(output)).sort_values(order)
 

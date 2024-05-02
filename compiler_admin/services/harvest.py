@@ -8,7 +8,7 @@ import pandas as pd
 import compiler_admin.services.files as files
 
 # input CSV columns needed for conversion
-INPUT_COLUMNS = ["Date", "Client", "Project", "Notes", "Hours", "First Name", "Last Name"]
+INPUT_COLUMNS = ["Date", "Client", "Project", "Notes", "Hours", "First name", "Last name"]
 
 # default output CSV columns
 OUTPUT_COLUMNS = ["Email", "Start date", "Start time", "Duration", "Project", "Task", "Client", "Billable", "Description"]
@@ -63,7 +63,7 @@ def convert_to_toggl(
     source["Billable"] = "Yes"
 
     # add the Email column
-    source["Email"] = source["First Name"].apply(lambda x: f"{x.lower()}@compiler.la")
+    source["Email"] = source["First name"].apply(lambda x: f"{x.lower()}@compiler.la")
 
     # Convert numeric Hours to timedelta Duration
     source["Duration"] = source["Hours"].apply(pd.to_timedelta, unit="hours")

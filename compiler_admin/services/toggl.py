@@ -18,7 +18,7 @@ NOT_FOUND = "NOT FOUND"
 INPUT_COLUMNS = ["Email", "Task", "Client", "Start date", "Start time", "Duration", "Description"]
 
 # default output CSV columns
-OUTPUT_COLUMNS = ["Date", "Client", "Project", "Task", "Notes", "Hours", "First Name", "Last Name"]
+OUTPUT_COLUMNS = ["Date", "Client", "Project", "Task", "Notes", "Hours", "First name", "Last name"]
 
 
 def _harvest_client_name():
@@ -119,9 +119,9 @@ def convert_to_harvest(
     # get cached project name if any
     source["Project"] = source["Project"].apply(lambda x: _toggl_project_info(x) or x)
 
-    # assign First and Last Name
-    source["First Name"] = source["Email"].apply(_get_first_name)
-    source["Last Name"] = source["Email"].apply(_get_last_name)
+    # assign First and Last name
+    source["First name"] = source["Email"].apply(_get_first_name)
+    source["Last name"] = source["Email"].apply(_get_last_name)
 
     # calculate hours as a decimal from duration timedelta
     source["Hours"] = (source["Duration"].dt.total_seconds() / 3600).round(2)
