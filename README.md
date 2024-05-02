@@ -8,7 +8,9 @@
 | compiler\_admin/commands/\_\_init\_\_.py         |        0 |        0 |        0 |        0 |    100% |           |
 | compiler\_admin/commands/info.py                 |        8 |        0 |        0 |        0 |    100% |           |
 | compiler\_admin/commands/init.py                 |       36 |        0 |       14 |        1 |     98% |    21->18 |
-| compiler\_admin/commands/user/\_\_init\_\_.py    |       12 |        3 |        2 |        0 |     64% |     15-18 |
+| compiler\_admin/commands/time/\_\_init\_\_.py    |        8 |        0 |        2 |        0 |    100% |           |
+| compiler\_admin/commands/time/convert.py         |       16 |        0 |        4 |        0 |    100% |           |
+| compiler\_admin/commands/user/\_\_init\_\_.py    |       14 |        0 |        2 |        0 |    100% |           |
 | compiler\_admin/commands/user/convert.py         |       43 |        0 |       26 |        1 |     99% |    66->74 |
 | compiler\_admin/commands/user/create.py          |       21 |        0 |        6 |        0 |    100% |           |
 | compiler\_admin/commands/user/delete.py          |       18 |        0 |        8 |        1 |     96% |    24->30 |
@@ -16,10 +18,13 @@
 | compiler\_admin/commands/user/reset\_password.py |       19 |        0 |        6 |        0 |    100% |           |
 | compiler\_admin/commands/user/restore.py         |       16 |        0 |        4 |        0 |    100% |           |
 | compiler\_admin/commands/user/signout.py         |       18 |        0 |        8 |        1 |     96% |    24->30 |
-| compiler\_admin/main.py                          |       50 |        2 |        6 |        2 |     93% |    87, 91 |
+| compiler\_admin/main.py                          |       67 |        2 |        6 |        2 |     95% |  115, 119 |
 | compiler\_admin/services/\_\_init\_\_.py         |        0 |        0 |        0 |        0 |    100% |           |
+| compiler\_admin/services/files.py                |       12 |        0 |        4 |        0 |    100% |           |
 | compiler\_admin/services/google.py               |       75 |        2 |       26 |        1 |     97% |   115-116 |
-|                                        **TOTAL** |  **370** |   **11** |  **122** |    **9** | **96%** |           |
+| compiler\_admin/services/harvest.py              |       32 |        0 |        4 |        0 |    100% |           |
+| compiler\_admin/services/toggl.py                |       62 |        0 |       16 |        0 |    100% |           |
+|                                        **TOTAL** |  **519** |    **8** |  **152** |    **9** | **97%** |           |
 
 
 ## Setup coverage badge
