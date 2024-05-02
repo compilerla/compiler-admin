@@ -4,8 +4,8 @@ services:
       context: .
       dockerfile: .devcontainer/Dockerfile
     image: compiler_admin:dev
-    environment:
-      GAMCFGDIR: /home/compiler/.config/compiler-admin/gam
+    env_file:
+      - .env
     entrypoint: sleep infinity
     volumes:
       - .:/home/compiler/admin

@@ -1,4 +1,4 @@
-Date,Client,Project,Project Code,Task,Notes,Hours,Billable?,Invoiced?,Approved?,First Name,Last Name,Roles,Employee?,External Reference URL
+Date,Client,Project,Project Code,Task,Notes,Hours,Billable?,Invoiced?,Approved?,First name,Last name,Roles,Employee?,External Reference URL
 2023-01-21,Client1,Project5,PROJECT,Project Consulting,nascetur ridiculus mus etiam vel augue vestibulum rutrum rutrum neque aenean auctor gravida sem praesent id massa id nisl venenatis lacinia aenean sit,2.51,true,false,false,Hetti,Becken,Team Member,true,
 2023-01-07,Client1,Project4,PROJECT,Project Consulting,quam a odio in hac habitasse platea dictumst maecenas ut massa quis augue luctus tincidunt nulla mollis molestie lorem quisque ut erat curabitur,1.84,false,true,false,Sawyer,Berrey,Team Member,false,
 2023-01-25,Client1,Project5,PROJECT,Project Consulting,odio odio elementum eu interdum eu tincidunt in leo maecenas pulvinar lobortis est,2.11,true,false,true,Silas,Idenden,Team Member,true,
