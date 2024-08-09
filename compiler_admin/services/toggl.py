@@ -15,7 +15,7 @@ USER_INFO = {}
 NOT_FOUND = "NOT FOUND"
 
 # input CSV columns needed for conversion
-INPUT_COLUMNS = ["Email", "Task", "Client", "Start date", "Start time", "Duration", "Description"]
+INPUT_COLUMNS = ["Email", "Project", "Client", "Start date", "Start time", "Duration", "Description"]
 
 # default output CSV columns
 OUTPUT_COLUMNS = ["Date", "Client", "Project", "Task", "Notes", "Hours", "First name", "Last name"]
@@ -110,7 +110,7 @@ def convert_to_harvest(
     source.sort_values(["Start date", "Start time", "Email"], inplace=True)
 
     # rename columns that can be imported as-is
-    source.rename(columns={"Task": "Project", "Description": "Notes", "Start date": "Date"}, inplace=True)
+    source.rename(columns={"Project": "Project", "Description": "Notes", "Start date": "Date"}, inplace=True)
 
     # update static calculated columns
     source["Client"] = client_name
