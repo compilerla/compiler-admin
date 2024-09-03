@@ -1,251 +1,251 @@
 Email,Start date,Start time,Duration,Project,Task,Client,Billable,Description
-aymer@compiler.la,2023-01-02,09:00:00,02:58:00,Prime1,Project3,Client1,Yes,nulla justo aliquam quis turpis eget elit sodales scelerisque mauris sit amet eros suspendisse accumsan tortor quis turpis sed ante vivamus tortor duis mattis
-aymer@compiler.la,2023-01-03,09:00:00,03:08:00,Prime1,Project3,Client1,Yes,elementum ligula vehicula consequat morbi a ipsum integer a nibh in quis justo
-aymer@compiler.la,2023-01-03,12:08:00,00:49:00,Prime1,Project4,Client1,Yes,ut erat curabitur gravida nisi at nibh in hac habitasse platea dictumst aliquam
-aymer@compiler.la,2023-01-04,09:00:00,02:57:00,Prime1,Project3,Client1,Yes,viverra eget congue eget semper rutrum nulla nunc purus phasellus in
-aymer@compiler.la,2023-01-05,09:00:00,02:40:00,Prime1,Project1,Client1,Yes,justo sollicitudin ut suscipit a feugiat et eros
-aymer@compiler.la,2023-01-05,11:40:00,01:39:00,Prime1,Project5,Client1,Yes,vestibulum ante ipsum primis in faucibus
-aymer@compiler.la,2023-01-06,09:00:00,02:15:00,Prime1,Project1,Client1,Yes,vehicula consequat morbi a ipsum integer a nibh in quis justo maecenas rhoncus aliquam lacus morbi quis
-aymer@compiler.la,2023-01-06,11:15:00,03:29:00,Prime1,Project4,Client1,Yes,leo maecenas pulvinar lobortis est phasellus sit amet erat nulla tempus vivamus in felis eu sapien cursus vestibulum proin eu
-aymer@compiler.la,2023-01-07,09:00:00,01:14:00,Prime1,Project5,Client1,Yes,nulla suspendisse potenti cras in purus eu
-aymer@compiler.la,2023-01-07,10:14:00,00:45:00,Prime1,Project3,Client1,Yes,sapien in sapien iaculis congue vivamus metus arcu adipiscing molestie hendrerit at vulputate vitae nisl aenean lectus pellentesque eget nunc
-aymer@compiler.la,2023-01-08,09:00:00,02:00:00,Prime1,Project4,Client1,Yes,sed magna at nunc commodo placerat praesent blandit nam nulla integer pede justo lacinia eget tincidunt
-aymer@compiler.la,2023-01-09,09:00:00,01:58:00,Prime1,Project7,Client1,Yes,nulla sed vel enim sit amet nunc viverra dapibus nulla suscipit ligula in lacus curabitur at ipsum ac tellus semper interdum
-aymer@compiler.la,2023-01-10,09:00:00,02:40:00,Prime1,Project6,Client1,Yes,curae donec pharetra magna vestibulum aliquet ultrices erat tortor sollicitudin mi sit amet lobortis sapien sapien non mi integer ac neque duis bibendum morbi non
-aymer@compiler.la,2023-01-11,09:00:00,03:09:00,Prime1,Project3,Client1,Yes,varius nulla facilisi cras non velit nec nisi vulputate nonummy maecenas tincidunt lacus at velit
-aymer@compiler.la,2023-01-11,12:09:00,00:49:00,Prime1,Project1,Client1,Yes,maecenas ut massa quis augue luctus tincidunt nulla mollis molestie lorem quisque ut erat curabitur gravida nisi at nibh
-aymer@compiler.la,2023-01-11,12:59:00,02:32:00,Prime1,Project7,Client1,Yes,blandit ultrices enim lorem ipsum dolor sit amet consectetuer adipiscing elit proin interdum mauris non ligula pellentesque ultrices phasellus id sapien in
-aymer@compiler.la,2023-01-11,15:31:00,02:37:00,Prime1,Project2,Client1,Yes,curabitur convallis duis consequat dui nec
-aymer@compiler.la,2023-01-12,09:00:00,01:24:00,Prime1,Project4,Client1,Yes,morbi a ipsum integer a nibh
-aymer@compiler.la,2023-01-12,10:24:00,03:50:00,Prime1,Project3,Client1,Yes,pede malesuada in imperdiet et commodo vulputate justo in blandit ultrices enim lorem ipsum dolor sit amet consectetuer adipiscing elit proin interdum mauris non ligula
-aymer@compiler.la,2023-01-12,14:14:00,01:15:00,Prime1,Project7,Client1,Yes,luctus et ultrices posuere cubilia curae nulla dapibus
-aymer@compiler.la,2023-01-13,09:00:00,03:49:00,Prime1,Project4,Client1,Yes,et commodo vulputate justo in blandit ultrices enim lorem ipsum dolor sit amet consectetuer adipiscing elit proin interdum mauris non
-aymer@compiler.la,2023-01-13,12:49:00,03:19:00,Prime1,Project4,Client1,Yes,lectus aliquam sit amet diam in
-aymer@compiler.la,2023-01-14,09:00:00,00:54:00,Prime1,Project3,Client1,Yes,in faucibus orci luctus et ultrices posuere cubilia curae donec pharetra magna vestibulum aliquet ultrices erat tortor sollicitudin mi sit amet lobortis
-aymer@compiler.la,2023-01-16,09:00:00,00:06:00,Prime1,Project6,Client1,Yes,amet turpis elementum ligula vehicula consequat morbi a
-aymer@compiler.la,2023-01-18,09:00:00,03:48:00,Prime1,Project7,Client1,Yes,ac diam cras pellentesque volutpat dui maecenas tristique est et tempus semper est quam pharetra magna ac consequat metus sapien ut nunc
-aymer@compiler.la,2023-01-19,09:00:00,03:54:00,Prime1,Project1,Client1,Yes,faucibus orci luctus et ultrices posuere cubilia curae donec pharetra
-aymer@compiler.la,2023-01-19,12:54:00,02:09:00,Prime1,Project2,Client1,Yes,neque aenean auctor gravida sem praesent id massa id
-aymer@compiler.la,2023-01-20,09:00:00,02:43:00,Prime1,Project1,Client1,Yes,tincidunt eu felis fusce posuere felis sed lacus morbi sem mauris laoreet ut rhoncus aliquet pulvinar sed nisl nunc rhoncus dui
-aymer@compiler.la,2023-01-20,11:43:00,03:45:00,Prime1,Project7,Client1,Yes,quis turpis eget elit sodales scelerisque mauris sit amet eros suspendisse accumsan tortor quis turpis sed ante vivamus
-aymer@compiler.la,2023-01-21,09:00:00,03:45:00,Prime1,Project3,Client1,Yes,nec sem duis aliquam convallis nunc proin at turpis a pede posuere nonummy integer non velit donec diam
-aymer@compiler.la,2023-01-21,12:45:00,00:15:00,Prime1,Project1,Client1,Yes,cursus id turpis integer aliquet massa id lobortis convallis tortor risus dapibus augue
-aymer@compiler.la,2023-01-22,09:00:00,00:05:00,Prime1,Project3,Client1,Yes,habitasse platea dictumst aliquam augue quam sollicitudin vitae consectetuer eget rutrum at lorem integer tincidunt ante vel
-aymer@compiler.la,2023-01-23,09:00:00,01:31:00,Prime1,Project7,Client1,Yes,ultrices phasellus id sapien in sapien iaculis congue vivamus metus arcu adipiscing molestie hendrerit at vulputate vitae nisl aenean lectus pellentesque eget
-aymer@compiler.la,2023-01-24,09:00:00,02:13:00,Prime1,Project7,Client1,Yes,aliquet massa id lobortis convallis tortor risus dapibus augue vel accumsan tellus nisi eu orci mauris lacinia sapien quis libero nullam sit amet turpis elementum
-aymer@compiler.la,2023-01-25,09:00:00,02:49:00,Prime1,Project6,Client1,Yes,consequat lectus in est risus auctor sed tristique in tempus sit amet
-aymer@compiler.la,2023-01-25,11:49:00,02:34:00,Prime1,Project5,Client1,Yes,sed nisl nunc rhoncus dui vel sem sed sagittis nam congue risus semper porta volutpat quam pede lobortis ligula sit amet eleifend pede
-aymer@compiler.la,2023-01-25,14:24:00,02:12:00,Prime1,Project2,Client1,Yes,mattis egestas metus aenean fermentum donec ut mauris eget massa tempor convallis nulla neque libero convallis eget eleifend luctus
-aymer@compiler.la,2023-01-26,09:00:00,03:34:00,Prime1,Project2,Client1,Yes,volutpat erat quisque erat eros viverra eget congue eget semper rutrum nulla nunc purus phasellus in felis donec semper sapien
-aymer@compiler.la,2023-01-26,12:34:00,02:39:00,Prime1,Project5,Client1,Yes,sit amet eleifend pede libero quis orci nullam molestie nibh in lectus pellentesque at nulla suspendisse
-aymer@compiler.la,2023-01-28,09:00:00,02:07:00,Prime1,Project6,Client1,Yes,nec euismod scelerisque quam turpis adipiscing lorem vitae mattis nibh ligula nec
-aymer@compiler.la,2023-01-30,09:00:00,01:48:00,Prime1,Project4,Client1,Yes,eget eros elementum pellentesque quisque porta volutpat erat quisque erat eros viverra eget congue eget semper rutrum nulla nunc purus
-aymer@compiler.la,2023-01-30,10:48:00,01:48:00,Prime1,Project3,Client1,Yes,nulla mollis molestie lorem quisque ut erat curabitur gravida nisi at
-aymer@compiler.la,2023-01-30,12:36:00,00:28:00,Prime1,Project5,Client1,Yes,a feugiat et eros vestibulum ac est lacinia nisi venenatis tristique fusce congue diam id ornare imperdiet sapien
-gusella@compiler.la,2023-01-02,09:00:00,00:43:00,Prime1,Project1,Client1,Yes,odio elementum eu interdum eu tincidunt in leo maecenas pulvinar lobortis est phasellus sit amet erat nulla
-gusella@compiler.la,2023-01-03,09:00:00,01:36:00,Prime1,Project2,Client1,Yes,ipsum ac tellus semper interdum mauris ullamcorper purus sit amet nulla quisque arcu libero rutrum ac lobortis vel dapibus at diam nam
-gusella@compiler.la,2023-01-04,09:00:00,02:34:00,Prime1,Project3,Client1,Yes,mauris vulputate elementum nullam varius nulla facilisi cras
-gusella@compiler.la,2023-01-05,09:00:00,03:47:00,Prime1,Project1,Client1,Yes,cursus vestibulum proin eu mi nulla ac enim in tempor
-gusella@compiler.la,2023-01-05,12:47:00,00:50:00,Prime1,Project7,Client1,Yes,malesuada in imperdiet et commodo vulputate justo in blandit
-gusella@compiler.la,2023-01-05,13:37:00,03:28:00,Prime1,Project3,Client1,Yes,dolor vel est donec odio justo sollicitudin ut suscipit a feugiat et eros vestibulum ac est lacinia
-gusella@compiler.la,2023-01-05,17:06:00,02:25:00,Prime1,Project7,Client1,Yes,ornare imperdiet sapien urna pretium nisl ut volutpat sapien arcu sed augue aliquam erat volutpat in congue etiam justo etiam pretium iaculis justo
-gusella@compiler.la,2023-01-07,09:00:00,00:41:00,Prime1,Project4,Client1,Yes,quam a odio in hac habitasse platea dictumst maecenas ut massa quis augue luctus tincidunt nulla mollis molestie lorem quisque
-gusella@compiler.la,2023-01-07,09:41:00,03:48:00,Prime1,Project4,Client1,Yes,mattis nibh ligula nec sem duis aliquam convallis nunc proin at turpis a pede posuere nonummy integer
-gusella@compiler.la,2023-01-08,09:00:00,04:00:00,Prime1,Project5,Client1,Yes,id nisl venenatis lacinia aenean sit amet justo morbi ut odio cras mi pede malesuada in imperdiet et commodo vulputate justo in blandit ultrices
-gusella@compiler.la,2023-01-09,09:00:00,00:28:00,Prime1,Project5,Client1,Yes,at turpis donec posuere metus vitae ipsum aliquam non mauris morbi non lectus aliquam sit amet diam in magna bibendum imperdiet nullam orci pede venenatis
-gusella@compiler.la,2023-01-09,09:28:00,02:37:00,Prime1,Project1,Client1,Yes,et ultrices posuere cubilia curae nulla dapibus dolor vel est donec odio justo sollicitudin ut suscipit a
-gusella@compiler.la,2023-01-10,09:00:00,00:58:00,Prime1,Project1,Client1,Yes,nulla quisque arcu libero rutrum ac lobortis vel dapibus at diam nam tristique
-gusella@compiler.la,2023-01-10,09:58:00,03:15:00,Prime1,Project1,Client1,Yes,duis aliquam convallis nunc proin at turpis a pede posuere nonummy integer non velit donec diam neque vestibulum eget vulputate ut ultrices vel augue
-gusella@compiler.la,2023-01-11,09:00:00,02:12:00,Prime1,Project6,Client1,Yes,gravida sem praesent id massa id nisl venenatis lacinia aenean sit amet justo morbi ut odio cras mi pede malesuada in imperdiet et commodo vulputate
-gusella@compiler.la,2023-01-11,11:12:00,03:31:00,Prime1,Project1,Client1,Yes,nulla elit ac nulla sed vel enim sit amet nunc viverra
-gusella@compiler.la,2023-01-12,09:00:00,03:19:00,Prime1,Project2,Client1,Yes,magna bibendum imperdiet nullam orci
-gusella@compiler.la,2023-01-13,09:00:00,01:52:00,Prime1,Project6,Client1,Yes,id ornare imperdiet sapien urna pretium nisl ut volutpat sapien arcu sed augue aliquam erat volutpat
-gusella@compiler.la,2023-01-13,10:52:00,00:28:00,Prime1,Project7,Client1,Yes,eget orci vehicula condimentum curabitur in
-gusella@compiler.la,2023-01-14,09:00:00,03:04:00,Prime1,Project6,Client1,Yes,viverra diam vitae quam suspendisse potenti nullam porttitor lacus at
-gusella@compiler.la,2023-01-14,12:04:00,00:49:00,Prime1,Project7,Client1,Yes,non interdum in ante vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae duis faucibus accumsan odio curabitur
-gusella@compiler.la,2023-01-15,09:00:00,03:36:00,Prime1,Project7,Client1,Yes,vulputate justo in blandit ultrices
-gusella@compiler.la,2023-01-15,12:36:00,02:08:00,Prime1,Project7,Client1,Yes,eros vestibulum ac est lacinia
-gusella@compiler.la,2023-01-15,14:45:00,01:34:00,Prime1,Project2,Client1,Yes,quam a odio in hac habitasse platea dictumst maecenas ut massa quis augue luctus tincidunt nulla mollis molestie lorem quisque ut erat curabitur gravida nisi
-gusella@compiler.la,2023-01-16,09:00:00,00:43:00,Prime1,Project7,Client1,Yes,elit ac nulla sed vel enim sit amet
-gusella@compiler.la,2023-01-17,09:00:00,01:35:00,Prime1,Project4,Client1,Yes,luctus rutrum nulla tellus in sagittis dui vel nisl duis
-gusella@compiler.la,2023-01-17,10:35:00,02:11:00,Prime1,Project3,Client1,Yes,ante nulla justo aliquam quis turpis eget elit sodales scelerisque mauris sit amet eros suspendisse accumsan tortor quis
-gusella@compiler.la,2023-01-18,09:00:00,00:31:00,Prime1,Project1,Client1,Yes,ullamcorper augue a suscipit nulla elit ac nulla sed
-gusella@compiler.la,2023-01-20,09:00:00,02:57:00,Prime1,Project4,Client1,Yes,varius ut blandit non interdum in ante vestibulum ante ipsum primis in faucibus orci
-gusella@compiler.la,2023-01-21,09:00:00,02:13:00,Prime1,Project6,Client1,Yes,convallis nulla neque libero convallis eget eleifend luctus ultricies eu nibh quisque id justo sit amet sapien
-gusella@compiler.la,2023-01-21,11:13:00,00:12:00,Prime1,Project4,Client1,Yes,ac lobortis vel dapibus at diam nam tristique tortor eu pede
-gusella@compiler.la,2023-01-21,11:25:00,00:33:00,Prime1,Project5,Client1,Yes,in tempor turpis nec euismod scelerisque quam turpis adipiscing lorem vitae mattis nibh ligula nec sem
-gusella@compiler.la,2023-01-22,09:00:00,00:46:00,Prime1,Project7,Client1,Yes,orci eget orci vehicula condimentum curabitur in libero ut massa
-gusella@compiler.la,2023-01-23,09:00:00,03:17:00,Prime1,Project7,Client1,Yes,tortor sollicitudin mi sit amet lobortis sapien sapien non
-gusella@compiler.la,2023-01-25,09:00:00,03:51:00,Prime1,Project6,Client1,Yes,neque aenean auctor gravida sem praesent id massa id nisl venenatis lacinia aenean sit amet justo morbi ut
-gusella@compiler.la,2023-01-25,12:51:00,02:54:00,Prime1,Project1,Client1,Yes,odio curabitur convallis duis consequat dui nec nisi volutpat eleifend donec ut dolor morbi vel
-gusella@compiler.la,2023-01-26,09:00:00,02:28:00,Prime1,Project4,Client1,Yes,nam congue risus semper porta volutpat quam pede lobortis ligula sit
-gusella@compiler.la,2023-01-26,11:28:00,03:02:00,Prime1,Project2,Client1,Yes,et ultrices posuere cubilia curae donec pharetra magna vestibulum aliquet ultrices erat tortor sollicitudin mi sit amet lobortis sapien sapien
-gusella@compiler.la,2023-01-26,14:31:00,00:52:00,Prime1,Project3,Client1,Yes,eget eros elementum pellentesque quisque porta volutpat erat quisque erat eros viverra eget congue eget semper rutrum nulla nunc purus phasellus in felis donec
-gusella@compiler.la,2023-01-26,15:24:00,02:25:00,Prime1,Project5,Client1,Yes,in felis eu sapien cursus vestibulum proin eu mi nulla ac enim
-gusella@compiler.la,2023-01-26,17:49:00,01:18:00,Prime1,Project2,Client1,Yes,convallis nulla neque libero convallis eget eleifend luctus ultricies eu nibh
-gusella@compiler.la,2023-01-26,19:07:00,01:37:00,Prime1,Project4,Client1,Yes,condimentum id luctus nec molestie sed justo pellentesque viverra pede ac diam cras pellentesque volutpat dui maecenas tristique est et tempus semper est quam pharetra
-gusella@compiler.la,2023-01-27,09:00:00,02:32:00,Prime1,Project5,Client1,Yes,egestas metus aenean fermentum donec ut mauris eget massa tempor
-gusella@compiler.la,2023-01-27,11:32:00,03:12:00,Prime1,Project1,Client1,Yes,consequat nulla nisl nunc nisl duis bibendum felis sed interdum venenatis turpis enim blandit mi in porttitor pede
-gusella@compiler.la,2023-01-28,09:00:00,03:43:00,Prime1,Project4,Client1,Yes,amet lobortis sapien sapien non mi
-gusella@compiler.la,2023-01-29,09:00:00,03:30:00,Prime1,Project3,Client1,Yes,vestibulum sagittis sapien cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus etiam vel augue vestibulum
-gusella@compiler.la,2023-01-29,12:30:00,01:37:00,Prime1,Project3,Client1,Yes,mi pede malesuada in imperdiet et commodo vulputate justo in blandit ultrices enim
-gusella@compiler.la,2023-01-30,09:00:00,02:43:00,Prime1,Project4,Client1,Yes,volutpat erat quisque erat eros viverra eget congue eget semper rutrum nulla
-gusella@compiler.la,2023-01-30,11:43:00,03:00:00,Prime1,Project2,Client1,Yes,dui vel sem sed sagittis nam congue risus semper porta volutpat quam pede lobortis ligula sit amet eleifend
-gusella@compiler.la,2023-01-30,14:44:00,01:06:00,Prime1,Project3,Client1,Yes,sagittis nam congue risus semper porta volutpat quam pede lobortis ligula sit amet eleifend pede libero quis orci nullam
-gusella@compiler.la,2023-01-30,15:51:00,02:20:00,Prime1,Project4,Client1,Yes,augue vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae
-gusella@compiler.la,2023-01-30,18:11:00,00:16:00,Prime1,Project3,Client1,Yes,platea dictumst maecenas ut massa quis augue luctus tincidunt nulla
-gusella@compiler.la,2023-01-30,18:27:00,00:45:00,Prime1,Project7,Client1,Yes,ligula suspendisse ornare consequat lectus in est risus
-hetti@compiler.la,2023-01-02,09:00:00,00:34:00,Prime1,Project7,Client1,Yes,in faucibus orci luctus et ultrices posuere cubilia curae nulla dapibus dolor vel est donec odio justo sollicitudin ut suscipit a feugiat et eros vestibulum
-hetti@compiler.la,2023-01-02,09:34:00,00:42:00,Prime1,Project3,Client1,Yes,elit proin interdum mauris non ligula pellentesque ultrices phasellus id sapien in sapien iaculis congue vivamus metus arcu adipiscing molestie hendrerit at
-hetti@compiler.la,2023-01-03,09:00:00,01:30:00,Prime1,Project1,Client1,Yes,praesent blandit lacinia erat vestibulum
-hetti@compiler.la,2023-01-03,10:30:00,01:30:00,Prime1,Project6,Client1,Yes,vel lectus in quam fringilla rhoncus mauris enim leo rhoncus sed vestibulum sit amet cursus id turpis integer aliquet massa id lobortis convallis
-hetti@compiler.la,2023-01-04,09:00:00,02:50:00,Prime1,Project1,Client1,Yes,eget elit sodales scelerisque mauris sit amet eros suspendisse accumsan tortor quis turpis
-hetti@compiler.la,2023-01-05,09:00:00,01:26:00,Prime1,Project3,Client1,Yes,condimentum neque sapien placerat ante nulla justo aliquam quis
-hetti@compiler.la,2023-01-06,09:00:00,02:12:00,Prime1,Project7,Client1,Yes,nec nisi vulputate nonummy maecenas tincidunt lacus at velit vivamus vel nulla eget eros elementum pellentesque quisque porta volutpat
-hetti@compiler.la,2023-01-06,11:12:00,03:41:00,Prime1,Project2,Client1,Yes,sit amet eleifend pede libero quis orci nullam molestie nibh in lectus pellentesque at nulla suspendisse potenti cras in purus eu magna
-hetti@compiler.la,2023-01-06,14:53:00,02:33:00,Prime1,Project4,Client1,Yes,consequat dui nec nisi volutpat eleifend donec ut dolor morbi vel
-hetti@compiler.la,2023-01-07,09:00:00,01:14:00,Prime1,Project5,Client1,Yes,vehicula condimentum curabitur in libero ut massa volutpat convallis morbi odio odio elementum eu interdum eu tincidunt in leo maecenas
-hetti@compiler.la,2023-01-07,10:14:00,02:45:00,Prime1,Project6,Client1,Yes,nunc viverra dapibus nulla suscipit ligula in lacus curabitur at ipsum ac tellus semper interdum mauris ullamcorper purus sit amet nulla
-hetti@compiler.la,2023-01-07,13:00:00,03:09:00,Prime1,Project1,Client1,Yes,in purus eu magna vulputate luctus cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus vivamus vestibulum sagittis sapien cum sociis natoque
-hetti@compiler.la,2023-01-09,09:00:00,03:49:00,Prime1,Project1,Client1,Yes,quis lectus suspendisse potenti in eleifend quam a odio in hac habitasse
-hetti@compiler.la,2023-01-09,12:49:00,01:31:00,Prime1,Project1,Client1,Yes,enim leo rhoncus sed vestibulum sit amet cursus id turpis integer
-hetti@compiler.la,2023-01-10,09:00:00,00:30:00,Prime1,Project2,Client1,Yes,blandit nam nulla integer pede justo
-hetti@compiler.la,2023-01-10,09:30:00,00:46:00,Prime1,Project6,Client1,Yes,eleifend pede libero quis orci nullam molestie nibh in lectus pellentesque
-hetti@compiler.la,2023-01-12,09:00:00,01:33:00,Prime1,Project5,Client1,Yes,massa quis augue luctus tincidunt nulla mollis molestie lorem
-hetti@compiler.la,2023-01-12,10:33:00,02:11:00,Prime1,Project7,Client1,Yes,eget eros elementum pellentesque quisque porta volutpat erat quisque erat eros
-hetti@compiler.la,2023-01-12,12:44:00,02:25:00,Prime1,Project3,Client1,Yes,vel augue vestibulum rutrum rutrum neque aenean auctor gravida
-hetti@compiler.la,2023-01-13,09:00:00,01:06:00,Prime1,Project7,Client1,Yes,varius ut blandit non interdum in ante vestibulum ante ipsum
-hetti@compiler.la,2023-01-13,10:06:00,02:02:00,Prime1,Project6,Client1,Yes,aliquam augue quam sollicitudin vitae consectetuer eget rutrum at lorem integer tincidunt ante vel ipsum praesent blandit lacinia erat vestibulum sed magna at
-hetti@compiler.la,2023-01-13,12:08:00,00:13:00,Prime1,Project3,Client1,Yes,sapien varius ut blandit non interdum in ante vestibulum ante ipsum primis in faucibus
-hetti@compiler.la,2023-01-13,12:21:00,00:29:00,Prime1,Project3,Client1,Yes,rutrum nulla tellus in sagittis dui vel nisl duis ac nibh fusce lacus purus aliquet at feugiat non
-hetti@compiler.la,2023-01-14,09:00:00,04:00:00,Prime1,Project6,Client1,Yes,interdum mauris non ligula pellentesque ultrices phasellus id sapien in sapien iaculis congue vivamus metus arcu adipiscing molestie hendrerit at
-hetti@compiler.la,2023-01-14,13:00:00,00:42:00,Prime1,Project2,Client1,Yes,elementum ligula vehicula consequat morbi a
-hetti@compiler.la,2023-01-15,09:00:00,02:36:00,Prime1,Project7,Client1,Yes,vel est donec odio justo sollicitudin ut suscipit a feugiat et eros vestibulum ac est lacinia nisi venenatis
-hetti@compiler.la,2023-01-15,11:36:00,02:19:00,Prime1,Project1,Client1,Yes,iaculis justo in hac habitasse platea dictumst etiam faucibus cursus urna
-hetti@compiler.la,2023-01-16,09:00:00,01:12:00,Prime1,Project1,Client1,Yes,at feugiat non pretium quis lectus suspendisse potenti in eleifend quam a odio in hac habitasse platea dictumst maecenas ut massa quis augue luctus
-hetti@compiler.la,2023-01-17,09:00:00,03:52:00,Prime1,Project1,Client1,Yes,vulputate justo in blandit ultrices enim lorem ipsum dolor sit amet consectetuer adipiscing elit proin
-hetti@compiler.la,2023-01-17,12:52:00,02:11:00,Prime1,Project2,Client1,Yes,sit amet justo morbi ut odio
-hetti@compiler.la,2023-01-17,15:04:00,03:37:00,Prime1,Project5,Client1,Yes,porttitor id consequat in consequat ut nulla sed accumsan felis ut at dolor quis odio consequat varius integer ac leo pellentesque ultrices mattis
-hetti@compiler.la,2023-01-18,09:00:00,01:43:00,Prime1,Project1,Client1,Yes,nec sem duis aliquam convallis nunc proin at turpis a pede posuere nonummy integer non velit donec diam neque
-hetti@compiler.la,2023-01-18,10:43:00,01:54:00,Prime1,Project3,Client1,Yes,auctor sed tristique in tempus sit
-hetti@compiler.la,2023-01-18,12:37:00,00:43:00,Prime1,Project2,Client1,Yes,volutpat sapien arcu sed augue aliquam erat volutpat in congue etiam
-hetti@compiler.la,2023-01-19,09:00:00,02:27:00,Prime1,Project6,Client1,Yes,at turpis donec posuere metus vitae ipsum aliquam non mauris morbi non lectus aliquam sit amet diam in magna bibendum imperdiet nullam
-hetti@compiler.la,2023-01-20,09:00:00,02:25:00,Prime1,Project2,Client1,Yes,diam neque vestibulum eget vulputate ut ultrices vel augue vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae donec pharetra
-hetti@compiler.la,2023-01-21,09:00:00,02:30:00,Prime1,Project5,Client1,Yes,nascetur ridiculus mus etiam vel augue vestibulum rutrum rutrum neque aenean auctor gravida sem praesent id massa id nisl venenatis lacinia aenean sit
-hetti@compiler.la,2023-01-21,11:30:00,01:19:00,Prime1,Project1,Client1,Yes,placerat ante nulla justo aliquam quis turpis eget elit sodales scelerisque mauris sit amet eros suspendisse accumsan
-hetti@compiler.la,2023-01-21,12:50:00,01:38:00,Prime1,Project6,Client1,Yes,mattis odio donec vitae nisi nam ultrices libero non mattis pulvinar nulla pede ullamcorper augue a suscipit nulla elit ac nulla
-hetti@compiler.la,2023-01-21,14:28:00,01:04:00,Prime1,Project4,Client1,Yes,justo morbi ut odio cras mi pede malesuada in
-hetti@compiler.la,2023-01-21,15:33:00,00:43:00,Prime1,Project3,Client1,Yes,quam sapien varius ut blandit non interdum in ante
-hetti@compiler.la,2023-01-22,09:00:00,03:25:00,Prime1,Project4,Client1,Yes,quis odio consequat varius integer ac leo pellentesque ultrices
-hetti@compiler.la,2023-01-22,12:25:00,03:24:00,Prime1,Project5,Client1,Yes,nonummy integer non velit donec diam neque vestibulum eget vulputate ut ultrices vel augue vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere
-hetti@compiler.la,2023-01-22,15:50:00,00:04:00,Prime1,Project1,Client1,Yes,sollicitudin mi sit amet lobortis sapien sapien non mi integer
-hetti@compiler.la,2023-01-23,09:00:00,03:34:00,Prime1,Project7,Client1,Yes,posuere metus vitae ipsum aliquam non mauris morbi non lectus aliquam sit amet diam in magna bibendum imperdiet nullam orci pede venenatis
-hetti@compiler.la,2023-01-24,09:00:00,00:55:00,Prime1,Project3,Client1,Yes,odio consequat varius integer ac leo pellentesque ultrices mattis odio
-hetti@compiler.la,2023-01-25,09:00:00,03:38:00,Prime1,Project6,Client1,Yes,id nulla ultrices aliquet maecenas leo odio condimentum id luctus nec molestie sed justo pellentesque
-hetti@compiler.la,2023-01-25,12:38:00,02:01:00,Prime1,Project6,Client1,Yes,vestibulum eget vulputate ut ultrices vel augue vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae donec pharetra
-hetti@compiler.la,2023-01-25,14:40:00,03:46:00,Prime1,Project7,Client1,Yes,adipiscing lorem vitae mattis nibh ligula nec sem duis aliquam convallis nunc proin at turpis a pede posuere nonummy integer non velit
-hetti@compiler.la,2023-01-26,09:00:00,03:48:00,Prime1,Project3,Client1,Yes,ligula vehicula consequat morbi a ipsum
-hetti@compiler.la,2023-01-26,12:48:00,02:11:00,Prime1,Project1,Client1,Yes,est quam pharetra magna ac consequat metus sapien ut
-hetti@compiler.la,2023-01-26,15:00:00,02:47:00,Prime1,Project1,Client1,Yes,magna vestibulum aliquet ultrices erat tortor sollicitudin mi sit amet lobortis sapien sapien non mi integer ac neque duis bibendum morbi non quam nec dui
-hetti@compiler.la,2023-01-27,09:00:00,03:12:00,Prime1,Project7,Client1,Yes,risus semper porta volutpat quam pede lobortis ligula
-hetti@compiler.la,2023-01-28,09:00:00,03:55:00,Prime1,Project3,Client1,Yes,felis sed lacus morbi sem mauris laoreet ut rhoncus aliquet pulvinar sed
-hetti@compiler.la,2023-01-28,12:55:00,03:42:00,Prime1,Project5,Client1,Yes,bibendum morbi non quam nec dui luctus rutrum nulla tellus in sagittis dui vel nisl
-hetti@compiler.la,2023-01-29,09:00:00,00:19:00,Prime1,Project5,Client1,Yes,aliquam convallis nunc proin at turpis a pede posuere nonummy
-hetti@compiler.la,2023-01-29,09:19:00,00:12:00,Prime1,Project1,Client1,Yes,quis turpis sed ante vivamus tortor duis mattis egestas metus aenean fermentum donec
-hetti@compiler.la,2023-01-30,09:00:00,01:04:00,Prime1,Project3,Client1,Yes,vestibulum sit amet cursus id turpis integer aliquet massa id lobortis convallis tortor risus dapibus augue vel accumsan tellus nisi eu orci
-hetti@compiler.la,2023-01-30,10:04:00,01:36:00,Prime1,Project2,Client1,Yes,magna vulputate luctus cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus vivamus vestibulum sagittis sapien cum sociis natoque penatibus et magnis
-hetti@compiler.la,2023-01-30,11:40:00,01:43:00,Prime1,Project4,Client1,Yes,phasellus in felis donec semper sapien a libero nam dui proin leo odio porttitor id consequat in consequat ut nulla sed accumsan
-sawyer@compiler.la,2023-01-03,09:00:00,02:03:00,Prime1,Project4,Client1,Yes,aliquet maecenas leo odio condimentum id luctus nec molestie sed justo pellentesque viverra pede ac diam cras pellentesque volutpat dui maecenas tristique est
-sawyer@compiler.la,2023-01-03,11:03:00,00:24:00,Prime1,Project1,Client1,Yes,eget rutrum at lorem integer tincidunt ante vel ipsum praesent blandit lacinia erat vestibulum
-sawyer@compiler.la,2023-01-04,09:00:00,02:21:00,Prime1,Project3,Client1,Yes,aliquet at feugiat non pretium quis
-sawyer@compiler.la,2023-01-04,11:21:00,00:48:00,Prime1,Project7,Client1,Yes,vehicula condimentum curabitur in libero ut massa volutpat convallis morbi odio odio elementum eu interdum eu tincidunt in leo maecenas
-sawyer@compiler.la,2023-01-04,12:09:00,03:55:00,Prime1,Project7,Client1,Yes,convallis eget eleifend luctus ultricies eu nibh quisque id justo sit amet sapien dignissim vestibulum vestibulum
-sawyer@compiler.la,2023-01-06,09:00:00,00:35:00,Prime1,Project7,Client1,Yes,feugiat et eros vestibulum ac est lacinia nisi venenatis tristique fusce congue diam id ornare imperdiet sapien urna pretium nisl ut volutpat sapien
-sawyer@compiler.la,2023-01-06,09:35:00,00:26:00,Prime1,Project3,Client1,Yes,vitae nisi nam ultrices libero non mattis pulvinar nulla pede ullamcorper augue a suscipit
-sawyer@compiler.la,2023-01-06,10:01:00,02:06:00,Prime1,Project6,Client1,Yes,accumsan odio curabitur convallis duis consequat dui nec nisi volutpat eleifend donec ut dolor morbi vel lectus in quam fringilla rhoncus
-sawyer@compiler.la,2023-01-07,09:00:00,01:50:00,Prime1,Project4,Client1,Yes,quam a odio in hac habitasse platea dictumst maecenas ut massa quis augue luctus tincidunt nulla mollis molestie lorem quisque ut erat curabitur
-sawyer@compiler.la,2023-01-07,10:50:00,01:01:00,Prime1,Project1,Client1,Yes,proin leo odio porttitor id consequat in consequat
-sawyer@compiler.la,2023-01-08,09:00:00,01:33:00,Prime1,Project5,Client1,Yes,porttitor lacus at turpis donec posuere metus vitae ipsum aliquam non mauris morbi non lectus aliquam
-sawyer@compiler.la,2023-01-08,10:33:00,02:35:00,Prime1,Project3,Client1,Yes,curae mauris viverra diam vitae quam suspendisse potenti nullam porttitor lacus at turpis donec posuere metus vitae ipsum aliquam non mauris morbi non
-sawyer@compiler.la,2023-01-09,09:00:00,01:01:00,Prime1,Project1,Client1,Yes,donec pharetra magna vestibulum aliquet ultrices erat tortor sollicitudin mi sit amet lobortis sapien sapien
-sawyer@compiler.la,2023-01-09,10:01:00,01:58:00,Prime1,Project5,Client1,Yes,nulla integer pede justo lacinia eget tincidunt eget
-sawyer@compiler.la,2023-01-11,09:00:00,01:37:00,Prime1,Project3,Client1,Yes,maecenas tristique est et tempus semper est
-sawyer@compiler.la,2023-01-11,10:37:00,01:55:00,Prime1,Project7,Client1,Yes,elementum pellentesque quisque porta volutpat erat quisque erat eros viverra eget congue eget semper rutrum nulla nunc purus phasellus in
-sawyer@compiler.la,2023-01-11,12:32:00,02:57:00,Prime1,Project1,Client1,Yes,eu interdum eu tincidunt in leo maecenas pulvinar lobortis est phasellus sit amet erat nulla
-sawyer@compiler.la,2023-01-12,09:00:00,02:03:00,Prime1,Project3,Client1,Yes,curae duis faucibus accumsan odio curabitur convallis duis consequat dui nec
-sawyer@compiler.la,2023-01-12,11:03:00,01:00:00,Prime1,Project1,Client1,Yes,eu interdum eu tincidunt in leo maecenas pulvinar lobortis est phasellus sit amet erat nulla tempus
-sawyer@compiler.la,2023-01-12,12:04:00,01:22:00,Prime1,Project6,Client1,Yes,etiam faucibus cursus urna ut
-sawyer@compiler.la,2023-01-13,09:00:00,01:07:00,Prime1,Project6,Client1,Yes,platea dictumst morbi vestibulum velit id pretium iaculis diam erat fermentum justo nec condimentum neque sapien placerat ante nulla justo aliquam quis turpis eget
-sawyer@compiler.la,2023-01-14,09:00:00,02:06:00,Prime1,Project4,Client1,Yes,feugiat et eros vestibulum ac est lacinia nisi venenatis tristique fusce congue diam id ornare imperdiet sapien urna pretium nisl ut volutpat sapien arcu
-sawyer@compiler.la,2023-01-14,11:06:00,01:16:00,Prime1,Project6,Client1,Yes,bibendum felis sed interdum venenatis turpis enim blandit mi
-sawyer@compiler.la,2023-01-14,12:22:00,01:44:00,Prime1,Project5,Client1,Yes,pretium nisl ut volutpat sapien arcu sed augue aliquam erat volutpat in congue etiam justo etiam pretium
-sawyer@compiler.la,2023-01-15,09:00:00,01:39:00,Prime1,Project3,Client1,Yes,luctus cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus vivamus
-sawyer@compiler.la,2023-01-15,10:39:00,00:59:00,Prime1,Project7,Client1,Yes,iaculis justo in hac habitasse platea dictumst etiam faucibus cursus urna ut tellus nulla ut erat id mauris vulputate elementum nullam varius nulla
-sawyer@compiler.la,2023-01-16,09:00:00,03:10:00,Prime1,Project2,Client1,Yes,erat id mauris vulputate elementum nullam varius nulla facilisi
-sawyer@compiler.la,2023-01-16,12:10:00,00:44:00,Prime1,Project3,Client1,Yes,nonummy integer non velit donec diam neque vestibulum eget vulputate ut ultrices vel augue vestibulum ante
-sawyer@compiler.la,2023-01-16,12:55:00,01:15:00,Prime1,Project4,Client1,Yes,eu massa donec dapibus duis at velit eu
-sawyer@compiler.la,2023-01-18,09:00:00,01:40:00,Prime1,Project4,Client1,Yes,imperdiet nullam orci pede venenatis non sodales sed tincidunt eu felis fusce
-sawyer@compiler.la,2023-01-18,10:40:00,01:37:00,Prime1,Project3,Client1,Yes,aliquam sit amet diam in magna bibendum imperdiet nullam orci pede venenatis non sodales sed tincidunt eu
-sawyer@compiler.la,2023-01-18,12:18:00,02:52:00,Prime1,Project7,Client1,Yes,ligula sit amet eleifend pede libero quis orci nullam molestie
-sawyer@compiler.la,2023-01-20,09:00:00,02:31:00,Prime1,Project6,Client1,Yes,nulla integer pede justo lacinia eget tincidunt eget tempus vel pede morbi porttitor lorem
-sawyer@compiler.la,2023-01-21,09:00:00,02:25:00,Prime1,Project5,Client1,Yes,vivamus in felis eu sapien cursus vestibulum
-sawyer@compiler.la,2023-01-22,09:00:00,01:28:00,Prime1,Project7,Client1,Yes,interdum mauris non ligula pellentesque ultrices phasellus id sapien in sapien iaculis
-sawyer@compiler.la,2023-01-23,09:00:00,01:04:00,Prime1,Project6,Client1,Yes,elementum in hac habitasse platea dictumst morbi vestibulum velit id pretium iaculis diam erat fermentum justo nec condimentum neque
-sawyer@compiler.la,2023-01-23,10:04:00,00:13:00,Prime1,Project7,Client1,Yes,congue vivamus metus arcu adipiscing molestie hendrerit at vulputate vitae nisl aenean lectus pellentesque eget nunc donec quis orci eget orci
-sawyer@compiler.la,2023-01-23,10:18:00,01:34:00,Prime1,Project7,Client1,Yes,id luctus nec molestie sed justo pellentesque viverra pede ac diam cras pellentesque volutpat dui maecenas tristique est et tempus semper est quam
-sawyer@compiler.la,2023-01-24,09:00:00,02:16:00,Prime1,Project5,Client1,Yes,vulputate elementum nullam varius nulla facilisi cras non velit nec nisi vulputate nonummy
-sawyer@compiler.la,2023-01-25,09:00:00,02:08:00,Prime1,Project2,Client1,Yes,nibh in lectus pellentesque at
-sawyer@compiler.la,2023-01-26,09:00:00,01:15:00,Prime1,Project4,Client1,Yes,id ornare imperdiet sapien urna pretium nisl ut volutpat sapien arcu sed augue aliquam erat volutpat in congue etiam justo etiam pretium iaculis justo in
-sawyer@compiler.la,2023-01-27,09:00:00,04:00:00,Prime1,Project1,Client1,Yes,quis justo maecenas rhoncus aliquam lacus morbi quis tortor id nulla ultrices aliquet maecenas leo odio
-sawyer@compiler.la,2023-01-29,09:00:00,03:23:00,Prime1,Project7,Client1,Yes,ut at dolor quis odio consequat varius integer
-sawyer@compiler.la,2023-01-30,09:00:00,00:19:00,Prime1,Project1,Client1,Yes,pellentesque ultrices phasellus id sapien in sapien iaculis congue vivamus metus arcu adipiscing molestie hendrerit at vulputate vitae nisl aenean lectus pellentesque eget nunc
-sawyer@compiler.la,2023-01-30,09:19:00,03:24:00,Prime1,Project1,Client1,Yes,metus arcu adipiscing molestie hendrerit at vulputate vitae nisl aenean lectus pellentesque eget
-silas@compiler.la,2023-01-03,09:00:00,00:42:00,Prime1,Project2,Client1,Yes,praesent blandit nam nulla integer pede
-silas@compiler.la,2023-01-04,09:00:00,02:51:00,Prime1,Project2,Client1,Yes,elit sodales scelerisque mauris sit amet eros suspendisse
-silas@compiler.la,2023-01-05,09:00:00,02:40:00,Prime1,Project6,Client1,Yes,aenean auctor gravida sem praesent id massa id nisl venenatis lacinia aenean sit amet justo morbi ut odio cras mi pede malesuada in imperdiet
-silas@compiler.la,2023-01-05,11:40:00,01:15:00,Prime1,Project2,Client1,Yes,sapien placerat ante nulla justo aliquam quis turpis eget elit sodales scelerisque
-silas@compiler.la,2023-01-05,12:56:00,01:21:00,Prime1,Project4,Client1,Yes,primis in faucibus orci luctus et ultrices posuere cubilia curae duis faucibus accumsan odio curabitur convallis duis consequat
-silas@compiler.la,2023-01-06,09:00:00,00:54:00,Prime1,Project5,Client1,Yes,nibh ligula nec sem duis aliquam convallis
-silas@compiler.la,2023-01-06,09:54:00,03:25:00,Prime1,Project2,Client1,Yes,at nunc commodo placerat praesent blandit
-silas@compiler.la,2023-01-06,13:19:00,02:27:00,Prime1,Project1,Client1,Yes,primis in faucibus orci luctus et ultrices posuere cubilia curae donec pharetra magna
-silas@compiler.la,2023-01-06,15:47:00,03:37:00,Prime1,Project7,Client1,Yes,leo odio porttitor id consequat in consequat ut nulla sed accumsan felis ut at dolor
-silas@compiler.la,2023-01-06,19:24:00,01:51:00,Prime1,Project4,Client1,Yes,pharetra magna ac consequat metus sapien ut nunc vestibulum ante ipsum
-silas@compiler.la,2023-01-07,09:00:00,02:25:00,Prime1,Project5,Client1,Yes,praesent blandit nam nulla integer pede justo lacinia eget tincidunt eget tempus vel pede morbi porttitor lorem id ligula suspendisse ornare consequat lectus in
-silas@compiler.la,2023-01-08,09:00:00,01:36:00,Prime1,Project3,Client1,Yes,in purus eu magna vulputate luctus
-silas@compiler.la,2023-01-08,10:36:00,01:19:00,Prime1,Project2,Client1,Yes,lobortis convallis tortor risus dapibus augue vel accumsan tellus nisi eu orci mauris lacinia sapien quis libero nullam sit amet
-silas@compiler.la,2023-01-11,09:00:00,00:41:00,Prime1,Project7,Client1,Yes,ac consequat metus sapien ut nunc vestibulum ante ipsum primis in faucibus
-silas@compiler.la,2023-01-11,09:41:00,01:07:00,Prime1,Project2,Client1,Yes,suspendisse ornare consequat lectus in est risus auctor sed tristique in tempus sit amet sem fusce
-silas@compiler.la,2023-01-11,10:49:00,03:09:00,Prime1,Project7,Client1,Yes,in blandit ultrices enim lorem ipsum dolor sit amet consectetuer adipiscing
-silas@compiler.la,2023-01-12,09:00:00,02:38:00,Prime1,Project7,Client1,Yes,nibh ligula nec sem duis aliquam convallis nunc proin at turpis a pede posuere nonummy integer non velit donec diam
-silas@compiler.la,2023-01-13,09:00:00,00:40:00,Prime1,Project6,Client1,Yes,blandit ultrices enim lorem ipsum dolor sit amet consectetuer adipiscing elit
-silas@compiler.la,2023-01-14,09:00:00,03:00:00,Prime1,Project7,Client1,Yes,morbi vestibulum velit id pretium iaculis diam
-silas@compiler.la,2023-01-14,12:00:00,02:19:00,Prime1,Project5,Client1,Yes,pede justo lacinia eget tincidunt eget tempus vel pede morbi porttitor lorem id ligula
-silas@compiler.la,2023-01-15,09:00:00,03:08:00,Prime1,Project6,Client1,Yes,dis parturient montes nascetur ridiculus mus etiam vel augue vestibulum rutrum
-silas@compiler.la,2023-01-15,12:08:00,00:03:00,Prime1,Project4,Client1,Yes,viverra pede ac diam cras pellentesque volutpat dui maecenas tristique est et
-silas@compiler.la,2023-01-15,12:11:00,03:01:00,Prime1,Project1,Client1,Yes,eu massa donec dapibus duis at velit eu est congue elementum in hac habitasse platea dictumst morbi vestibulum
-silas@compiler.la,2023-01-16,09:00:00,02:59:00,Prime1,Project4,Client1,Yes,vestibulum proin eu mi nulla ac enim in tempor
-silas@compiler.la,2023-01-17,09:00:00,02:25:00,Prime1,Project2,Client1,Yes,cras pellentesque volutpat dui maecenas tristique est et tempus semper est quam pharetra magna ac consequat metus sapien
-silas@compiler.la,2023-01-17,11:25:00,03:51:00,Prime1,Project5,Client1,Yes,vestibulum sagittis sapien cum sociis natoque
-silas@compiler.la,2023-01-18,09:00:00,02:44:00,Prime1,Project4,Client1,Yes,tortor duis mattis egestas metus aenean fermentum donec ut mauris eget
-silas@compiler.la,2023-01-18,11:44:00,01:08:00,Prime1,Project4,Client1,Yes,faucibus orci luctus et ultrices posuere
-silas@compiler.la,2023-01-20,09:00:00,01:18:00,Prime1,Project6,Client1,Yes,metus sapien ut nunc vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae mauris viverra diam vitae quam suspendisse potenti nullam
-silas@compiler.la,2023-01-20,10:18:00,03:15:00,Prime1,Project2,Client1,Yes,iaculis justo in hac habitasse platea dictumst etiam faucibus cursus urna ut tellus nulla ut erat id mauris vulputate elementum nullam
-silas@compiler.la,2023-01-20,13:33:00,03:57:00,Prime1,Project6,Client1,Yes,elit proin risus praesent lectus vestibulum quam sapien varius ut blandit non interdum in ante vestibulum ante ipsum
-silas@compiler.la,2023-01-20,17:31:00,02:06:00,Prime1,Project2,Client1,Yes,tincidunt in leo maecenas pulvinar lobortis est phasellus sit amet erat
-silas@compiler.la,2023-01-22,09:00:00,03:10:00,Prime1,Project1,Client1,Yes,pulvinar lobortis est phasellus sit amet erat nulla tempus vivamus in felis eu sapien cursus vestibulum proin eu mi nulla
-silas@compiler.la,2023-01-22,12:10:00,01:24:00,Prime1,Project1,Client1,Yes,mollis molestie lorem quisque ut erat curabitur gravida nisi at nibh in hac habitasse platea dictumst aliquam augue quam sollicitudin vitae consectetuer eget
-silas@compiler.la,2023-01-22,13:34:00,02:22:00,Prime1,Project6,Client1,Yes,arcu libero rutrum ac lobortis vel dapibus at diam nam tristique
-silas@compiler.la,2023-01-23,09:00:00,00:20:00,Prime1,Project5,Client1,Yes,nec nisi vulputate nonummy maecenas tincidunt lacus at velit vivamus vel nulla eget eros elementum pellentesque quisque porta volutpat erat quisque erat eros
-silas@compiler.la,2023-01-24,09:00:00,02:45:00,Prime1,Project6,Client1,Yes,duis aliquam convallis nunc proin at turpis
-silas@compiler.la,2023-01-24,11:45:00,03:20:00,Prime1,Project6,Client1,Yes,porttitor lorem id ligula suspendisse ornare consequat lectus
-silas@compiler.la,2023-01-24,15:06:00,00:26:00,Prime1,Project5,Client1,Yes,ut blandit non interdum in
-silas@compiler.la,2023-01-25,09:00:00,02:06:00,Prime1,Project5,Client1,Yes,odio odio elementum eu interdum eu tincidunt in leo maecenas pulvinar lobortis est
-silas@compiler.la,2023-01-25,11:06:00,02:28:00,Prime1,Project4,Client1,Yes,elementum pellentesque quisque porta volutpat erat quisque erat eros viverra eget congue eget semper rutrum nulla nunc purus phasellus in felis
-silas@compiler.la,2023-01-25,13:35:00,01:10:00,Prime1,Project7,Client1,Yes,leo pellentesque ultrices mattis odio donec vitae
-silas@compiler.la,2023-01-26,09:00:00,01:30:00,Prime1,Project5,Client1,Yes,ultrices posuere cubilia curae mauris viverra diam
-silas@compiler.la,2023-01-27,09:00:00,01:49:00,Prime1,Project6,Client1,Yes,blandit non interdum in ante vestibulum ante
-silas@compiler.la,2023-01-27,10:49:00,02:55:00,Prime1,Project7,Client1,Yes,hac habitasse platea dictumst aliquam augue quam
-silas@compiler.la,2023-01-27,13:45:00,03:40:00,Prime1,Project4,Client1,Yes,nullam orci pede venenatis non sodales sed tincidunt eu
-silas@compiler.la,2023-01-28,09:00:00,02:37:00,Prime1,Project4,Client1,Yes,volutpat in congue etiam justo etiam pretium iaculis justo in hac habitasse platea dictumst etiam faucibus cursus urna
-silas@compiler.la,2023-01-30,09:00:00,03:31:00,Prime1,Project1,Client1,Yes,nibh quisque id justo sit amet sapien dignissim vestibulum vestibulum ante ipsum primis in faucibus orci luctus et
-silas@compiler.la,2023-01-30,12:31:00,01:56:00,Prime1,Project6,Client1,Yes,ante vivamus tortor duis mattis egestas metus aenean fermentum donec ut mauris eget massa tempor convallis
+aymer@compiler.la,2023-01-02,09:00:00,02:58:00,Project3,,Client1,Yes,nulla justo aliquam quis turpis eget elit sodales scelerisque mauris sit amet eros suspendisse accumsan tortor quis turpis sed ante vivamus tortor duis mattis
+aymer@compiler.la,2023-01-03,09:00:00,03:08:00,Project3,,Client1,Yes,elementum ligula vehicula consequat morbi a ipsum integer a nibh in quis justo
+aymer@compiler.la,2023-01-03,12:08:00,00:49:00,Project4,,Client1,Yes,ut erat curabitur gravida nisi at nibh in hac habitasse platea dictumst aliquam
+aymer@compiler.la,2023-01-04,09:00:00,02:57:00,Project3,,Client1,Yes,viverra eget congue eget semper rutrum nulla nunc purus phasellus in
+aymer@compiler.la,2023-01-05,09:00:00,02:40:00,Project1,,Client1,Yes,justo sollicitudin ut suscipit a feugiat et eros
+aymer@compiler.la,2023-01-05,11:40:00,01:39:00,Project5,,Client1,Yes,vestibulum ante ipsum primis in faucibus
+aymer@compiler.la,2023-01-06,09:00:00,02:15:00,Project1,,Client1,Yes,vehicula consequat morbi a ipsum integer a nibh in quis justo maecenas rhoncus aliquam lacus morbi quis
+aymer@compiler.la,2023-01-06,11:15:00,03:29:00,Project4,,Client1,Yes,leo maecenas pulvinar lobortis est phasellus sit amet erat nulla tempus vivamus in felis eu sapien cursus vestibulum proin eu
+aymer@compiler.la,2023-01-07,09:00:00,01:14:00,Project5,,Client1,Yes,nulla suspendisse potenti cras in purus eu
+aymer@compiler.la,2023-01-07,10:14:00,00:45:00,Project3,,Client1,Yes,sapien in sapien iaculis congue vivamus metus arcu adipiscing molestie hendrerit at vulputate vitae nisl aenean lectus pellentesque eget nunc
+aymer@compiler.la,2023-01-08,09:00:00,02:00:00,Project4,,Client1,Yes,sed magna at nunc commodo placerat praesent blandit nam nulla integer pede justo lacinia eget tincidunt
+aymer@compiler.la,2023-01-09,09:00:00,01:58:00,Project7,,Client1,Yes,nulla sed vel enim sit amet nunc viverra dapibus nulla suscipit ligula in lacus curabitur at ipsum ac tellus semper interdum
+aymer@compiler.la,2023-01-10,09:00:00,02:40:00,Project6,,Client1,Yes,curae donec pharetra magna vestibulum aliquet ultrices erat tortor sollicitudin mi sit amet lobortis sapien sapien non mi integer ac neque duis bibendum morbi non
+aymer@compiler.la,2023-01-11,09:00:00,03:09:00,Project3,,Client1,Yes,varius nulla facilisi cras non velit nec nisi vulputate nonummy maecenas tincidunt lacus at velit
+aymer@compiler.la,2023-01-11,12:09:00,00:49:00,Project1,,Client1,Yes,maecenas ut massa quis augue luctus tincidunt nulla mollis molestie lorem quisque ut erat curabitur gravida nisi at nibh
+aymer@compiler.la,2023-01-11,12:59:00,02:32:00,Project7,,Client1,Yes,blandit ultrices enim lorem ipsum dolor sit amet consectetuer adipiscing elit proin interdum mauris non ligula pellentesque ultrices phasellus id sapien in
+aymer@compiler.la,2023-01-11,15:31:00,02:37:00,Project2,,Client1,Yes,curabitur convallis duis consequat dui nec
+aymer@compiler.la,2023-01-12,09:00:00,01:24:00,Project4,,Client1,Yes,morbi a ipsum integer a nibh
+aymer@compiler.la,2023-01-12,10:24:00,03:50:00,Project3,,Client1,Yes,pede malesuada in imperdiet et commodo vulputate justo in blandit ultrices enim lorem ipsum dolor sit amet consectetuer adipiscing elit proin interdum mauris non ligula
+aymer@compiler.la,2023-01-12,14:14:00,01:15:00,Project7,,Client1,Yes,luctus et ultrices posuere cubilia curae nulla dapibus
+aymer@compiler.la,2023-01-13,09:00:00,03:49:00,Project4,,Client1,Yes,et commodo vulputate justo in blandit ultrices enim lorem ipsum dolor sit amet consectetuer adipiscing elit proin interdum mauris non
+aymer@compiler.la,2023-01-13,12:49:00,03:19:00,Project4,,Client1,Yes,lectus aliquam sit amet diam in
+aymer@compiler.la,2023-01-14,09:00:00,00:54:00,Project3,,Client1,Yes,in faucibus orci luctus et ultrices posuere cubilia curae donec pharetra magna vestibulum aliquet ultrices erat tortor sollicitudin mi sit amet lobortis
+aymer@compiler.la,2023-01-16,09:00:00,00:06:00,Project6,,Client1,Yes,amet turpis elementum ligula vehicula consequat morbi a
+aymer@compiler.la,2023-01-18,09:00:00,03:48:00,Project7,,Client1,Yes,ac diam cras pellentesque volutpat dui maecenas tristique est et tempus semper est quam pharetra magna ac consequat metus sapien ut nunc
+aymer@compiler.la,2023-01-19,09:00:00,03:54:00,Project1,,Client1,Yes,faucibus orci luctus et ultrices posuere cubilia curae donec pharetra
+aymer@compiler.la,2023-01-19,12:54:00,02:09:00,Project2,,Client1,Yes,neque aenean auctor gravida sem praesent id massa id
+aymer@compiler.la,2023-01-20,09:00:00,02:43:00,Project1,,Client1,Yes,tincidunt eu felis fusce posuere felis sed lacus morbi sem mauris laoreet ut rhoncus aliquet pulvinar sed nisl nunc rhoncus dui
+aymer@compiler.la,2023-01-20,11:43:00,03:45:00,Project7,,Client1,Yes,quis turpis eget elit sodales scelerisque mauris sit amet eros suspendisse accumsan tortor quis turpis sed ante vivamus
+aymer@compiler.la,2023-01-21,09:00:00,03:45:00,Project3,,Client1,Yes,nec sem duis aliquam convallis nunc proin at turpis a pede posuere nonummy integer non velit donec diam
+aymer@compiler.la,2023-01-21,12:45:00,00:15:00,Project1,,Client1,Yes,cursus id turpis integer aliquet massa id lobortis convallis tortor risus dapibus augue
+aymer@compiler.la,2023-01-22,09:00:00,00:05:00,Project3,,Client1,Yes,habitasse platea dictumst aliquam augue quam sollicitudin vitae consectetuer eget rutrum at lorem integer tincidunt ante vel
+aymer@compiler.la,2023-01-23,09:00:00,01:31:00,Project7,,Client1,Yes,ultrices phasellus id sapien in sapien iaculis congue vivamus metus arcu adipiscing molestie hendrerit at vulputate vitae nisl aenean lectus pellentesque eget
+aymer@compiler.la,2023-01-24,09:00:00,02:13:00,Project7,,Client1,Yes,aliquet massa id lobortis convallis tortor risus dapibus augue vel accumsan tellus nisi eu orci mauris lacinia sapien quis libero nullam sit amet turpis elementum
+aymer@compiler.la,2023-01-25,09:00:00,02:49:00,Project6,,Client1,Yes,consequat lectus in est risus auctor sed tristique in tempus sit amet
+aymer@compiler.la,2023-01-25,11:49:00,02:34:00,Project5,,Client1,Yes,sed nisl nunc rhoncus dui vel sem sed sagittis nam congue risus semper porta volutpat quam pede lobortis ligula sit amet eleifend pede
+aymer@compiler.la,2023-01-25,14:24:00,02:12:00,Project2,,Client1,Yes,mattis egestas metus aenean fermentum donec ut mauris eget massa tempor convallis nulla neque libero convallis eget eleifend luctus
+aymer@compiler.la,2023-01-26,09:00:00,03:34:00,Project2,,Client1,Yes,volutpat erat quisque erat eros viverra eget congue eget semper rutrum nulla nunc purus phasellus in felis donec semper sapien
+aymer@compiler.la,2023-01-26,12:34:00,02:39:00,Project5,,Client1,Yes,sit amet eleifend pede libero quis orci nullam molestie nibh in lectus pellentesque at nulla suspendisse
+aymer@compiler.la,2023-01-28,09:00:00,02:07:00,Project6,,Client1,Yes,nec euismod scelerisque quam turpis adipiscing lorem vitae mattis nibh ligula nec
+aymer@compiler.la,2023-01-30,09:00:00,01:48:00,Project4,,Client1,Yes,eget eros elementum pellentesque quisque porta volutpat erat quisque erat eros viverra eget congue eget semper rutrum nulla nunc purus
+aymer@compiler.la,2023-01-30,10:48:00,01:48:00,Project3,,Client1,Yes,nulla mollis molestie lorem quisque ut erat curabitur gravida nisi at
+aymer@compiler.la,2023-01-30,12:36:00,00:28:00,Project5,,Client1,Yes,a feugiat et eros vestibulum ac est lacinia nisi venenatis tristique fusce congue diam id ornare imperdiet sapien
+gusella@compiler.la,2023-01-02,09:00:00,00:43:00,Project1,,Client1,Yes,odio elementum eu interdum eu tincidunt in leo maecenas pulvinar lobortis est phasellus sit amet erat nulla
+gusella@compiler.la,2023-01-03,09:00:00,01:36:00,Project2,,Client1,Yes,ipsum ac tellus semper interdum mauris ullamcorper purus sit amet nulla quisque arcu libero rutrum ac lobortis vel dapibus at diam nam
+gusella@compiler.la,2023-01-04,09:00:00,02:34:00,Project3,,Client1,Yes,mauris vulputate elementum nullam varius nulla facilisi cras
+gusella@compiler.la,2023-01-05,09:00:00,03:47:00,Project1,,Client1,Yes,cursus vestibulum proin eu mi nulla ac enim in tempor
+gusella@compiler.la,2023-01-05,12:47:00,00:50:00,Project7,,Client1,Yes,malesuada in imperdiet et commodo vulputate justo in blandit
+gusella@compiler.la,2023-01-05,13:37:00,03:28:00,Project3,,Client1,Yes,dolor vel est donec odio justo sollicitudin ut suscipit a feugiat et eros vestibulum ac est lacinia
+gusella@compiler.la,2023-01-05,17:06:00,02:25:00,Project7,,Client1,Yes,ornare imperdiet sapien urna pretium nisl ut volutpat sapien arcu sed augue aliquam erat volutpat in congue etiam justo etiam pretium iaculis justo
+gusella@compiler.la,2023-01-07,09:00:00,00:41:00,Project4,,Client1,Yes,quam a odio in hac habitasse platea dictumst maecenas ut massa quis augue luctus tincidunt nulla mollis molestie lorem quisque
+gusella@compiler.la,2023-01-07,09:41:00,03:48:00,Project4,,Client1,Yes,mattis nibh ligula nec sem duis aliquam convallis nunc proin at turpis a pede posuere nonummy integer
+gusella@compiler.la,2023-01-08,09:00:00,04:00:00,Project5,,Client1,Yes,id nisl venenatis lacinia aenean sit amet justo morbi ut odio cras mi pede malesuada in imperdiet et commodo vulputate justo in blandit ultrices
+gusella@compiler.la,2023-01-09,09:00:00,00:28:00,Project5,,Client1,Yes,at turpis donec posuere metus vitae ipsum aliquam non mauris morbi non lectus aliquam sit amet diam in magna bibendum imperdiet nullam orci pede venenatis
+gusella@compiler.la,2023-01-09,09:28:00,02:37:00,Project1,,Client1,Yes,et ultrices posuere cubilia curae nulla dapibus dolor vel est donec odio justo sollicitudin ut suscipit a
+gusella@compiler.la,2023-01-10,09:00:00,00:58:00,Project1,,Client1,Yes,nulla quisque arcu libero rutrum ac lobortis vel dapibus at diam nam tristique
+gusella@compiler.la,2023-01-10,09:58:00,03:15:00,Project1,,Client1,Yes,duis aliquam convallis nunc proin at turpis a pede posuere nonummy integer non velit donec diam neque vestibulum eget vulputate ut ultrices vel augue
+gusella@compiler.la,2023-01-11,09:00:00,02:12:00,Project6,,Client1,Yes,gravida sem praesent id massa id nisl venenatis lacinia aenean sit amet justo morbi ut odio cras mi pede malesuada in imperdiet et commodo vulputate
+gusella@compiler.la,2023-01-11,11:12:00,03:31:00,Project1,,Client1,Yes,nulla elit ac nulla sed vel enim sit amet nunc viverra
+gusella@compiler.la,2023-01-12,09:00:00,03:19:00,Project2,,Client1,Yes,magna bibendum imperdiet nullam orci
+gusella@compiler.la,2023-01-13,09:00:00,01:52:00,Project6,,Client1,Yes,id ornare imperdiet sapien urna pretium nisl ut volutpat sapien arcu sed augue aliquam erat volutpat
+gusella@compiler.la,2023-01-13,10:52:00,00:28:00,Project7,,Client1,Yes,eget orci vehicula condimentum curabitur in
+gusella@compiler.la,2023-01-14,09:00:00,03:04:00,Project6,,Client1,Yes,viverra diam vitae quam suspendisse potenti nullam porttitor lacus at
+gusella@compiler.la,2023-01-14,12:04:00,00:49:00,Project7,,Client1,Yes,non interdum in ante vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae duis faucibus accumsan odio curabitur
+gusella@compiler.la,2023-01-15,09:00:00,03:36:00,Project7,,Client1,Yes,vulputate justo in blandit ultrices
+gusella@compiler.la,2023-01-15,12:36:00,02:08:00,Project7,,Client1,Yes,eros vestibulum ac est lacinia
+gusella@compiler.la,2023-01-15,14:45:00,01:34:00,Project2,,Client1,Yes,quam a odio in hac habitasse platea dictumst maecenas ut massa quis augue luctus tincidunt nulla mollis molestie lorem quisque ut erat curabitur gravida nisi
+gusella@compiler.la,2023-01-16,09:00:00,00:43:00,Project7,,Client1,Yes,elit ac nulla sed vel enim sit amet
+gusella@compiler.la,2023-01-17,09:00:00,01:35:00,Project4,,Client1,Yes,luctus rutrum nulla tellus in sagittis dui vel nisl duis
+gusella@compiler.la,2023-01-17,10:35:00,02:11:00,Project3,,Client1,Yes,ante nulla justo aliquam quis turpis eget elit sodales scelerisque mauris sit amet eros suspendisse accumsan tortor quis
+gusella@compiler.la,2023-01-18,09:00:00,00:31:00,Project1,,Client1,Yes,ullamcorper augue a suscipit nulla elit ac nulla sed
+gusella@compiler.la,2023-01-20,09:00:00,02:57:00,Project4,,Client1,Yes,varius ut blandit non interdum in ante vestibulum ante ipsum primis in faucibus orci
+gusella@compiler.la,2023-01-21,09:00:00,02:13:00,Project6,,Client1,Yes,convallis nulla neque libero convallis eget eleifend luctus ultricies eu nibh quisque id justo sit amet sapien
+gusella@compiler.la,2023-01-21,11:13:00,00:12:00,Project4,,Client1,Yes,ac lobortis vel dapibus at diam nam tristique tortor eu pede
+gusella@compiler.la,2023-01-21,11:25:00,00:33:00,Project5,,Client1,Yes,in tempor turpis nec euismod scelerisque quam turpis adipiscing lorem vitae mattis nibh ligula nec sem
+gusella@compiler.la,2023-01-22,09:00:00,00:46:00,Project7,,Client1,Yes,orci eget orci vehicula condimentum curabitur in libero ut massa
+gusella@compiler.la,2023-01-23,09:00:00,03:17:00,Project7,,Client1,Yes,tortor sollicitudin mi sit amet lobortis sapien sapien non
+gusella@compiler.la,2023-01-25,09:00:00,03:51:00,Project6,,Client1,Yes,neque aenean auctor gravida sem praesent id massa id nisl venenatis lacinia aenean sit amet justo morbi ut
+gusella@compiler.la,2023-01-25,12:51:00,02:54:00,Project1,,Client1,Yes,odio curabitur convallis duis consequat dui nec nisi volutpat eleifend donec ut dolor morbi vel
+gusella@compiler.la,2023-01-26,09:00:00,02:28:00,Project4,,Client1,Yes,nam congue risus semper porta volutpat quam pede lobortis ligula sit
+gusella@compiler.la,2023-01-26,11:28:00,03:02:00,Project2,,Client1,Yes,et ultrices posuere cubilia curae donec pharetra magna vestibulum aliquet ultrices erat tortor sollicitudin mi sit amet lobortis sapien sapien
+gusella@compiler.la,2023-01-26,14:31:00,00:52:00,Project3,,Client1,Yes,eget eros elementum pellentesque quisque porta volutpat erat quisque erat eros viverra eget congue eget semper rutrum nulla nunc purus phasellus in felis donec
+gusella@compiler.la,2023-01-26,15:24:00,02:25:00,Project5,,Client1,Yes,in felis eu sapien cursus vestibulum proin eu mi nulla ac enim
+gusella@compiler.la,2023-01-26,17:49:00,01:18:00,Project2,,Client1,Yes,convallis nulla neque libero convallis eget eleifend luctus ultricies eu nibh
+gusella@compiler.la,2023-01-26,19:07:00,01:37:00,Project4,,Client1,Yes,condimentum id luctus nec molestie sed justo pellentesque viverra pede ac diam cras pellentesque volutpat dui maecenas tristique est et tempus semper est quam pharetra
+gusella@compiler.la,2023-01-27,09:00:00,02:32:00,Project5,,Client1,Yes,egestas metus aenean fermentum donec ut mauris eget massa tempor
+gusella@compiler.la,2023-01-27,11:32:00,03:12:00,Project1,,Client1,Yes,consequat nulla nisl nunc nisl duis bibendum felis sed interdum venenatis turpis enim blandit mi in porttitor pede
+gusella@compiler.la,2023-01-28,09:00:00,03:43:00,Project4,,Client1,Yes,amet lobortis sapien sapien non mi
+gusella@compiler.la,2023-01-29,09:00:00,03:30:00,Project3,,Client1,Yes,vestibulum sagittis sapien cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus etiam vel augue vestibulum
+gusella@compiler.la,2023-01-29,12:30:00,01:37:00,Project3,,Client1,Yes,mi pede malesuada in imperdiet et commodo vulputate justo in blandit ultrices enim
+gusella@compiler.la,2023-01-30,09:00:00,02:43:00,Project4,,Client1,Yes,volutpat erat quisque erat eros viverra eget congue eget semper rutrum nulla
+gusella@compiler.la,2023-01-30,11:43:00,03:00:00,Project2,,Client1,Yes,dui vel sem sed sagittis nam congue risus semper porta volutpat quam pede lobortis ligula sit amet eleifend
+gusella@compiler.la,2023-01-30,14:44:00,01:06:00,Project3,,Client1,Yes,sagittis nam congue risus semper porta volutpat quam pede lobortis ligula sit amet eleifend pede libero quis orci nullam
+gusella@compiler.la,2023-01-30,15:51:00,02:20:00,Project4,,Client1,Yes,augue vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae
+gusella@compiler.la,2023-01-30,18:11:00,00:16:00,Project3,,Client1,Yes,platea dictumst maecenas ut massa quis augue luctus tincidunt nulla
+gusella@compiler.la,2023-01-30,18:27:00,00:45:00,Project7,,Client1,Yes,ligula suspendisse ornare consequat lectus in est risus
+hetti@compiler.la,2023-01-02,09:00:00,00:34:00,Project7,,Client1,Yes,in faucibus orci luctus et ultrices posuere cubilia curae nulla dapibus dolor vel est donec odio justo sollicitudin ut suscipit a feugiat et eros vestibulum
+hetti@compiler.la,2023-01-02,09:34:00,00:42:00,Project3,,Client1,Yes,elit proin interdum mauris non ligula pellentesque ultrices phasellus id sapien in sapien iaculis congue vivamus metus arcu adipiscing molestie hendrerit at
+hetti@compiler.la,2023-01-03,09:00:00,01:30:00,Project1,,Client1,Yes,praesent blandit lacinia erat vestibulum
+hetti@compiler.la,2023-01-03,10:30:00,01:30:00,Project6,,Client1,Yes,vel lectus in quam fringilla rhoncus mauris enim leo rhoncus sed vestibulum sit amet cursus id turpis integer aliquet massa id lobortis convallis
+hetti@compiler.la,2023-01-04,09:00:00,02:50:00,Project1,,Client1,Yes,eget elit sodales scelerisque mauris sit amet eros suspendisse accumsan tortor quis turpis
+hetti@compiler.la,2023-01-05,09:00:00,01:26:00,Project3,,Client1,Yes,condimentum neque sapien placerat ante nulla justo aliquam quis
+hetti@compiler.la,2023-01-06,09:00:00,02:12:00,Project7,,Client1,Yes,nec nisi vulputate nonummy maecenas tincidunt lacus at velit vivamus vel nulla eget eros elementum pellentesque quisque porta volutpat
+hetti@compiler.la,2023-01-06,11:12:00,03:41:00,Project2,,Client1,Yes,sit amet eleifend pede libero quis orci nullam molestie nibh in lectus pellentesque at nulla suspendisse potenti cras in purus eu magna
+hetti@compiler.la,2023-01-06,14:53:00,02:33:00,Project4,,Client1,Yes,consequat dui nec nisi volutpat eleifend donec ut dolor morbi vel
+hetti@compiler.la,2023-01-07,09:00:00,01:14:00,Project5,,Client1,Yes,vehicula condimentum curabitur in libero ut massa volutpat convallis morbi odio odio elementum eu interdum eu tincidunt in leo maecenas
+hetti@compiler.la,2023-01-07,10:14:00,02:45:00,Project6,,Client1,Yes,nunc viverra dapibus nulla suscipit ligula in lacus curabitur at ipsum ac tellus semper interdum mauris ullamcorper purus sit amet nulla
+hetti@compiler.la,2023-01-07,13:00:00,03:09:00,Project1,,Client1,Yes,in purus eu magna vulputate luctus cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus vivamus vestibulum sagittis sapien cum sociis natoque
+hetti@compiler.la,2023-01-09,09:00:00,03:49:00,Project1,,Client1,Yes,quis lectus suspendisse potenti in eleifend quam a odio in hac habitasse
+hetti@compiler.la,2023-01-09,12:49:00,01:31:00,Project1,,Client1,Yes,enim leo rhoncus sed vestibulum sit amet cursus id turpis integer
+hetti@compiler.la,2023-01-10,09:00:00,00:30:00,Project2,,Client1,Yes,blandit nam nulla integer pede justo
+hetti@compiler.la,2023-01-10,09:30:00,00:46:00,Project6,,Client1,Yes,eleifend pede libero quis orci nullam molestie nibh in lectus pellentesque
+hetti@compiler.la,2023-01-12,09:00:00,01:33:00,Project5,,Client1,Yes,massa quis augue luctus tincidunt nulla mollis molestie lorem
+hetti@compiler.la,2023-01-12,10:33:00,02:11:00,Project7,,Client1,Yes,eget eros elementum pellentesque quisque porta volutpat erat quisque erat eros
+hetti@compiler.la,2023-01-12,12:44:00,02:25:00,Project3,,Client1,Yes,vel augue vestibulum rutrum rutrum neque aenean auctor gravida
+hetti@compiler.la,2023-01-13,09:00:00,01:06:00,Project7,,Client1,Yes,varius ut blandit non interdum in ante vestibulum ante ipsum
+hetti@compiler.la,2023-01-13,10:06:00,02:02:00,Project6,,Client1,Yes,aliquam augue quam sollicitudin vitae consectetuer eget rutrum at lorem integer tincidunt ante vel ipsum praesent blandit lacinia erat vestibulum sed magna at
+hetti@compiler.la,2023-01-13,12:08:00,00:13:00,Project3,,Client1,Yes,sapien varius ut blandit non interdum in ante vestibulum ante ipsum primis in faucibus
+hetti@compiler.la,2023-01-13,12:21:00,00:29:00,Project3,,Client1,Yes,rutrum nulla tellus in sagittis dui vel nisl duis ac nibh fusce lacus purus aliquet at feugiat non
+hetti@compiler.la,2023-01-14,09:00:00,04:00:00,Project6,,Client1,Yes,interdum mauris non ligula pellentesque ultrices phasellus id sapien in sapien iaculis congue vivamus metus arcu adipiscing molestie hendrerit at
+hetti@compiler.la,2023-01-14,13:00:00,00:42:00,Project2,,Client1,Yes,elementum ligula vehicula consequat morbi a
+hetti@compiler.la,2023-01-15,09:00:00,02:36:00,Project7,,Client1,Yes,vel est donec odio justo sollicitudin ut suscipit a feugiat et eros vestibulum ac est lacinia nisi venenatis
+hetti@compiler.la,2023-01-15,11:36:00,02:19:00,Project1,,Client1,Yes,iaculis justo in hac habitasse platea dictumst etiam faucibus cursus urna
+hetti@compiler.la,2023-01-16,09:00:00,01:12:00,Project1,,Client1,Yes,at feugiat non pretium quis lectus suspendisse potenti in eleifend quam a odio in hac habitasse platea dictumst maecenas ut massa quis augue luctus
+hetti@compiler.la,2023-01-17,09:00:00,03:52:00,Project1,,Client1,Yes,vulputate justo in blandit ultrices enim lorem ipsum dolor sit amet consectetuer adipiscing elit proin
+hetti@compiler.la,2023-01-17,12:52:00,02:11:00,Project2,,Client1,Yes,sit amet justo morbi ut odio
+hetti@compiler.la,2023-01-17,15:04:00,03:37:00,Project5,,Client1,Yes,porttitor id consequat in consequat ut nulla sed accumsan felis ut at dolor quis odio consequat varius integer ac leo pellentesque ultrices mattis
+hetti@compiler.la,2023-01-18,09:00:00,01:43:00,Project1,,Client1,Yes,nec sem duis aliquam convallis nunc proin at turpis a pede posuere nonummy integer non velit donec diam neque
+hetti@compiler.la,2023-01-18,10:43:00,01:54:00,Project3,,Client1,Yes,auctor sed tristique in tempus sit
+hetti@compiler.la,2023-01-18,12:37:00,00:43:00,Project2,,Client1,Yes,volutpat sapien arcu sed augue aliquam erat volutpat in congue etiam
+hetti@compiler.la,2023-01-19,09:00:00,02:27:00,Project6,,Client1,Yes,at turpis donec posuere metus vitae ipsum aliquam non mauris morbi non lectus aliquam sit amet diam in magna bibendum imperdiet nullam
+hetti@compiler.la,2023-01-20,09:00:00,02:25:00,Project2,,Client1,Yes,diam neque vestibulum eget vulputate ut ultrices vel augue vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae donec pharetra
+hetti@compiler.la,2023-01-21,09:00:00,02:30:00,Project5,,Client1,Yes,nascetur ridiculus mus etiam vel augue vestibulum rutrum rutrum neque aenean auctor gravida sem praesent id massa id nisl venenatis lacinia aenean sit
+hetti@compiler.la,2023-01-21,11:30:00,01:19:00,Project1,,Client1,Yes,placerat ante nulla justo aliquam quis turpis eget elit sodales scelerisque mauris sit amet eros suspendisse accumsan
+hetti@compiler.la,2023-01-21,12:50:00,01:38:00,Project6,,Client1,Yes,mattis odio donec vitae nisi nam ultrices libero non mattis pulvinar nulla pede ullamcorper augue a suscipit nulla elit ac nulla
+hetti@compiler.la,2023-01-21,14:28:00,01:04:00,Project4,,Client1,Yes,justo morbi ut odio cras mi pede malesuada in
+hetti@compiler.la,2023-01-21,15:33:00,00:43:00,Project3,,Client1,Yes,quam sapien varius ut blandit non interdum in ante
+hetti@compiler.la,2023-01-22,09:00:00,03:25:00,Project4,,Client1,Yes,quis odio consequat varius integer ac leo pellentesque ultrices
+hetti@compiler.la,2023-01-22,12:25:00,03:24:00,Project5,,Client1,Yes,nonummy integer non velit donec diam neque vestibulum eget vulputate ut ultrices vel augue vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere
+hetti@compiler.la,2023-01-22,15:50:00,00:04:00,Project1,,Client1,Yes,sollicitudin mi sit amet lobortis sapien sapien non mi integer
+hetti@compiler.la,2023-01-23,09:00:00,03:34:00,Project7,,Client1,Yes,posuere metus vitae ipsum aliquam non mauris morbi non lectus aliquam sit amet diam in magna bibendum imperdiet nullam orci pede venenatis
+hetti@compiler.la,2023-01-24,09:00:00,00:55:00,Project3,,Client1,Yes,odio consequat varius integer ac leo pellentesque ultrices mattis odio
+hetti@compiler.la,2023-01-25,09:00:00,03:38:00,Project6,,Client1,Yes,id nulla ultrices aliquet maecenas leo odio condimentum id luctus nec molestie sed justo pellentesque
+hetti@compiler.la,2023-01-25,12:38:00,02:01:00,Project6,,Client1,Yes,vestibulum eget vulputate ut ultrices vel augue vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae donec pharetra
+hetti@compiler.la,2023-01-25,14:40:00,03:46:00,Project7,,Client1,Yes,adipiscing lorem vitae mattis nibh ligula nec sem duis aliquam convallis nunc proin at turpis a pede posuere nonummy integer non velit
+hetti@compiler.la,2023-01-26,09:00:00,03:48:00,Project3,,Client1,Yes,ligula vehicula consequat morbi a ipsum
+hetti@compiler.la,2023-01-26,12:48:00,02:11:00,Project1,,Client1,Yes,est quam pharetra magna ac consequat metus sapien ut
+hetti@compiler.la,2023-01-26,15:00:00,02:47:00,Project1,,Client1,Yes,magna vestibulum aliquet ultrices erat tortor sollicitudin mi sit amet lobortis sapien sapien non mi integer ac neque duis bibendum morbi non quam nec dui
+hetti@compiler.la,2023-01-27,09:00:00,03:12:00,Project7,,Client1,Yes,risus semper porta volutpat quam pede lobortis ligula
+hetti@compiler.la,2023-01-28,09:00:00,03:55:00,Project3,,Client1,Yes,felis sed lacus morbi sem mauris laoreet ut rhoncus aliquet pulvinar sed
+hetti@compiler.la,2023-01-28,12:55:00,03:42:00,Project5,,Client1,Yes,bibendum morbi non quam nec dui luctus rutrum nulla tellus in sagittis dui vel nisl
+hetti@compiler.la,2023-01-29,09:00:00,00:19:00,Project5,,Client1,Yes,aliquam convallis nunc proin at turpis a pede posuere nonummy
+hetti@compiler.la,2023-01-29,09:19:00,00:12:00,Project1,,Client1,Yes,quis turpis sed ante vivamus tortor duis mattis egestas metus aenean fermentum donec
+hetti@compiler.la,2023-01-30,09:00:00,01:04:00,Project3,,Client1,Yes,vestibulum sit amet cursus id turpis integer aliquet massa id lobortis convallis tortor risus dapibus augue vel accumsan tellus nisi eu orci
+hetti@compiler.la,2023-01-30,10:04:00,01:36:00,Project2,,Client1,Yes,magna vulputate luctus cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus vivamus vestibulum sagittis sapien cum sociis natoque penatibus et magnis
+hetti@compiler.la,2023-01-30,11:40:00,01:43:00,Project4,,Client1,Yes,phasellus in felis donec semper sapien a libero nam dui proin leo odio porttitor id consequat in consequat ut nulla sed accumsan
+sawyer@compiler.la,2023-01-03,09:00:00,02:03:00,Project4,,Client1,Yes,aliquet maecenas leo odio condimentum id luctus nec molestie sed justo pellentesque viverra pede ac diam cras pellentesque volutpat dui maecenas tristique est
+sawyer@compiler.la,2023-01-03,11:03:00,00:24:00,Project1,,Client1,Yes,eget rutrum at lorem integer tincidunt ante vel ipsum praesent blandit lacinia erat vestibulum
+sawyer@compiler.la,2023-01-04,09:00:00,02:21:00,Project3,,Client1,Yes,aliquet at feugiat non pretium quis
+sawyer@compiler.la,2023-01-04,11:21:00,00:48:00,Project7,,Client1,Yes,vehicula condimentum curabitur in libero ut massa volutpat convallis morbi odio odio elementum eu interdum eu tincidunt in leo maecenas
+sawyer@compiler.la,2023-01-04,12:09:00,03:55:00,Project7,,Client1,Yes,convallis eget eleifend luctus ultricies eu nibh quisque id justo sit amet sapien dignissim vestibulum vestibulum
+sawyer@compiler.la,2023-01-06,09:00:00,00:35:00,Project7,,Client1,Yes,feugiat et eros vestibulum ac est lacinia nisi venenatis tristique fusce congue diam id ornare imperdiet sapien urna pretium nisl ut volutpat sapien
+sawyer@compiler.la,2023-01-06,09:35:00,00:26:00,Project3,,Client1,Yes,vitae nisi nam ultrices libero non mattis pulvinar nulla pede ullamcorper augue a suscipit
+sawyer@compiler.la,2023-01-06,10:01:00,02:06:00,Project6,,Client1,Yes,accumsan odio curabitur convallis duis consequat dui nec nisi volutpat eleifend donec ut dolor morbi vel lectus in quam fringilla rhoncus
+sawyer@compiler.la,2023-01-07,09:00:00,01:50:00,Project4,,Client1,Yes,quam a odio in hac habitasse platea dictumst maecenas ut massa quis augue luctus tincidunt nulla mollis molestie lorem quisque ut erat curabitur
+sawyer@compiler.la,2023-01-07,10:50:00,01:01:00,Project1,,Client1,Yes,proin leo odio porttitor id consequat in consequat
+sawyer@compiler.la,2023-01-08,09:00:00,01:33:00,Project5,,Client1,Yes,porttitor lacus at turpis donec posuere metus vitae ipsum aliquam non mauris morbi non lectus aliquam
+sawyer@compiler.la,2023-01-08,10:33:00,02:35:00,Project3,,Client1,Yes,curae mauris viverra diam vitae quam suspendisse potenti nullam porttitor lacus at turpis donec posuere metus vitae ipsum aliquam non mauris morbi non
+sawyer@compiler.la,2023-01-09,09:00:00,01:01:00,Project1,,Client1,Yes,donec pharetra magna vestibulum aliquet ultrices erat tortor sollicitudin mi sit amet lobortis sapien sapien
+sawyer@compiler.la,2023-01-09,10:01:00,01:58:00,Project5,,Client1,Yes,nulla integer pede justo lacinia eget tincidunt eget
+sawyer@compiler.la,2023-01-11,09:00:00,01:37:00,Project3,,Client1,Yes,maecenas tristique est et tempus semper est
+sawyer@compiler.la,2023-01-11,10:37:00,01:55:00,Project7,,Client1,Yes,elementum pellentesque quisque porta volutpat erat quisque erat eros viverra eget congue eget semper rutrum nulla nunc purus phasellus in
+sawyer@compiler.la,2023-01-11,12:32:00,02:57:00,Project1,,Client1,Yes,eu interdum eu tincidunt in leo maecenas pulvinar lobortis est phasellus sit amet erat nulla
+sawyer@compiler.la,2023-01-12,09:00:00,02:03:00,Project3,,Client1,Yes,curae duis faucibus accumsan odio curabitur convallis duis consequat dui nec
+sawyer@compiler.la,2023-01-12,11:03:00,01:00:00,Project1,,Client1,Yes,eu interdum eu tincidunt in leo maecenas pulvinar lobortis est phasellus sit amet erat nulla tempus
+sawyer@compiler.la,2023-01-12,12:04:00,01:22:00,Project6,,Client1,Yes,etiam faucibus cursus urna ut
+sawyer@compiler.la,2023-01-13,09:00:00,01:07:00,Project6,,Client1,Yes,platea dictumst morbi vestibulum velit id pretium iaculis diam erat fermentum justo nec condimentum neque sapien placerat ante nulla justo aliquam quis turpis eget
+sawyer@compiler.la,2023-01-14,09:00:00,02:06:00,Project4,,Client1,Yes,feugiat et eros vestibulum ac est lacinia nisi venenatis tristique fusce congue diam id ornare imperdiet sapien urna pretium nisl ut volutpat sapien arcu
+sawyer@compiler.la,2023-01-14,11:06:00,01:16:00,Project6,,Client1,Yes,bibendum felis sed interdum venenatis turpis enim blandit mi
+sawyer@compiler.la,2023-01-14,12:22:00,01:44:00,Project5,,Client1,Yes,pretium nisl ut volutpat sapien arcu sed augue aliquam erat volutpat in congue etiam justo etiam pretium
+sawyer@compiler.la,2023-01-15,09:00:00,01:39:00,Project3,,Client1,Yes,luctus cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus vivamus
+sawyer@compiler.la,2023-01-15,10:39:00,00:59:00,Project7,,Client1,Yes,iaculis justo in hac habitasse platea dictumst etiam faucibus cursus urna ut tellus nulla ut erat id mauris vulputate elementum nullam varius nulla
+sawyer@compiler.la,2023-01-16,09:00:00,03:10:00,Project2,,Client1,Yes,erat id mauris vulputate elementum nullam varius nulla facilisi
+sawyer@compiler.la,2023-01-16,12:10:00,00:44:00,Project3,,Client1,Yes,nonummy integer non velit donec diam neque vestibulum eget vulputate ut ultrices vel augue vestibulum ante
+sawyer@compiler.la,2023-01-16,12:55:00,01:15:00,Project4,,Client1,Yes,eu massa donec dapibus duis at velit eu
+sawyer@compiler.la,2023-01-18,09:00:00,01:40:00,Project4,,Client1,Yes,imperdiet nullam orci pede venenatis non sodales sed tincidunt eu felis fusce
+sawyer@compiler.la,2023-01-18,10:40:00,01:37:00,Project3,,Client1,Yes,aliquam sit amet diam in magna bibendum imperdiet nullam orci pede venenatis non sodales sed tincidunt eu
+sawyer@compiler.la,2023-01-18,12:18:00,02:52:00,Project7,,Client1,Yes,ligula sit amet eleifend pede libero quis orci nullam molestie
+sawyer@compiler.la,2023-01-20,09:00:00,02:31:00,Project6,,Client1,Yes,nulla integer pede justo lacinia eget tincidunt eget tempus vel pede morbi porttitor lorem
+sawyer@compiler.la,2023-01-21,09:00:00,02:25:00,Project5,,Client1,Yes,vivamus in felis eu sapien cursus vestibulum
+sawyer@compiler.la,2023-01-22,09:00:00,01:28:00,Project7,,Client1,Yes,interdum mauris non ligula pellentesque ultrices phasellus id sapien in sapien iaculis
+sawyer@compiler.la,2023-01-23,09:00:00,01:04:00,Project6,,Client1,Yes,elementum in hac habitasse platea dictumst morbi vestibulum velit id pretium iaculis diam erat fermentum justo nec condimentum neque
+sawyer@compiler.la,2023-01-23,10:04:00,00:13:00,Project7,,Client1,Yes,congue vivamus metus arcu adipiscing molestie hendrerit at vulputate vitae nisl aenean lectus pellentesque eget nunc donec quis orci eget orci
+sawyer@compiler.la,2023-01-23,10:18:00,01:34:00,Project7,,Client1,Yes,id luctus nec molestie sed justo pellentesque viverra pede ac diam cras pellentesque volutpat dui maecenas tristique est et tempus semper est quam
+sawyer@compiler.la,2023-01-24,09:00:00,02:16:00,Project5,,Client1,Yes,vulputate elementum nullam varius nulla facilisi cras non velit nec nisi vulputate nonummy
+sawyer@compiler.la,2023-01-25,09:00:00,02:08:00,Project2,,Client1,Yes,nibh in lectus pellentesque at
+sawyer@compiler.la,2023-01-26,09:00:00,01:15:00,Project4,,Client1,Yes,id ornare imperdiet sapien urna pretium nisl ut volutpat sapien arcu sed augue aliquam erat volutpat in congue etiam justo etiam pretium iaculis justo in
+sawyer@compiler.la,2023-01-27,09:00:00,04:00:00,Project1,,Client1,Yes,quis justo maecenas rhoncus aliquam lacus morbi quis tortor id nulla ultrices aliquet maecenas leo odio
+sawyer@compiler.la,2023-01-29,09:00:00,03:23:00,Project7,,Client1,Yes,ut at dolor quis odio consequat varius integer
+sawyer@compiler.la,2023-01-30,09:00:00,00:19:00,Project1,,Client1,Yes,pellentesque ultrices phasellus id sapien in sapien iaculis congue vivamus metus arcu adipiscing molestie hendrerit at vulputate vitae nisl aenean lectus pellentesque eget nunc
+sawyer@compiler.la,2023-01-30,09:19:00,03:24:00,Project1,,Client1,Yes,metus arcu adipiscing molestie hendrerit at vulputate vitae nisl aenean lectus pellentesque eget
+silas@compiler.la,2023-01-03,09:00:00,00:42:00,Project2,,Client1,Yes,praesent blandit nam nulla integer pede
+silas@compiler.la,2023-01-04,09:00:00,02:51:00,Project2,,Client1,Yes,elit sodales scelerisque mauris sit amet eros suspendisse
+silas@compiler.la,2023-01-05,09:00:00,02:40:00,Project6,,Client1,Yes,aenean auctor gravida sem praesent id massa id nisl venenatis lacinia aenean sit amet justo morbi ut odio cras mi pede malesuada in imperdiet
+silas@compiler.la,2023-01-05,11:40:00,01:15:00,Project2,,Client1,Yes,sapien placerat ante nulla justo aliquam quis turpis eget elit sodales scelerisque
+silas@compiler.la,2023-01-05,12:56:00,01:21:00,Project4,,Client1,Yes,primis in faucibus orci luctus et ultrices posuere cubilia curae duis faucibus accumsan odio curabitur convallis duis consequat
+silas@compiler.la,2023-01-06,09:00:00,00:54:00,Project5,,Client1,Yes,nibh ligula nec sem duis aliquam convallis
+silas@compiler.la,2023-01-06,09:54:00,03:25:00,Project2,,Client1,Yes,at nunc commodo placerat praesent blandit
+silas@compiler.la,2023-01-06,13:19:00,02:27:00,Project1,,Client1,Yes,primis in faucibus orci luctus et ultrices posuere cubilia curae donec pharetra magna
+silas@compiler.la,2023-01-06,15:47:00,03:37:00,Project7,,Client1,Yes,leo odio porttitor id consequat in consequat ut nulla sed accumsan felis ut at dolor
+silas@compiler.la,2023-01-06,19:24:00,01:51:00,Project4,,Client1,Yes,pharetra magna ac consequat metus sapien ut nunc vestibulum ante ipsum
+silas@compiler.la,2023-01-07,09:00:00,02:25:00,Project5,,Client1,Yes,praesent blandit nam nulla integer pede justo lacinia eget tincidunt eget tempus vel pede morbi porttitor lorem id ligula suspendisse ornare consequat lectus in
+silas@compiler.la,2023-01-08,09:00:00,01:36:00,Project3,,Client1,Yes,in purus eu magna vulputate luctus
+silas@compiler.la,2023-01-08,10:36:00,01:19:00,Project2,,Client1,Yes,lobortis convallis tortor risus dapibus augue vel accumsan tellus nisi eu orci mauris lacinia sapien quis libero nullam sit amet
+silas@compiler.la,2023-01-11,09:00:00,00:41:00,Project7,,Client1,Yes,ac consequat metus sapien ut nunc vestibulum ante ipsum primis in faucibus
+silas@compiler.la,2023-01-11,09:41:00,01:07:00,Project2,,Client1,Yes,suspendisse ornare consequat lectus in est risus auctor sed tristique in tempus sit amet sem fusce
+silas@compiler.la,2023-01-11,10:49:00,03:09:00,Project7,,Client1,Yes,in blandit ultrices enim lorem ipsum dolor sit amet consectetuer adipiscing
+silas@compiler.la,2023-01-12,09:00:00,02:38:00,Project7,,Client1,Yes,nibh ligula nec sem duis aliquam convallis nunc proin at turpis a pede posuere nonummy integer non velit donec diam
+silas@compiler.la,2023-01-13,09:00:00,00:40:00,Project6,,Client1,Yes,blandit ultrices enim lorem ipsum dolor sit amet consectetuer adipiscing elit
+silas@compiler.la,2023-01-14,09:00:00,03:00:00,Project7,,Client1,Yes,morbi vestibulum velit id pretium iaculis diam
+silas@compiler.la,2023-01-14,12:00:00,02:19:00,Project5,,Client1,Yes,pede justo lacinia eget tincidunt eget tempus vel pede morbi porttitor lorem id ligula
+silas@compiler.la,2023-01-15,09:00:00,03:08:00,Project6,,Client1,Yes,dis parturient montes nascetur ridiculus mus etiam vel augue vestibulum rutrum
+silas@compiler.la,2023-01-15,12:08:00,00:03:00,Project4,,Client1,Yes,viverra pede ac diam cras pellentesque volutpat dui maecenas tristique est et
+silas@compiler.la,2023-01-15,12:11:00,03:01:00,Project1,,Client1,Yes,eu massa donec dapibus duis at velit eu est congue elementum in hac habitasse platea dictumst morbi vestibulum
+silas@compiler.la,2023-01-16,09:00:00,02:59:00,Project4,,Client1,Yes,vestibulum proin eu mi nulla ac enim in tempor
+silas@compiler.la,2023-01-17,09:00:00,02:25:00,Project2,,Client1,Yes,cras pellentesque volutpat dui maecenas tristique est et tempus semper est quam pharetra magna ac consequat metus sapien
+silas@compiler.la,2023-01-17,11:25:00,03:51:00,Project5,,Client1,Yes,vestibulum sagittis sapien cum sociis natoque
+silas@compiler.la,2023-01-18,09:00:00,02:44:00,Project4,,Client1,Yes,tortor duis mattis egestas metus aenean fermentum donec ut mauris eget
+silas@compiler.la,2023-01-18,11:44:00,01:08:00,Project4,,Client1,Yes,faucibus orci luctus et ultrices posuere
+silas@compiler.la,2023-01-20,09:00:00,01:18:00,Project6,,Client1,Yes,metus sapien ut nunc vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae mauris viverra diam vitae quam suspendisse potenti nullam
+silas@compiler.la,2023-01-20,10:18:00,03:15:00,Project2,,Client1,Yes,iaculis justo in hac habitasse platea dictumst etiam faucibus cursus urna ut tellus nulla ut erat id mauris vulputate elementum nullam
+silas@compiler.la,2023-01-20,13:33:00,03:57:00,Project6,,Client1,Yes,elit proin risus praesent lectus vestibulum quam sapien varius ut blandit non interdum in ante vestibulum ante ipsum
+silas@compiler.la,2023-01-20,17:31:00,02:06:00,Project2,,Client1,Yes,tincidunt in leo maecenas pulvinar lobortis est phasellus sit amet erat
+silas@compiler.la,2023-01-22,09:00:00,03:10:00,Project1,,Client1,Yes,pulvinar lobortis est phasellus sit amet erat nulla tempus vivamus in felis eu sapien cursus vestibulum proin eu mi nulla
+silas@compiler.la,2023-01-22,12:10:00,01:24:00,Project1,,Client1,Yes,mollis molestie lorem quisque ut erat curabitur gravida nisi at nibh in hac habitasse platea dictumst aliquam augue quam sollicitudin vitae consectetuer eget
+silas@compiler.la,2023-01-22,13:34:00,02:22:00,Project6,,Client1,Yes,arcu libero rutrum ac lobortis vel dapibus at diam nam tristique
+silas@compiler.la,2023-01-23,09:00:00,00:20:00,Project5,,Client1,Yes,nec nisi vulputate nonummy maecenas tincidunt lacus at velit vivamus vel nulla eget eros elementum pellentesque quisque porta volutpat erat quisque erat eros
+silas@compiler.la,2023-01-24,09:00:00,02:45:00,Project6,,Client1,Yes,duis aliquam convallis nunc proin at turpis
+silas@compiler.la,2023-01-24,11:45:00,03:20:00,Project6,,Client1,Yes,porttitor lorem id ligula suspendisse ornare consequat lectus
+silas@compiler.la,2023-01-24,15:06:00,00:26:00,Project5,,Client1,Yes,ut blandit non interdum in
+silas@compiler.la,2023-01-25,09:00:00,02:06:00,Project5,,Client1,Yes,odio odio elementum eu interdum eu tincidunt in leo maecenas pulvinar lobortis est
+silas@compiler.la,2023-01-25,11:06:00,02:28:00,Project4,,Client1,Yes,elementum pellentesque quisque porta volutpat erat quisque erat eros viverra eget congue eget semper rutrum nulla nunc purus phasellus in felis
+silas@compiler.la,2023-01-25,13:35:00,01:10:00,Project7,,Client1,Yes,leo pellentesque ultrices mattis odio donec vitae
+silas@compiler.la,2023-01-26,09:00:00,01:30:00,Project5,,Client1,Yes,ultrices posuere cubilia curae mauris viverra diam
+silas@compiler.la,2023-01-27,09:00:00,01:49:00,Project6,,Client1,Yes,blandit non interdum in ante vestibulum ante
+silas@compiler.la,2023-01-27,10:49:00,02:55:00,Project7,,Client1,Yes,hac habitasse platea dictumst aliquam augue quam
+silas@compiler.la,2023-01-27,13:45:00,03:40:00,Project4,,Client1,Yes,nullam orci pede venenatis non sodales sed tincidunt eu
+silas@compiler.la,2023-01-28,09:00:00,02:37:00,Project4,,Client1,Yes,volutpat in congue etiam justo etiam pretium iaculis justo in hac habitasse platea dictumst etiam faucibus cursus urna
+silas@compiler.la,2023-01-30,09:00:00,03:31:00,Project1,,Client1,Yes,nibh quisque id justo sit amet sapien dignissim vestibulum vestibulum ante ipsum primis in faucibus orci luctus et
+silas@compiler.la,2023-01-30,12:31:00,01:56:00,Project6,,Client1,Yes,ante vivamus tortor duis mattis egestas metus aenean fermentum donec ut mauris eget massa tempor convallis
