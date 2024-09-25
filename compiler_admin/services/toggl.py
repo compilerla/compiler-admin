@@ -1,11 +1,18 @@
+from base64 import b64encode
 import os
 import sys
 from typing import TextIO
 
 import pandas as pd
 
+from compiler_admin import __version__
 from compiler_admin.services.google import user_info as google_user_info
 import compiler_admin.services.files as files
+
+# Toggl API config
+API_BASE_URL = "https://api.track.toggl.com"
+API_REPORTS_BASE_URL = "reports/api/v3"
+API_WORKSPACE = "workspace/{}"
 
 # cache of previously seen project information, keyed on Toggl project name
 PROJECT_INFO = {}
@@ -36,6 +43,50 @@ def _get_info(obj: dict, key: str, env_key: str):
     return obj.get(key)
 
 
+def _toggl_api_authorization_header():
+    """Gets an `Authorization: Basic xyz` header using the Toggl API token.
+
+    See https://engineering.toggl.com/docs/authentication.
+    """
+    token = _toggl_api_token()
+    creds = f"{token}:api_token"
+    creds64 = b64encode(bytes(creds, "utf-8")).decode("utf-8")
+    return {"Authorization": "Basic {}".format(creds64)}
+
+
+def _toggl_api_headers():
+    """Gets a dict of headers for Toggl API requests.
+
+    See https://engineering.toggl.com/docs/.
+    """
+    headers = {"Content-Type": "application/json"}
+    headers.update({"User-Agent": "compilerla/compiler-admin:{}".format(__version__)})
+    headers.update(_toggl_api_authorization_header())
+    return headers
+
+
+def _toggl_api_report_url(endpoint: str):
+    """Get a fully formed URL for the Toggl Reports API v3 endpoint.
+
+    See https://engineering.toggl.com/docs/reports_start.
+    """
+    workspace_id = _toggl_workspace()
+    return "/".join((API_BASE_URL, API_REPORTS_BASE_URL, API_WORKSPACE.format(workspace_id), endpoint))
+
+
+def _toggl_api_token():
+    """Gets the value of the TOGGL_API_TOKEN env var."""
+    return os.environ.get("TOGGL_API_TOKEN")
+
+
+def _toggl_client_id():
+    """Gets the value of the TOGGL_CLIENT_ID env var."""
+    client_id = os.environ.get("TOGGL_CLIENT_ID")
+    if client_id:
+        return int(client_id)
+    return None
+
+
 def _toggl_project_info(project: str):
     """Return the cached project for the given project key."""
     return _get_info(PROJECT_INFO, project, "TOGGL_PROJECT_INFO")
@@ -44,6 +95,11 @@ def _toggl_project_info(project: str):
 def _toggl_user_info(email: str):
     """Return the cached user for the given email."""
     return _get_info(USER_INFO, email, "TOGGL_USER_INFO")
+
+
+def _toggl_workspace():
+    """Gets the value of the TOGGL_WORKSPACE_ID env var."""
+    return os.environ.get("TOGGL_WORKSPACE_ID")
 
 
 def _get_first_name(email: str) -> str:
