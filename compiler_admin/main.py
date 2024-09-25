@@ -76,6 +76,25 @@ def setup_time_command(cmd_parsers: _SubParsersAction):
     )
     time_convert.add_argument("--client", default=None, help="The name of the client to use in converted data.")
 
+    time_download = add_sub_cmd(time_subcmds, "download", help="Download a Toggl report in CSV format.")
+    time_download.add_argument(
+        "--start",
+        metavar="YYYY-MM-DD",
+        default=prior_month_start(),
+        type=lambda s: TZINFO.localize(datetime.strptime(s, "%Y-%m-%d")),
+        help="The start date of the reporting period. Defaults to the beginning of the prior month.",
+    )
+    time_download.add_argument(
+        "--end",
+        metavar="YYYY-MM-DD",
+        default=prior_month_end(),
+        type=lambda s: TZINFO.localize(datetime.strptime(s, "%Y-%m-%d")),
+        help="The end date of the reporting period. Defaults to the end of the prior month.",
+    )
+    time_download.add_argument(
+        "--output", default=sys.stdout, help="The path to the file where converted data should be written. Defaults to stdout."
+    )
+
 
 def setup_user_command(cmd_parsers: _SubParsersAction):
     user_cmd = add_sub_cmd(cmd_parsers, "user", help="Work with users in the Compiler org.")

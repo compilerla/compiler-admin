@@ -114,6 +114,41 @@ def test_main_time_convert_default(mock_commands_time):
     )
 
 
+@pytest.mark.usefixtures("mock_local_now")
+def test_main_time_download_default(mock_commands_time, mock_start, mock_end):
+    main(argv=["time", "download"])
+
+    mock_commands_time.assert_called_once()
+    call_args = mock_commands_time.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_time, command="time", subcommand="download", start=mock_start, end=mock_end, output=sys.stdout
+        )
+        in call_args
+    )
+
+
+def test_main_time_download_args(mock_commands_time):
+    main(argv=["time", "download", "--start", "2024-01-01", "--end", "2024-01-31", "--output", "file.csv"])
+
+    expected_start = TZINFO.localize(datetime(2024, 1, 1))
+    expected_end = TZINFO.localize(datetime(2024, 1, 31))
+
+    mock_commands_time.assert_called_once()
+    call_args = mock_commands_time.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_time,
+            command="time",
+            subcommand="download",
+            start=expected_start,
+            end=expected_end,
+            output="file.csv",
+        )
+        in call_args
+    )
+
+
 def test_main_time_convert_client(mock_commands_time):
     main(argv=["time", "convert", "--client", "client123"])
 
