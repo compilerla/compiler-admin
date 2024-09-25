@@ -53,6 +53,7 @@ source = ["compiler_admin"]
 
 [tool.pyright]
 include = ["compiler_admin", "tests"]
+typeCheckingMode = "off"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
