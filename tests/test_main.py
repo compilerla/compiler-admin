@@ -1,12 +1,30 @@
 from argparse import Namespace
+from datetime import datetime
 import subprocess
 import sys
 
 import pytest
 
 import compiler_admin.main
-from compiler_admin.main import main, __name__ as MODULE
+from compiler_admin.main import main, prior_month_start, prior_month_end, TZINFO, __name__ as MODULE
 from compiler_admin.services.google import DOMAIN
+
+
+@pytest.fixture
+def mock_local_now(mocker):
+    dt = datetime(2024, 9, 25, tzinfo=TZINFO)
+    mocker.patch(f"{MODULE}.local_now", return_value=dt)
+    return dt
+
+
+@pytest.fixture
+def mock_start(mock_local_now):
+    return datetime(2024, 8, 1, tzinfo=TZINFO)
+
+
+@pytest.fixture
+def mock_end(mock_local_now):
+    return datetime(2024, 8, 31, tzinfo=TZINFO)
 
 
 @pytest.fixture
@@ -27,6 +45,18 @@ def mock_commands_time(mock_commands_time):
 @pytest.fixture
 def mock_commands_user(mock_commands_user):
     return mock_commands_user(MODULE)
+
+
+def test_prior_month_start(mock_start):
+    start = prior_month_start()
+
+    assert start == mock_start
+
+
+def test_prior_month_end(mock_end):
+    end = prior_month_end()
+
+    assert end == mock_end
 
 
 def test_main_info(mock_commands_info):

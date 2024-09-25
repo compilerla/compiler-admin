@@ -1,5 +1,9 @@
 from argparse import ArgumentParser, _SubParsersAction
+from datetime import datetime, timedelta
+import os
 import sys
+
+from pytz import timezone
 
 from compiler_admin import __version__ as version
 from compiler_admin.commands.info import info
@@ -7,6 +11,24 @@ from compiler_admin.commands.init import init
 from compiler_admin.commands.time import time
 from compiler_admin.commands.user import user
 from compiler_admin.commands.user.convert import ACCOUNT_TYPE_OU
+
+
+TZINFO = timezone(os.environ.get("TZ_NAME", "America/Los_Angeles"))
+
+
+def local_now():
+    return datetime.now(tz=TZINFO)
+
+
+def prior_month_end():
+    now = local_now()
+    first = now.replace(day=1)
+    return first - timedelta(days=1)
+
+
+def prior_month_start():
+    end = prior_month_end()
+    return end.replace(day=1)
 
 
 def add_sub_cmd_parser(parser: ArgumentParser, dest="subcommand", help=None):
