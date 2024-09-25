@@ -31,7 +31,8 @@ dev = [
 test = [
     "coverage",
     "pytest",
-    "pytest-mock"
+    "pytest-mock",
+    "pytest-socket"
 ]
 
 [project.scripts]
