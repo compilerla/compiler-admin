@@ -1,6 +1,7 @@
+from datetime import datetime, timedelta
+from io import BytesIO, StringIO
 import sys
-from datetime import timedelta
-from io import StringIO
+from pathlib import Path
 from tempfile import NamedTemporaryFile
 
 import pandas as pd
@@ -22,6 +23,7 @@ from compiler_admin.services.toggl import (
     _get_last_name,
     _str_timedelta,
     convert_to_harvest,
+    download_time_entries,
 )
 
 
@@ -55,6 +57,11 @@ def mock_get_info(mocker):
 @pytest.fixture
 def mock_google_user_info(mocker):
     return mocker.patch(f"{MODULE}.google_user_info")
+
+
+@pytest.fixture
+def mock_requests(mocker):
+    return mocker.patch(f"{MODULE}.requests")
 
 
 def test_harvest_client_name(monkeypatch):
@@ -212,3 +219,49 @@ def test_convert_to_harvest_sample(toggl_file, harvest_file, mock_google_user_in
 
     assert set(output_df.columns.to_list()) <= set(sample_output_df.columns.to_list())
     assert output_df["Client"].eq("Test Client 123").all()
+
+
+def test_download_time_entries(monkeypatch, toggl_file, mock_requests, mocker):
+    monkeypatch.setenv("TOGGL_API_TOKEN", "token")
+    monkeypatch.setenv("TOGGL_CLIENT_ID", "1234")
+    monkeypatch.setenv("TOGGL_WORKSPACE_ID", "workspace")
+
+    # setup a mock response to a requests.post call
+    mock_csv_bytes = Path(toggl_file).read_bytes()
+    mock_post_response = mocker.Mock()
+    mock_post_response.raise_for_status.return_value = None
+    # prepend the BOM to the mock content
+    mock_post_response.content = b"\xef\xbb\xbf" + mock_csv_bytes
+    # override the requests.post call to return the mock response
+    mock_requests.post.return_value = mock_post_response
+
+    dt = datetime.now()
+
+    with NamedTemporaryFile("w") as temp:
+        download_time_entries(dt, dt, temp.name, extra_1=1, extra_2="two")
+
+        called_params = mock_requests.post.call_args.kwargs["json"]
+        assert isinstance(called_params, dict)
+        assert called_params["billable"] is True
+        assert called_params["client_ids"] == [1234]
+        assert called_params["end_date"] == dt.strftime("%Y-%m-%d")
+        assert called_params["extra_1"] == 1
+        assert called_params["extra_2"] == "two"
+        assert called_params["rounding"] == 1
+        assert called_params["rounding_minutes"] == 15
+        assert called_params["start_date"] == dt.strftime("%Y-%m-%d")
+
+        temp.flush()
+        response_csv_bytes = Path(temp.name).read_bytes()
+
+        # load each CSV into a DataFrame
+        mock_df = pd.read_csv(BytesIO(mock_csv_bytes))
+        response_df = pd.read_csv(BytesIO(response_csv_bytes))
+
+        # check that the response DataFrame has all columns from the mock DataFrame
+        assert set(response_df.columns.to_list()).issubset(mock_df.columns.to_list())
+
+        # check that all column values from response DataFrame are the same
+        # as corresponding column values from the mock DataFrame
+        for col in response_df.columns:
+            assert response_df[col].equals(mock_df[col])
