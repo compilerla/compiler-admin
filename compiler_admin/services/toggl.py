@@ -1,9 +1,12 @@
 from base64 import b64encode
+from datetime import datetime
+import io
 import os
 import sys
 from typing import TextIO
 
 import pandas as pd
+import requests
 
 from compiler_admin import __version__
 from compiler_admin.services.google import user_info as google_user_info
@@ -183,3 +186,71 @@ def convert_to_harvest(
     source["Hours"] = (source["Duration"].dt.total_seconds() / 3600).round(2)
 
     files.write_csv(output_path, source, columns=output_cols)
+
+
+def download_time_entries(
+    start_date: datetime,
+    end_date: datetime,
+    output_path: str | TextIO = sys.stdout,
+    output_cols: list[str] | None = INPUT_COLUMNS,
+    **kwargs,
+):
+    """Download a CSV report from Toggl of detailed time entries for the given date range.
+
+    Args:
+        start_date (datetime): The beginning of the reporting period.
+
+        end_date (str): The end of the reporting period.
+
+        output_path: The path to a CSV file where Toggl time entries will be written; or a writeable buffer for the same.
+
+        output_cols (list[str]): A list of column names for the output.
+
+    Extra kwargs are passed along in the POST request body.
+
+    By default, requests a report with the following configuration:
+        * `billable=True`
+        * `client_ids=[$TOGGL_CLIENT_ID]`
+        * `rounding=1` (True, but this is an int param)
+        * `rounding_minutes=15`
+
+    See https://engineering.toggl.com/docs/reports/detailed_reports#post-export-detailed-report.
+
+    Returns:
+        None. Either prints the resulting CSV data or writes to output_path.
+    """
+    start = start_date.strftime("%Y-%m-%d")
+    end = end_date.strftime("%Y-%m-%d")
+
+    if ("client_ids" not in kwargs or not kwargs["client_ids"]) and isinstance(_toggl_client_id(), int):
+        kwargs["client_ids"] = [_toggl_client_id()]
+
+    params = dict(
+        billable=True,
+        start_date=start,
+        end_date=end,
+        rounding=1,
+        rounding_minutes=15,
+    )
+    params.update(kwargs)
+
+    headers = _toggl_api_headers()
+    url = _toggl_api_report_url("search/time_entries.csv")
+
+    response = requests.post(url, json=params, headers=headers, timeout=5)
+    response.raise_for_status()
+
+    # the raw response has these initial 3 bytes:
+    #
+    #   b"\xef\xbb\xbfUser,Email,Client..."
+    #
+    # \xef\xbb\xb is the Byte Order Mark (BOM) sometimes used in unicode text files
+    # these 3 bytes indicate a utf-8 encoded text file
+    #
+    # See more
+    #  - https://en.wikipedia.org/wiki/Byte_order_mark
+    #  - https://stackoverflow.com/a/50131187
+    csv = response.content.decode("utf-8-sig")
+
+    df = pd.read_csv(io.StringIO(csv))
+    files.write_csv(output_path, df, columns=output_cols)
