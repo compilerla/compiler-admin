@@ -1,11 +1,21 @@
+from base64 import b64encode
+from datetime import datetime
+import io
 import os
 import sys
 from typing import TextIO
 
 import pandas as pd
+import requests
 
+from compiler_admin import __version__
 from compiler_admin.services.google import user_info as google_user_info
 import compiler_admin.services.files as files
+
+# Toggl API config
+API_BASE_URL = "https://api.track.toggl.com"
+API_REPORTS_BASE_URL = "reports/api/v3"
+API_WORKSPACE = "workspace/{}"
 
 # cache of previously seen project information, keyed on Toggl project name
 PROJECT_INFO = {}
@@ -36,6 +46,50 @@ def _get_info(obj: dict, key: str, env_key: str):
     return obj.get(key)
 
 
+def _toggl_api_authorization_header():
+    """Gets an `Authorization: Basic xyz` header using the Toggl API token.
+
+    See https://engineering.toggl.com/docs/authentication.
+    """
+    token = _toggl_api_token()
+    creds = f"{token}:api_token"
+    creds64 = b64encode(bytes(creds, "utf-8")).decode("utf-8")
+    return {"Authorization": "Basic {}".format(creds64)}
+
+
+def _toggl_api_headers():
+    """Gets a dict of headers for Toggl API requests.
+
+    See https://engineering.toggl.com/docs/.
+    """
+    headers = {"Content-Type": "application/json"}
+    headers.update({"User-Agent": "compilerla/compiler-admin:{}".format(__version__)})
+    headers.update(_toggl_api_authorization_header())
+    return headers
+
+
+def _toggl_api_report_url(endpoint: str):
+    """Get a fully formed URL for the Toggl Reports API v3 endpoint.
+
+    See https://engineering.toggl.com/docs/reports_start.
+    """
+    workspace_id = _toggl_workspace()
+    return "/".join((API_BASE_URL, API_REPORTS_BASE_URL, API_WORKSPACE.format(workspace_id), endpoint))
+
+
+def _toggl_api_token():
+    """Gets the value of the TOGGL_API_TOKEN env var."""
+    return os.environ.get("TOGGL_API_TOKEN")
+
+
+def _toggl_client_id():
+    """Gets the value of the TOGGL_CLIENT_ID env var."""
+    client_id = os.environ.get("TOGGL_CLIENT_ID")
+    if client_id:
+        return int(client_id)
+    return None
+
+
 def _toggl_project_info(project: str):
     """Return the cached project for the given project key."""
     return _get_info(PROJECT_INFO, project, "TOGGL_PROJECT_INFO")
@@ -44,6 +98,11 @@ def _toggl_project_info(project: str):
 def _toggl_user_info(email: str):
     """Return the cached user for the given email."""
     return _get_info(USER_INFO, email, "TOGGL_USER_INFO")
+
+
+def _toggl_workspace():
+    """Gets the value of the TOGGL_WORKSPACE_ID env var."""
+    return os.environ.get("TOGGL_WORKSPACE_ID")
 
 
 def _get_first_name(email: str) -> str:
@@ -127,3 +186,75 @@ def convert_to_harvest(
     source["Hours"] = (source["Duration"].dt.total_seconds() / 3600).round(2)
 
     files.write_csv(output_path, source, columns=output_cols)
+
+
+def download_time_entries(
+    start_date: datetime,
+    end_date: datetime,
+    output_path: str | TextIO = sys.stdout,
+    output_cols: list[str] | None = INPUT_COLUMNS,
+    **kwargs,
+):
+    """Download a CSV report from Toggl of detailed time entries for the given date range.
+
+    Args:
+        start_date (datetime): The beginning of the reporting period.
+
+        end_date (str): The end of the reporting period.
+
+        output_path: The path to a CSV file where Toggl time entries will be written; or a writeable buffer for the same.
+
+        output_cols (list[str]): A list of column names for the output.
+
+    Extra kwargs are passed along in the POST request body.
+
+    By default, requests a report with the following configuration:
+        * `billable=True`
+        * `client_ids=[$TOGGL_CLIENT_ID]`
+        * `rounding=1` (True, but this is an int param)
+        * `rounding_minutes=15`
+
+    See https://engineering.toggl.com/docs/reports/detailed_reports#post-export-detailed-report.
+
+    Returns:
+        None. Either prints the resulting CSV data or writes to output_path.
+    """
+    start = start_date.strftime("%Y-%m-%d")
+    end = end_date.strftime("%Y-%m-%d")
+    # calculate a timeout based on the size of the reporting period in days
+    # approximately 5 seconds per month of query size, with a minimum of 5 seconds
+    range_days = (end_date - start_date).days
+    timeout = int((max(30, range_days) / 30.0) * 5)
+
+    if ("client_ids" not in kwargs or not kwargs["client_ids"]) and isinstance(_toggl_client_id(), int):
+        kwargs["client_ids"] = [_toggl_client_id()]
+
+    params = dict(
+        billable=True,
+        start_date=start,
+        end_date=end,
+        rounding=1,
+        rounding_minutes=15,
+    )
+    params.update(kwargs)
+
+    headers = _toggl_api_headers()
+    url = _toggl_api_report_url("search/time_entries.csv")
+
+    response = requests.post(url, json=params, headers=headers, timeout=timeout)
+    response.raise_for_status()
+
+    # the raw response has these initial 3 bytes:
+    #
+    #   b"\xef\xbb\xbfUser,Email,Client..."
+    #
+    # \xef\xbb\xb is the Byte Order Mark (BOM) sometimes used in unicode text files
+    # these 3 bytes indicate a utf-8 encoded text file
+    #
+    # See more
+    #  - https://en.wikipedia.org/wiki/Byte_order_mark
+    #  - https://stackoverflow.com/a/50131187
+    csv = response.content.decode("utf-8-sig")
+
+    df = pd.read_csv(io.StringIO(csv))
+    files.write_csv(output_path, df, columns=output_cols)

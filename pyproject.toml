@@ -13,6 +13,7 @@ requires-python = ">=3.11"
 dependencies = [
     "advanced-gam-for-google-workspace @ git+https://github.com/taers232c/GAMADV-XTD3.git@v7.00.05#subdirectory=src",
     "pandas==2.2.3",
+    "tzdata",
 ]
 
 [project.urls]
@@ -31,7 +32,8 @@ dev = [
 test = [
     "coverage",
     "pytest",
-    "pytest-mock"
+    "pytest-mock",
+    "pytest-socket"
 ]
 
 [project.scripts]
@@ -53,6 +55,7 @@ source = ["compiler_admin"]
 
 [tool.pyright]
 include = ["compiler_admin", "tests"]
+typeCheckingMode = "off"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

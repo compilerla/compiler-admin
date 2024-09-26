@@ -1,5 +1,9 @@
 from argparse import ArgumentParser, _SubParsersAction
+from datetime import datetime, timedelta
+import os
 import sys
+
+from pytz import timezone
 
 from compiler_admin import __version__ as version
 from compiler_admin.commands.info import info
@@ -7,6 +11,24 @@ from compiler_admin.commands.init import init
 from compiler_admin.commands.time import time
 from compiler_admin.commands.user import user
 from compiler_admin.commands.user.convert import ACCOUNT_TYPE_OU
+
+
+TZINFO = timezone(os.environ.get("TZ_NAME", "America/Los_Angeles"))
+
+
+def local_now():
+    return datetime.now(tz=TZINFO)
+
+
+def prior_month_end():
+    now = local_now()
+    first = now.replace(day=1)
+    return first - timedelta(days=1)
+
+
+def prior_month_start():
+    end = prior_month_end()
+    return end.replace(day=1)
 
 
 def add_sub_cmd_parser(parser: ArgumentParser, dest="subcommand", help=None):
@@ -53,6 +75,57 @@ def setup_time_command(cmd_parsers: _SubParsersAction):
         "--output", default=sys.stdout, help="The path to the file where converted data should be written. Defaults to stdout."
     )
     time_convert.add_argument("--client", default=None, help="The name of the client to use in converted data.")
+
+    time_download = add_sub_cmd(time_subcmds, "download", help="Download a Toggl report in CSV format.")
+    time_download.add_argument(
+        "--start",
+        metavar="YYYY-MM-DD",
+        default=prior_month_start(),
+        type=lambda s: TZINFO.localize(datetime.strptime(s, "%Y-%m-%d")),
+        help="The start date of the reporting period. Defaults to the beginning of the prior month.",
+    )
+    time_download.add_argument(
+        "--end",
+        metavar="YYYY-MM-DD",
+        default=prior_month_end(),
+        type=lambda s: TZINFO.localize(datetime.strptime(s, "%Y-%m-%d")),
+        help="The end date of the reporting period. Defaults to the end of the prior month.",
+    )
+    time_download.add_argument(
+        "--output", default=sys.stdout, help="The path to the file where converted data should be written. Defaults to stdout."
+    )
+    time_download.add_argument(
+        "--client",
+        dest="client_ids",
+        metavar="CLIENT_ID",
+        action="append",
+        type=int,
+        help="An ID for a Toggl Client to filter for in reports. Can be supplied more than once.",
+    )
+    time_download.add_argument(
+        "--project",
+        dest="project_ids",
+        metavar="PROJECT_ID",
+        action="append",
+        type=int,
+        help="An ID for a Toggl Project to filter for in reports. Can be supplied more than once.",
+    )
+    time_download.add_argument(
+        "--task",
+        dest="task_ids",
+        metavar="TASK_ID",
+        action="append",
+        type=int,
+        help="An ID for a Toggl Project Task to filter for in reports. Can be supplied more than once.",
+    )
+    time_download.add_argument(
+        "--user",
+        dest="user_ids",
+        metavar="USER_ID",
+        action="append",
+        type=int,
+        help="An ID for a Toggl User to filter for in reports. Can be supplied more than once.",
+    )
 
 
 def setup_user_command(cmd_parsers: _SubParsersAction):

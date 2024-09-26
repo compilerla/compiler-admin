@@ -1,6 +1,7 @@
 from argparse import Namespace
 
 from compiler_admin.commands.time.convert import convert  # noqa: F401
+from compiler_admin.commands.time.download import download  # noqa: F401
 
 
 def time(args: Namespace, *extra):

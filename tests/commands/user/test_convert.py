@@ -172,7 +172,7 @@ def test_convert_partner(mock_google_add_user_to_group, mock_google_move_user_ou
     res = convert(args)
 
     assert res == RESULT_SUCCESS
-    mock_google_add_user_to_group.call_count == 2
+    assert mock_google_add_user_to_group.call_count == 2
     mock_google_move_user_ou.assert_called_once()
 
 

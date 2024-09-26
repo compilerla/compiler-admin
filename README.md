@@ -62,14 +62,35 @@ The `time` command provides an interface for working with time entries from Comp
 
 ```bash
 $ compiler-admin time -h
-usage: compiler-admin time [-h] {convert} ...
+usage: compiler-admin time [-h] {convert,download} ...
 
 positional arguments:
-  {convert}   The time command to run.
-    convert   Convert a time report from one format into another.
+  {convert,download}  The time command to run.
+    convert           Convert a time report from one format into another.
+    download          Download a Toggl report in CSV format.
 
 options:
-  -h, --help  show this help message and exit
+  -h, --help          show this help message and exit
+```
+
+### Downloading a Toggl report
+
+Use this command to download a time report from Toggl in CSV format:
+
+```bash
+$ compiler-admin time download -h
+usage: compiler-admin time download [-h] [--start YYYY-MM-DD] [--end YYYY-MM-DD] [--output OUTPUT]
+                                    [--client CLIENT_ID] [--project PROJECT_ID] [--task TASK_ID] [--user USER_ID]
+
+options:
+  -h, --help            show this help message and exit
+  --start YYYY-MM-DD    The start date of the reporting period. Defaults to the beginning of the prior month.
+  --end YYYY-MM-DD      The end date of the reporting period. Defaults to the end of the prior month.
+  --output OUTPUT       The path to the file where converted data should be written. Defaults to stdout.
+  --client CLIENT_ID    An ID for a Toggl Client to filter for in reports. Can be supplied more than once.
+  --project PROJECT_ID  An ID for a Toggl Project to filter for in reports. Can be supplied more than once.
+  --task TASK_ID        An ID for a Toggl Project Task to filter for in reports. Can be supplied more than once.
+  --user USER_ID        An ID for a Toggl User to filter for in reports. Can be supplied more than once.
 ```
 
 ### Converting an hours report

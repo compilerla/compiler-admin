@@ -1,12 +1,30 @@
 from argparse import Namespace
+from datetime import datetime
 import subprocess
 import sys
 
 import pytest
 
 import compiler_admin.main
-from compiler_admin.main import main, __name__ as MODULE
+from compiler_admin.main import main, prior_month_start, prior_month_end, TZINFO, __name__ as MODULE
 from compiler_admin.services.google import DOMAIN
+
+
+@pytest.fixture
+def mock_local_now(mocker):
+    dt = datetime(2024, 9, 25, tzinfo=TZINFO)
+    mocker.patch(f"{MODULE}.local_now", return_value=dt)
+    return dt
+
+
+@pytest.fixture
+def mock_start(mock_local_now):
+    return datetime(2024, 8, 1, tzinfo=TZINFO)
+
+
+@pytest.fixture
+def mock_end(mock_local_now):
+    return datetime(2024, 8, 31, tzinfo=TZINFO)
 
 
 @pytest.fixture
@@ -27,6 +45,18 @@ def mock_commands_time(mock_commands_time):
 @pytest.fixture
 def mock_commands_user(mock_commands_user):
     return mock_commands_user(MODULE)
+
+
+def test_prior_month_start(mock_start):
+    start = prior_month_start()
+
+    assert start == mock_start
+
+
+def test_prior_month_end(mock_end):
+    end = prior_month_end()
+
+    assert end == mock_end
 
 
 def test_main_info(mock_commands_info):
@@ -79,6 +109,90 @@ def test_main_time_convert_default(mock_commands_time):
     assert (
         Namespace(
             func=mock_commands_time, command="time", subcommand="convert", client=None, input=sys.stdin, output=sys.stdout
+        )
+        in call_args
+    )
+
+
+@pytest.mark.usefixtures("mock_local_now")
+def test_main_time_download_default(mock_commands_time, mock_start, mock_end):
+    main(argv=["time", "download"])
+
+    mock_commands_time.assert_called_once()
+    call_args = mock_commands_time.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_time,
+            command="time",
+            subcommand="download",
+            start=mock_start,
+            end=mock_end,
+            output=sys.stdout,
+            client_ids=None,
+            project_ids=None,
+            task_ids=None,
+            user_ids=None,
+        )
+        in call_args
+    )
+
+
+def test_main_time_download_args(mock_commands_time):
+    main(
+        argv=[
+            "time",
+            "download",
+            "--start",
+            "2024-01-01",
+            "--end",
+            "2024-01-31",
+            "--output",
+            "file.csv",
+            "--client",
+            "1",
+            "--client",
+            "2",
+            "--client",
+            "3",
+            "--project",
+            "1",
+            "--project",
+            "2",
+            "--project",
+            "3",
+            "--task",
+            "1",
+            "--task",
+            "2",
+            "--task",
+            "3",
+            "--user",
+            "1",
+            "--user",
+            "2",
+            "--user",
+            "3",
+        ]
+    )
+
+    expected_start = TZINFO.localize(datetime(2024, 1, 1))
+    expected_end = TZINFO.localize(datetime(2024, 1, 31))
+    ids = [1, 2, 3]
+
+    mock_commands_time.assert_called_once()
+    call_args = mock_commands_time.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_time,
+            command="time",
+            subcommand="download",
+            start=expected_start,
+            end=expected_end,
+            output="file.csv",
+            client_ids=ids,
+            project_ids=ids,
+            task_ids=ids,
+            user_ids=ids,
         )
         in call_args
     )
