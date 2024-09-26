@@ -221,6 +221,10 @@ def download_time_entries(
     """
     start = start_date.strftime("%Y-%m-%d")
     end = end_date.strftime("%Y-%m-%d")
+    # calculate a timeout based on the size of the reporting period in days
+    # approximately 5 seconds per month of query size, with a minimum of 5 seconds
+    range_days = (end_date - start_date).days
+    timeout = int((max(30, range_days) / 30.0) * 5)
 
     if ("client_ids" not in kwargs or not kwargs["client_ids"]) and isinstance(_toggl_client_id(), int):
         kwargs["client_ids"] = [_toggl_client_id()]
@@ -237,7 +241,7 @@ def download_time_entries(
     headers = _toggl_api_headers()
     url = _toggl_api_report_url("search/time_entries.csv")
 
-    response = requests.post(url, json=params, headers=headers, timeout=5)
+    response = requests.post(url, json=params, headers=headers, timeout=timeout)
     response.raise_for_status()
 
     # the raw response has these initial 3 bytes:
