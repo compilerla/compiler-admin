@@ -94,6 +94,38 @@ def setup_time_command(cmd_parsers: _SubParsersAction):
     time_download.add_argument(
         "--output", default=sys.stdout, help="The path to the file where converted data should be written. Defaults to stdout."
     )
+    time_download.add_argument(
+        "--client",
+        dest="client_ids",
+        metavar="CLIENT_ID",
+        action="append",
+        type=int,
+        help="An ID for a Toggl Client to filter for in reports. Can be supplied more than once.",
+    )
+    time_download.add_argument(
+        "--project",
+        dest="project_ids",
+        metavar="PROJECT_ID",
+        action="append",
+        type=int,
+        help="An ID for a Toggl Project to filter for in reports. Can be supplied more than once.",
+    )
+    time_download.add_argument(
+        "--task",
+        dest="task_ids",
+        metavar="TASK_ID",
+        action="append",
+        type=int,
+        help="An ID for a Toggl Project Task to filter for in reports. Can be supplied more than once.",
+    )
+    time_download.add_argument(
+        "--user",
+        dest="user_ids",
+        metavar="USER_ID",
+        action="append",
+        type=int,
+        help="An ID for a Toggl User to filter for in reports. Can be supplied more than once.",
+    )
 
 
 def setup_user_command(cmd_parsers: _SubParsersAction):

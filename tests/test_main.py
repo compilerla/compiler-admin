@@ -122,17 +122,62 @@ def test_main_time_download_default(mock_commands_time, mock_start, mock_end):
     call_args = mock_commands_time.call_args.args
     assert (
         Namespace(
-            func=mock_commands_time, command="time", subcommand="download", start=mock_start, end=mock_end, output=sys.stdout
+            func=mock_commands_time,
+            command="time",
+            subcommand="download",
+            start=mock_start,
+            end=mock_end,
+            output=sys.stdout,
+            client_ids=None,
+            project_ids=None,
+            task_ids=None,
+            user_ids=None,
         )
         in call_args
     )
 
 
 def test_main_time_download_args(mock_commands_time):
-    main(argv=["time", "download", "--start", "2024-01-01", "--end", "2024-01-31", "--output", "file.csv"])
+    main(
+        argv=[
+            "time",
+            "download",
+            "--start",
+            "2024-01-01",
+            "--end",
+            "2024-01-31",
+            "--output",
+            "file.csv",
+            "--client",
+            "1",
+            "--client",
+            "2",
+            "--client",
+            "3",
+            "--project",
+            "1",
+            "--project",
+            "2",
+            "--project",
+            "3",
+            "--task",
+            "1",
+            "--task",
+            "2",
+            "--task",
+            "3",
+            "--user",
+            "1",
+            "--user",
+            "2",
+            "--user",
+            "3",
+        ]
+    )
 
     expected_start = TZINFO.localize(datetime(2024, 1, 1))
     expected_end = TZINFO.localize(datetime(2024, 1, 31))
+    ids = [1, 2, 3]
 
     mock_commands_time.assert_called_once()
     call_args = mock_commands_time.call_args.args
@@ -144,6 +189,10 @@ def test_main_time_download_args(mock_commands_time):
             start=expected_start,
             end=expected_end,
             output="file.csv",
+            client_ids=ids,
+            project_ids=ids,
+            task_ids=ids,
+            user_ids=ids,
         )
         in call_args
     )
