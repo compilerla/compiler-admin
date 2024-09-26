@@ -68,6 +68,7 @@ norecursedirs = [
     ".pytest_cache",
     ".vscode",
 ]
+addopts = "-m 'not e2e'"
 
 [tool.setuptools]
 packages = ["compiler_admin"]
