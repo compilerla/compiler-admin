@@ -12,11 +12,6 @@ from compiler_admin import __version__
 from compiler_admin.services.google import user_info as google_user_info
 import compiler_admin.services.files as files
 
-# Toggl API config
-API_BASE_URL = "https://api.track.toggl.com"
-API_REPORTS_BASE_URL = "reports/api/v3"
-API_WORKSPACE = "workspace/{}"
-
 # cache of previously seen project information, keyed on Toggl project name
 PROJECT_INFO = {}
 
@@ -29,6 +24,110 @@ INPUT_COLUMNS = ["Email", "Project", "Client", "Start date", "Start time", "Dura
 
 # default output CSV columns
 OUTPUT_COLUMNS = ["Date", "Client", "Project", "Task", "Notes", "Hours", "First name", "Last name"]
+
+
+class Toggl:
+    """Toggl API Client.
+
+    See https://engineering.toggl.com/docs/.
+    """
+
+    API_BASE_URL = "https://api.track.toggl.com"
+    API_REPORTS_BASE_URL = "reports/api/v3"
+    API_WORKSPACE = "workspace/{}"
+    API_HEADERS = {"Content-Type": "application/json", "User-Agent": "compilerla/compiler-admin:{}".format(__version__)}
+
+    def __init__(self, api_token: str, workspace_id: int, **kwargs):
+        self._token = api_token
+        self.workspace_id = workspace_id
+
+        self.headers = dict(Toggl.API_HEADERS)
+        self.headers.update(self._authorization_header())
+
+        self.timeout = int(kwargs.get("timeout", 5))
+
+    @property
+    def workspace_url_fragment(self):
+        """The workspace portion of an API URL."""
+        return Toggl.API_WORKSPACE.format(self.workspace_id)
+
+    def _authorization_header(self):
+        """Gets an `Authorization: Basic xyz` header using the Toggl API token.
+
+        See https://engineering.toggl.com/docs/authentication.
+        """
+        creds = f"{self._token}:api_token"
+        creds64 = b64encode(bytes(creds, "utf-8")).decode("utf-8")
+        return {"Authorization": "Basic {}".format(creds64)}
+
+    def _make_report_url(self, endpoint: str):
+        """Get a fully formed URL for the Toggl Reports API v3 endpoint.
+
+        See https://engineering.toggl.com/docs/reports_start.
+        """
+        return "/".join((Toggl.API_BASE_URL, Toggl.API_REPORTS_BASE_URL, self.workspace_url_fragment, endpoint))
+
+    def post_reports(self, endpoint: str, **kwargs) -> requests.Response:
+        """Send a POST request to the Reports v3 `endpoint`.
+
+        Extra `kwargs` are passed through as a POST json body.
+
+        Will raise for non-200 status codes.
+
+        See https://engineering.toggl.com/docs/reports_start.
+        """
+        url = self._make_report_url(endpoint)
+
+        response = requests.post(url, json=kwargs, headers=self.headers, timeout=self.timeout)
+        response.raise_for_status()
+
+        return response
+
+    def detailed_time_entries(self, start_date: datetime, end_date: datetime, **kwargs):
+        """Request a CSV report from Toggl of detailed time entries for the given date range.
+
+        Args:
+            start_date (datetime): The beginning of the reporting period.
+
+            end_date (str): The end of the reporting period.
+
+        Extra `kwargs` are passed through as a POST json body.
+
+        By default, requests a report with the following configuration:
+            * `billable=True`
+            * `rounding=1` (True, but this is an int param)
+            * `rounding_minutes=15`
+
+        See https://engineering.toggl.com/docs/reports/detailed_reports#post-export-detailed-report.
+
+        Returns:
+            response (requests.Response): The HTTP response.
+        """
+        # ensure start_date precedes end_date
+        start_date, end_date = min(start_date, end_date), max(start_date, end_date)
+        start = start_date.strftime("%Y-%m-%d")
+        end = end_date.strftime("%Y-%m-%d")
+
+        # calculate a timeout based on the size of the reporting period in days
+        # approximately 5 seconds per month of query size, with a minimum of 5 seconds
+        range_days = (end_date - start_date).days
+        current_timeout = self.timeout
+        dynamic_timeout = int((max(30, range_days) / 30.0) * 5)
+        self.timeout = max(current_timeout, dynamic_timeout)
+
+        params = dict(
+            billable=True,
+            start_date=start,
+            end_date=end,
+            rounding=1,
+            rounding_minutes=15,
+        )
+        params.update(kwargs)
+
+        response = self.post_reports("search/time_entries.csv", **params)
+        self.timeout = current_timeout
+
+        return response
 
 
 def _harvest_client_name():
@@ -44,37 +143,6 @@ def _get_info(obj: dict, key: str, env_key: str):
             file_info = files.read_json(file_path)
             obj.update(file_info)
     return obj.get(key)
-
-
-def _toggl_api_authorization_header():
-    """Gets an `Authorization: Basic xyz` header using the Toggl API token.
-
-    See https://engineering.toggl.com/docs/authentication.
-    """
-    token = _toggl_api_token()
-    creds = f"{token}:api_token"
-    creds64 = b64encode(bytes(creds, "utf-8")).decode("utf-8")
-    return {"Authorization": "Basic {}".format(creds64)}
-
-
-def _toggl_api_headers():
-    """Gets a dict of headers for Toggl API requests.
-
-    See https://engineering.toggl.com/docs/.
-    """
-    headers = {"Content-Type": "application/json"}
-    headers.update({"User-Agent": "compilerla/compiler-admin:{}".format(__version__)})
-    headers.update(_toggl_api_authorization_header())
-    return headers
-
-
-def _toggl_api_report_url(endpoint: str):
-    """Get a fully formed URL for the Toggl Reports API v3 endpoint.
-
-    See https://engineering.toggl.com/docs/reports_start.
-    """
-    workspace_id = _toggl_workspace()
-    return "/".join((API_BASE_URL, API_REPORTS_BASE_URL, API_WORKSPACE.format(workspace_id), endpoint))
 
 
 def _toggl_api_token():
@@ -208,42 +276,17 @@ def download_time_entries(
 
     Extra kwargs are passed along in the POST request body.
 
-    By default, requests a report with the following configuration:
-        * `billable=True`
-        * `client_ids=[$TOGGL_CLIENT_ID]`
-        * `rounding=1` (True, but this is an int param)
-        * `rounding_minutes=15`
-
-    See https://engineering.toggl.com/docs/reports/detailed_reports#post-export-detailed-report.
-
     Returns:
         None. Either prints the resulting CSV data or writes to output_path.
     """
-    start = start_date.strftime("%Y-%m-%d")
-    end = end_date.strftime("%Y-%m-%d")
-    # calculate a timeout based on the size of the reporting period in days
-    # approximately 5 seconds per month of query size, with a minimum of 5 seconds
-    range_days = (end_date - start_date).days
-    timeout = int((max(30, range_days) / 30.0) * 5)
-
     if ("client_ids" not in kwargs or not kwargs["client_ids"]) and isinstance(_toggl_client_id(), int):
         kwargs["client_ids"] = [_toggl_client_id()]
 
-    params = dict(
-        billable=True,
-        start_date=start,
-        end_date=end,
-        rounding=1,
-        rounding_minutes=15,
-    )
-    params.update(kwargs)
+    token = _toggl_api_token()
+    workspace = _toggl_workspace()
+    toggl = Toggl(token, workspace)
 
-    headers = _toggl_api_headers()
-    url = _toggl_api_report_url("search/time_entries.csv")
-
-    response = requests.post(url, json=params, headers=headers, timeout=timeout)
-    response.raise_for_status()
-
+    response = toggl.detailed_time_entries(start_date, end_date, **kwargs)
     # the raw response has these initial 3 bytes:
     #
     #   b"\xef\xbb\xbfUser,Email,Client..."

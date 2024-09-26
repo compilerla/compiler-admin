@@ -7,6 +7,7 @@ from tempfile import NamedTemporaryFile
 import pandas as pd
 import pytest
 
+from compiler_admin import __version__
 import compiler_admin.services.toggl
 from compiler_admin.services.toggl import (
     __name__ as MODULE,
@@ -15,6 +16,7 @@ from compiler_admin.services.toggl import (
     OUTPUT_COLUMNS,
     PROJECT_INFO,
     USER_INFO,
+    Toggl,
     _harvest_client_name,
     _get_info,
     _toggl_project_info,
@@ -60,19 +62,30 @@ def mock_google_user_info(mocker):
 
 
 @pytest.fixture
-def mock_api_env(monkeypatch):
+def mock_requests(mocker):
+    return mocker.patch(f"{MODULE}.requests")
+
+
+@pytest.fixture
+def mock_toggl_api(mocker):
+    t = mocker.patch(f"{MODULE}.Toggl")
+    return t.return_value
+
+
+@pytest.fixture
+def mock_toggl_api_env(monkeypatch):
     monkeypatch.setenv("TOGGL_API_TOKEN", "token")
     monkeypatch.setenv("TOGGL_CLIENT_ID", "1234")
     monkeypatch.setenv("TOGGL_WORKSPACE_ID", "workspace")
 
 
 @pytest.fixture
-def mock_requests(mocker):
-    return mocker.patch(f"{MODULE}.requests")
+def toggl():
+    return Toggl("token", 1234)
 
 
 @pytest.fixture
-def mock_api_post(mocker, mock_requests, toggl_file):
+def toggl_mock_post_reports(mocker, toggl, toggl_file):
     # setup a mock response to a requests.post call
     mock_csv_bytes = Path(toggl_file).read_bytes()
     mock_post_response = mocker.Mock()
@@ -80,8 +93,80 @@ def mock_api_post(mocker, mock_requests, toggl_file):
     # prepend the BOM to the mock content
     mock_post_response.content = b"\xef\xbb\xbf" + mock_csv_bytes
     # override the requests.post call to return the mock response
-    mock_requests.post.return_value = mock_post_response
-    return mock_requests
+    mocker.patch.object(toggl, "post_reports", return_value=mock_post_response)
+    return toggl
+
+
+@pytest.fixture
+def toggl_mock_detailed_time_entries(mock_toggl_api, toggl_file):
+    mock_csv_bytes = Path(toggl_file).read_bytes()
+    mock_toggl_api.detailed_time_entries.return_value.content = mock_csv_bytes
+    return mock_toggl_api
+
+
+def test_toggl_init(toggl):
+    token64 = "dG9rZW46YXBpX3Rva2Vu"
+
+    assert toggl._token == "token"
+    assert toggl.workspace_id == 1234
+    assert toggl.workspace_url_fragment == "workspace/1234"
+
+    assert toggl.headers["Content-Type"] == "application/json"
+
+    user_agent = toggl.headers["User-Agent"]
+    assert "compilerla/compiler-admin" in user_agent
+    assert __version__ in user_agent
+
+    assert toggl.headers["Authorization"] == f"Basic {token64}"
+
+    assert toggl.timeout == 5
+
+
+def test_toggl_make_report_url(toggl):
+    url = toggl._make_report_url("endpoint")
+
+    assert url.startswith(toggl.API_BASE_URL)
+    assert toggl.API_REPORTS_BASE_URL in url
+    assert toggl.workspace_url_fragment in url
+    assert "/endpoint" in url
+
+
+def test_toggl_post_reports(mock_requests, toggl):
+    url = toggl._make_report_url("endpoint")
+    response = toggl.post_reports("endpoint", kwarg1=1, kwarg2="two")
+
+    response.raise_for_status.assert_called_once()
+
+    mock_requests.post.assert_called_once_with(
+        url, json=dict(kwarg1=1, kwarg2="two"), headers=toggl.headers, timeout=toggl.timeout
+    )
+
+
+def test_toggl_detailed_time_entries(toggl_mock_post_reports):
+    dt = datetime(2024, 9, 25)
+    toggl_mock_post_reports.detailed_time_entries(dt, dt, kwarg1=1, kwarg2="two")
+
+    toggl_mock_post_reports.post_reports.assert_called_once_with(
+        "search/time_entries.csv",
+        billable=True,
+        start_date="2024-09-25",
+        end_date="2024-09-25",
+        rounding=1,
+        rounding_minutes=15,
+        kwarg1=1,
+        kwarg2="two",
+    )
+
+
+def test_toggl_detailed_time_entries_dynamic_timeout(mock_requests, toggl):
+    # range of 6 months
+    # timeout should be 6 * 5 = 30
+    start = datetime(2024, 1, 1)
+    end = datetime(2024, 6, 30)
+    toggl.detailed_time_entries(start, end)
+
+    mock_requests.post.assert_called_once()
+    assert mock_requests.post.call_args.kwargs["timeout"] == 30
 
 
 def test_harvest_client_name(monkeypatch):
@@ -241,27 +326,13 @@ def test_convert_to_harvest_sample(toggl_file, harvest_file, mock_google_user_in
     assert output_df["Client"].eq("Test Client 123").all()
 
 
-@pytest.mark.usefixtures("mock_api_env")
-def test_download_time_entries(toggl_file, mock_api_post):
+@pytest.mark.usefixtures("mock_toggl_api_env", "toggl_mock_detailed_time_entries")
+def test_download_time_entries(toggl_file):
     dt = datetime.now()
     mock_csv_bytes = Path(toggl_file).read_bytes()
 
     with NamedTemporaryFile("w") as temp:
-        download_time_entries(dt, dt, temp.name, extra_1=1, extra_2="two")
-
-        json_params = mock_api_post.post.call_args.kwargs["json"]
-        assert isinstance(json_params, dict)
-        assert json_params["billable"] is True
-        assert json_params["client_ids"] == [1234]
-        assert json_params["end_date"] == dt.strftime("%Y-%m-%d")
-        assert json_params["extra_1"] == 1
-        assert json_params["extra_2"] == "two"
-        assert json_params["rounding"] == 1
-        assert json_params["rounding_minutes"] == 15
-        assert json_params["start_date"] == dt.strftime("%Y-%m-%d")
-
-        assert mock_api_post.post.call_args.kwargs["timeout"] == 5
-
+        download_time_entries(dt, dt, temp.name)
         temp.flush()
         response_csv_bytes = Path(temp.name).read_bytes()
 
@@ -276,15 +347,3 @@ def test_download_time_entries(toggl_file, mock_api_post):
         # as corresponding column values from the mock DataFrame
         for col in response_df.columns:
             assert response_df[col].equals(mock_df[col])
-
-
-@pytest.mark.usefixtures("mock_api_env")
-def test_download_time_entries_dynamic_timeout(mock_api_post):
-    # range of 6 months
-    # timeout should be 6 * 5 = 30
-    start = datetime(2024, 1, 1)
-    end = datetime(2024, 6, 30)
-
-    download_time_entries(start, end)
-
-    assert mock_api_post.post.call_args.kwargs["timeout"] == 30
