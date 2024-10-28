@@ -25,8 +25,8 @@ def mock_NamedTemporaryFile(mock_NamedTemporaryFile_with_readlines):
 
 
 @pytest.fixture
-def mock_commands_signout(mock_commands_signout):
-    return mock_commands_signout(MODULE)
+def mock_commands_alumni(mock_commands_alumni):
+    return mock_commands_alumni(MODULE)
 
 
 @pytest.fixture
@@ -62,7 +62,7 @@ def test_offboard_confirm_yes(
     mock_google_CallGAMCommand,
     mock_google_CallGYBCommand,
     mock_NamedTemporaryFile,
-    mock_commands_signout,
+    mock_commands_alumni,
     mock_commands_delete,
 ):
     mock_google_user_exists.return_value = True
@@ -75,8 +75,8 @@ def test_offboard_confirm_yes(
     mock_google_CallGYBCommand.assert_called_once()
     mock_NamedTemporaryFile.assert_called_once()
 
-    mock_commands_signout.assert_called_once()
-    assert args in mock_commands_signout.call_args.args
+    mock_commands_alumni.assert_called_once()
+    assert args in mock_commands_alumni.call_args.args
 
     mock_commands_delete.assert_called_once()
     assert args in mock_commands_delete.call_args.args
@@ -87,7 +87,7 @@ def test_offboard_confirm_no(
     mock_google_user_exists,
     mock_google_CallGAMCommand,
     mock_google_CallGYBCommand,
-    mock_commands_signout,
+    mock_commands_alumni,
     mock_commands_delete,
 ):
     mock_google_user_exists.return_value = True
@@ -99,7 +99,7 @@ def test_offboard_confirm_no(
     mock_google_CallGAMCommand.assert_not_called()
     mock_google_CallGYBCommand.assert_not_called()
 
-    mock_commands_signout.assert_not_called()
+    mock_commands_alumni.assert_not_called()
     mock_commands_delete.assert_not_called()
 
 
