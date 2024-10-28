@@ -1,5 +1,6 @@
 from argparse import Namespace
 
+from compiler_admin.commands.user.alumni import alumni  # noqa: F401
 from compiler_admin.commands.user.create import create  # noqa: F401
 from compiler_admin.commands.user.convert import convert  # noqa: F401
 from compiler_admin.commands.user.delete import delete  # noqa: F401
