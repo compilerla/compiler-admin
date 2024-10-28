@@ -144,6 +144,10 @@ def setup_user_command(cmd_parsers: _SubParsersAction):
 
     user_convert = add_sub_cmd_with_username_arg(user_subcmds, "convert", help="Convert a user account to a new type.")
     user_convert.add_argument("account_type", choices=ACCOUNT_TYPE_OU.keys(), help="Target account type for this conversion.")
+    user_convert.add_argument(
+        "--force", action="store_true", default=False, help="Don't ask for confirmation before conversion."
+    )
+    user_convert.add_argument("--notify", help="An email address to send the alumni's new password.")
 
     user_delete = add_sub_cmd_with_username_arg(user_subcmds, "delete", help="Delete a user account.")
     user_delete.add_argument("--force", action="store_true", default=False, help="Don't ask for confirmation before deletion.")
