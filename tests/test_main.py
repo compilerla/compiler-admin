@@ -394,7 +394,8 @@ def test_main_user_reset(mock_commands_user):
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
     assert (
-        Namespace(func=mock_commands_user, command="user", subcommand="reset", username="username", notify=None) in call_args
+        Namespace(func=mock_commands_user, command="user", subcommand="reset", username="username", force=False, notify=None)
+        in call_args
     )
 
 
@@ -404,7 +405,25 @@ def test_main_user_reset_notify(mock_commands_user):
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
     assert (
-        Namespace(func=mock_commands_user, command="user", subcommand="reset", username="username", notify="notification")
+        Namespace(
+            func=mock_commands_user,
+            command="user",
+            subcommand="reset",
+            username="username",
+            notify="notification",
+            force=False,
+        )
+        in call_args
+    )
+
+
+def test_main_user_reset_force(mock_commands_user):
+    main(argv=["user", "reset", "username", "--force"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="reset", username="username", force=True, notify=None)
         in call_args
     )
 
