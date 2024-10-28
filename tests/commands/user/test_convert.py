@@ -6,6 +6,11 @@ from compiler_admin.commands.user.convert import convert, __name__ as MODULE
 
 
 @pytest.fixture
+def mock_commands_alumni(mock_commands_alumni):
+    return mock_commands_alumni(MODULE)
+
+
+@pytest.fixture
 def mock_google_user_exists(mock_google_user_exists):
     return mock_google_user_exists(MODULE)
 
@@ -96,6 +101,16 @@ def test_convert_user_exists_bad_account_type(mock_google_move_user_ou):
 
     assert res == RESULT_FAILURE
     assert mock_google_move_user_ou.call_count == 0
+
+
+@pytest.mark.usefixtures("mock_google_user_exists_true")
+def test_convert_alumni(mock_commands_alumni, mock_google_move_user_ou):
+    args = Namespace(username="username", account_type="alumni")
+    res = convert(args)
+
+    assert res == RESULT_SUCCESS
+    mock_commands_alumni.assert_called_once_with(args)
+    mock_google_move_user_ou.assert_called_once()
 
 
 @pytest.mark.usefixtures(

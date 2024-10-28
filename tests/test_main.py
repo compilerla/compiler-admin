@@ -345,7 +345,13 @@ def test_main_user_convert(mock_commands_user):
     call_args = mock_commands_user.call_args.args
     assert (
         Namespace(
-            func=mock_commands_user, command="user", subcommand="convert", username="username", account_type="contractor"
+            func=mock_commands_user,
+            command="user",
+            subcommand="convert",
+            username="username",
+            account_type="contractor",
+            force=False,
+            notify=None,
         )
         in call_args
     )
