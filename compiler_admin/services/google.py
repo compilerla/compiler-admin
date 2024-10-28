@@ -17,6 +17,7 @@ GYB = "gyb"
 DOMAIN = "compiler.la"
 
 # Org structure
+OU_ALUMNI = "alumni"
 OU_CONTRACTORS = "contractors"
 OU_STAFF = "staff"
 OU_PARTNERS = f"{OU_STAFF}/partners"
@@ -77,7 +78,7 @@ def add_user_to_group(username: str, group: str) -> int:
 
 
 def move_user_ou(username: str, ou: str) -> int:
-    """Remove a user from a group."""
+    """Move a user into a new OU."""
     return CallGAMCommand(("update", "ou", ou, "move", username))
 
 

@@ -252,6 +252,53 @@ def test_main_time_convert_output(mock_commands_time):
     )
 
 
+def test_main_user_alumni(mock_commands_user):
+    main(argv=["user", "alumni", "username"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="alumni", username="username", force=False, notify=None)
+        in call_args
+    )
+
+
+def test_main_user_alumni_notify(mock_commands_user):
+    main(argv=["user", "alumni", "username", "--notify", "notification"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_user,
+            command="user",
+            subcommand="alumni",
+            username="username",
+            force=False,
+            notify="notification",
+        )
+        in call_args
+    )
+
+
+def test_main_user_alumni_force(mock_commands_user):
+    main(argv=["user", "alumni", "username", "--force"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_user,
+            command="user",
+            subcommand="alumni",
+            username="username",
+            force=True,
+            notify=None,
+        )
+        in call_args
+    )
+
+
 def test_main_user_create(mock_commands_user):
     main(argv=["user", "create", "username"])
 

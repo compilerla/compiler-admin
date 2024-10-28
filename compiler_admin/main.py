@@ -133,6 +133,12 @@ def setup_user_command(cmd_parsers: _SubParsersAction):
     user_cmd.set_defaults(func=user)
     user_subcmds = add_sub_cmd_parser(user_cmd, help="The user command to run.")
 
+    user_alumni = add_sub_cmd_with_username_arg(user_subcmds, "alumni", help="Convert a user account to a Compiler alumni.")
+    user_alumni.add_argument("--notify", help="An email address to send the alumni's new password.")
+    user_alumni.add_argument(
+        "--force", action="store_true", default=False, help="Don't ask for confirmation before conversion."
+    )
+
     user_create = add_sub_cmd_with_username_arg(user_subcmds, "create", help="Create a new user in the Compiler domain.")
     user_create.add_argument("--notify", help="An email address to send the newly created account info.")
 
