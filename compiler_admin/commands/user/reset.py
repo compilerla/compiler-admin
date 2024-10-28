@@ -26,6 +26,12 @@ def reset(args: Namespace) -> int:
         print(f"User does not exist: {account}")
         return RESULT_FAILURE
 
+    if getattr(args, "force", False) is False:
+        cont = input(f"Reset password for {account}? (Y/n)")
+        if not cont.lower().startswith("y"):
+            print("Aborting password reset.")
+            return RESULT_SUCCESS
+
     command = ("update", "user", account, "password", "random", "changepassword")
 
     notify = getattr(args, "notify", None)

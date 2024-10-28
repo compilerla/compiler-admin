@@ -151,6 +151,7 @@ def setup_user_command(cmd_parsers: _SubParsersAction):
     user_reset = add_sub_cmd_with_username_arg(
         user_subcmds, "reset", help="Reset a user's password to a randomly generated string."
     )
+    user_reset.add_argument("--force", action="store_true", default=False, help="Don't ask for confirmation before reset.")
     user_reset.add_argument("--notify", help="An email address to send the newly generated password.")
 
     add_sub_cmd_with_username_arg(user_subcmds, "restore", help="Restore an email backup from a prior offboarding.")
