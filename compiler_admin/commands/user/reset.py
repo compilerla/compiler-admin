@@ -5,7 +5,7 @@ from compiler_admin.commands.user.signout import signout
 from compiler_admin.services.google import USER_HELLO, CallGAMCommand, user_account_name, user_exists
 
 
-def reset_password(args: Namespace) -> int:
+def reset(args: Namespace) -> int:
     """Reset a user's password.
 
     Optionally notify an email address with the new randomly generated password.
