@@ -114,16 +114,16 @@ The following commands are available to work with users in the Compiler domain:
 
 ```bash
 $ compiler-admin user -h
-usage: compiler-admin user [-h] {create,convert,delete,offboard,reset-password,restore,signout} ...
+usage: compiler-admin user [-h] {create,convert,delete,offboard,reset,restore,signout} ...
 
 positional arguments:
-  {create,convert,delete,offboard,reset-password,restore,signout}
+  {create,convert,delete,offboard,reset,restore,signout}
                         The user command to run.
     create              Create a new user in the Compiler domain.
     convert             Convert a user account to a new type.
     delete              Delete a user account.
     offboard            Offboard a user account.
-    reset-password      Reset a user's password to a randomly generated string.
+    reset               Reset a user's password to a randomly generated string.
     restore             Restore an email backup from a prior offboarding.
     signout             Signs a user out from all active sessions.
 

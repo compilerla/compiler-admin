@@ -388,33 +388,30 @@ def test_main_user_offboard_no_username(mock_commands_user):
         assert mock_commands_user.call_count == 0
 
 
-def test_main_user_reset_password(mock_commands_user):
-    main(argv=["user", "reset-password", "username"])
+def test_main_user_reset(mock_commands_user):
+    main(argv=["user", "reset", "username"])
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
     assert (
-        Namespace(func=mock_commands_user, command="user", subcommand="reset-password", username="username", notify=None)
-        in call_args
+        Namespace(func=mock_commands_user, command="user", subcommand="reset", username="username", notify=None) in call_args
     )
 
 
-def test_main_user_reset_password_notify(mock_commands_user):
-    main(argv=["user", "reset-password", "username", "--notify", "notification"])
+def test_main_user_reset_notify(mock_commands_user):
+    main(argv=["user", "reset", "username", "--notify", "notification"])
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
     assert (
-        Namespace(
-            func=mock_commands_user, command="user", subcommand="reset-password", username="username", notify="notification"
-        )
+        Namespace(func=mock_commands_user, command="user", subcommand="reset", username="username", notify="notification")
         in call_args
     )
 
 
-def test_main_user_reset_password_no_username(mock_commands_user):
+def test_main_user_reset_no_username(mock_commands_user):
     with pytest.raises(SystemExit):
-        main(argv=["user", "reset-password"])
+        main(argv=["user", "reset"])
         assert mock_commands_user.call_count == 0
 
 

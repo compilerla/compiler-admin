@@ -70,9 +70,9 @@ def mock_commands_offboard(mock_module_name):
 
 
 @pytest.fixture
-def mock_commands_reset_password(mock_module_name):
-    """Fixture returns a function that patches the reset_password command function in a given module."""
-    return mock_module_name("reset_password")
+def mock_commands_reset(mock_module_name):
+    """Fixture returns a function that patches the reset command function in a given module."""
+    return mock_module_name("reset")
 
 
 @pytest.fixture
