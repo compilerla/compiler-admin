@@ -252,6 +252,53 @@ def test_main_time_convert_output(mock_commands_time):
     )
 
 
+def test_main_user_alumni(mock_commands_user):
+    main(argv=["user", "alumni", "username"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="alumni", username="username", force=False, notify=None)
+        in call_args
+    )
+
+
+def test_main_user_alumni_notify(mock_commands_user):
+    main(argv=["user", "alumni", "username", "--notify", "notification"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_user,
+            command="user",
+            subcommand="alumni",
+            username="username",
+            force=False,
+            notify="notification",
+        )
+        in call_args
+    )
+
+
+def test_main_user_alumni_force(mock_commands_user):
+    main(argv=["user", "alumni", "username", "--force"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_user,
+            command="user",
+            subcommand="alumni",
+            username="username",
+            force=True,
+            notify=None,
+        )
+        in call_args
+    )
+
+
 def test_main_user_create(mock_commands_user):
     main(argv=["user", "create", "username"])
 
@@ -298,7 +345,13 @@ def test_main_user_convert(mock_commands_user):
     call_args = mock_commands_user.call_args.args
     assert (
         Namespace(
-            func=mock_commands_user, command="user", subcommand="convert", username="username", account_type="contractor"
+            func=mock_commands_user,
+            command="user",
+            subcommand="convert",
+            username="username",
+            account_type="contractor",
+            force=False,
+            notify=None,
         )
         in call_args
     )
@@ -388,33 +441,49 @@ def test_main_user_offboard_no_username(mock_commands_user):
         assert mock_commands_user.call_count == 0
 
 
-def test_main_user_reset_password(mock_commands_user):
-    main(argv=["user", "reset-password", "username"])
+def test_main_user_reset(mock_commands_user):
+    main(argv=["user", "reset", "username"])
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
     assert (
-        Namespace(func=mock_commands_user, command="user", subcommand="reset-password", username="username", notify=None)
+        Namespace(func=mock_commands_user, command="user", subcommand="reset", username="username", force=False, notify=None)
         in call_args
     )
 
 
-def test_main_user_reset_password_notify(mock_commands_user):
-    main(argv=["user", "reset-password", "username", "--notify", "notification"])
+def test_main_user_reset_notify(mock_commands_user):
+    main(argv=["user", "reset", "username", "--notify", "notification"])
 
     mock_commands_user.assert_called_once()
     call_args = mock_commands_user.call_args.args
     assert (
         Namespace(
-            func=mock_commands_user, command="user", subcommand="reset-password", username="username", notify="notification"
+            func=mock_commands_user,
+            command="user",
+            subcommand="reset",
+            username="username",
+            notify="notification",
+            force=False,
         )
         in call_args
     )
 
 
-def test_main_user_reset_password_no_username(mock_commands_user):
+def test_main_user_reset_force(mock_commands_user):
+    main(argv=["user", "reset", "username", "--force"])
+
+    mock_commands_user.assert_called_once()
+    call_args = mock_commands_user.call_args.args
+    assert (
+        Namespace(func=mock_commands_user, command="user", subcommand="reset", username="username", force=True, notify=None)
+        in call_args
+    )
+
+
+def test_main_user_reset_no_username(mock_commands_user):
     with pytest.raises(SystemExit):
-        main(argv=["user", "reset-password"])
+        main(argv=["user", "reset"])
         assert mock_commands_user.call_count == 0
 
 

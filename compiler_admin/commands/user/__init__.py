@@ -1,10 +1,11 @@
 from argparse import Namespace
 
+from compiler_admin.commands.user.alumni import alumni  # noqa: F401
 from compiler_admin.commands.user.create import create  # noqa: F401
 from compiler_admin.commands.user.convert import convert  # noqa: F401
 from compiler_admin.commands.user.delete import delete  # noqa: F401
 from compiler_admin.commands.user.offboard import offboard  # noqa: F401
-from compiler_admin.commands.user.reset_password import reset_password  # noqa: F401
+from compiler_admin.commands.user.reset import reset  # noqa: F401
 from compiler_admin.commands.user.restore import restore  # noqa: F401
 from compiler_admin.commands.user.signout import signout  # noqa: F401
 
