@@ -40,7 +40,7 @@ def offboard(args: Namespace) -> int:
         return RESULT_FAILURE
 
     if getattr(args, "force", False) is False:
-        cont = input(f"Offboard account {account} {' (assigning alias to '+ alias_account +')' if alias else ''}? (Y/n)")
+        cont = input(f"Offboard account {account} {' (assigning alias to ' + alias_account + ')' if alias else ''}? (Y/n)")
         if not cont.lower().startswith("y"):
             print("Aborting offboard.")
             return RESULT_SUCCESS
