@@ -2,8 +2,8 @@ from argparse import Namespace
 from tempfile import NamedTemporaryFile
 
 from compiler_admin import RESULT_SUCCESS, RESULT_FAILURE
+from compiler_admin.commands.user.alumni import alumni
 from compiler_admin.commands.user.delete import delete
-from compiler_admin.commands.user.signout import signout
 from compiler_admin.services.google import (
     USER_ARCHIVE,
     CallGAMCommand,
@@ -48,8 +48,7 @@ def offboard(args: Namespace) -> int:
     print(f"User exists, offboarding: {account}")
     res = RESULT_SUCCESS
 
-    print("Removing from groups")
-    res += CallGAMCommand(("user", account, "delete", "groups"))
+    res += alumni(args)
 
     print("Backing up email")
     res += CallGYBCommand(("--service-account", "--email", account, "--action", "backup"))
@@ -66,8 +65,6 @@ def offboard(args: Namespace) -> int:
             stdout.seek(0)
 
     res += CallGAMCommand(("user", account, "deprovision", "popimap"))
-
-    res += signout(args)
 
     res += delete(args)
 

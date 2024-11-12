@@ -1,9 +1,11 @@
 from argparse import Namespace
 
 from compiler_admin import RESULT_SUCCESS, RESULT_FAILURE
+from compiler_admin.commands.user.alumni import alumni
 from compiler_admin.services.google import (
     GROUP_PARTNERS,
     GROUP_STAFF,
+    OU_ALUMNI,
     OU_CONTRACTORS,
     OU_PARTNERS,
     OU_STAFF,
@@ -17,7 +19,7 @@ from compiler_admin.services.google import (
 )
 
 
-ACCOUNT_TYPE_OU = {"contractor": OU_CONTRACTORS, "partner": OU_PARTNERS, "staff": OU_STAFF}
+ACCOUNT_TYPE_OU = {"alumni": OU_ALUMNI, "contractor": OU_CONTRACTORS, "partner": OU_PARTNERS, "staff": OU_STAFF}
 
 
 def convert(args: Namespace) -> int:
@@ -48,7 +50,10 @@ def convert(args: Namespace) -> int:
     print(f"User exists, converting to: {account_type} for {account}")
     res = RESULT_SUCCESS
 
-    if account_type == "contractor":
+    if account_type == "alumni":
+        res = alumni(args)
+
+    elif account_type == "contractor":
         if user_is_partner(account):
             res += remove_user_from_group(account, GROUP_PARTNERS)
             res += remove_user_from_group(account, GROUP_STAFF)

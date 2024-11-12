@@ -133,11 +133,21 @@ def setup_user_command(cmd_parsers: _SubParsersAction):
     user_cmd.set_defaults(func=user)
     user_subcmds = add_sub_cmd_parser(user_cmd, help="The user command to run.")
 
+    user_alumni = add_sub_cmd_with_username_arg(user_subcmds, "alumni", help="Convert a user account to a Compiler alumni.")
+    user_alumni.add_argument("--notify", help="An email address to send the alumni's new password.")
+    user_alumni.add_argument(
+        "--force", action="store_true", default=False, help="Don't ask for confirmation before conversion."
+    )
+
     user_create = add_sub_cmd_with_username_arg(user_subcmds, "create", help="Create a new user in the Compiler domain.")
     user_create.add_argument("--notify", help="An email address to send the newly created account info.")
 
     user_convert = add_sub_cmd_with_username_arg(user_subcmds, "convert", help="Convert a user account to a new type.")
     user_convert.add_argument("account_type", choices=ACCOUNT_TYPE_OU.keys(), help="Target account type for this conversion.")
+    user_convert.add_argument(
+        "--force", action="store_true", default=False, help="Don't ask for confirmation before conversion."
+    )
+    user_convert.add_argument("--notify", help="An email address to send the alumni's new password.")
 
     user_delete = add_sub_cmd_with_username_arg(user_subcmds, "delete", help="Delete a user account.")
     user_delete.add_argument("--force", action="store_true", default=False, help="Don't ask for confirmation before deletion.")
@@ -149,8 +159,9 @@ def setup_user_command(cmd_parsers: _SubParsersAction):
     )
 
     user_reset = add_sub_cmd_with_username_arg(
-        user_subcmds, "reset-password", help="Reset a user's password to a randomly generated string."
+        user_subcmds, "reset", help="Reset a user's password to a randomly generated string."
     )
+    user_reset.add_argument("--force", action="store_true", default=False, help="Don't ask for confirmation before reset.")
     user_reset.add_argument("--notify", help="An email address to send the newly generated password.")
 
     add_sub_cmd_with_username_arg(user_subcmds, "restore", help="Restore an email backup from a prior offboarding.")

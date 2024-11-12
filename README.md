@@ -114,16 +114,17 @@ The following commands are available to work with users in the Compiler domain:
 
 ```bash
 $ compiler-admin user -h
-usage: compiler-admin user [-h] {create,convert,delete,offboard,reset-password,restore,signout} ...
+usage: compiler-admin user [-h] {alumni,create,convert,delete,offboard,reset,restore,signout} ...
 
 positional arguments:
-  {create,convert,delete,offboard,reset-password,restore,signout}
+  {alumni,create,convert,delete,offboard,reset,restore,signout}
                         The user command to run.
+    alumni              Convert a user account to a Compiler alumni.
     create              Create a new user in the Compiler domain.
     convert             Convert a user account to a new type.
     delete              Delete a user account.
     offboard            Offboard a user account.
-    reset-password      Reset a user's password to a randomly generated string.
+    reset               Reset a user's password to a randomly generated string.
     restore             Restore an email backup from a prior offboarding.
     signout             Signs a user out from all active sessions.
 
@@ -151,15 +152,17 @@ Additional options are passed through to GAM, see more about [GAM user create](h
 
 ```bash
 $ compiler-admin user convert -h
-usage: compiler-admin user convert [-h] username {contractor,partner,staff}
+usage: compiler-admin user convert [-h] [--force] [--notify NOTIFY] username {alumni,contractor,partner,staff}
 
 positional arguments:
   username              A Compiler user account name, sans domain.
-  {contractor,partner,staff}
+  {alumni,contractor,partner,staff}
                         Target account type for this conversion.
 
 options:
   -h, --help            show this help message and exit
+  --force               Don't ask for confirmation before conversion.
+  --notify NOTIFY       An email address to send the alumni's new password.
 ```
 
 ### Offboarding a user

@@ -5,7 +5,7 @@ from compiler_admin.commands.user.signout import signout
 from compiler_admin.services.google import USER_HELLO, CallGAMCommand, user_account_name, user_exists
 
 
-def reset_password(args: Namespace) -> int:
+def reset(args: Namespace) -> int:
     """Reset a user's password.
 
     Optionally notify an email address with the new randomly generated password.
@@ -25,6 +25,12 @@ def reset_password(args: Namespace) -> int:
     if not user_exists(account):
         print(f"User does not exist: {account}")
         return RESULT_FAILURE
+
+    if getattr(args, "force", False) is False:
+        cont = input(f"Reset password for {account}? (Y/n)")
+        if not cont.lower().startswith("y"):
+            print("Aborting password reset.")
+            return RESULT_SUCCESS
 
     command = ("update", "user", account, "password", "random", "changepassword")
 
