@@ -34,7 +34,7 @@ def alumni(args: Namespace) -> int:
         return RESULT_FAILURE
 
     if getattr(args, "force", False) is False:
-        cont = input(f"Convert account to alumni for {account}? (Y/n)")
+        cont = input(f"Convert account to alumni: {account}? (Y/n) ")
         if not cont.lower().startswith("y"):
             print("Aborting conversion.")
             return RESULT_SUCCESS
@@ -84,6 +84,32 @@ def alumni(args: Namespace) -> int:
         "name",
         "Compiler LLC",
         "primary",
+    )
+    res += CallGAMCommand(command)
+
+    print("Turning on email autoresponder")
+    # https://github.com/taers232c/GAMADV-XTD3/wiki/Users-Gmail-Send-As-Signature-Vacation#manage-vacation
+    message = (
+        "Thank you for contacting Compiler. This inbox is no longer actively monitored.<br /><br />"
+        + f"Please reach out to {USER_HELLO} if you need to get a hold of us."
+    )
+    command = (
+        "user",
+        account,
+        "vacation",
+        "true",
+        "subject",
+        "[This inbox is no longer active]",
+        "message",
+        message,
+        "contactsonly",
+        "false",
+        "domainonly",
+        "false",
+        "start",
+        "Started",
+        "end",
+        "2999-12-31",
     )
     res += CallGAMCommand(command)
 
