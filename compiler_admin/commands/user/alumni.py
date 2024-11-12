@@ -4,6 +4,7 @@ from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
 from compiler_admin.commands.user.reset import reset
 from compiler_admin.services.google import (
     OU_ALUMNI,
+    USER_HELLO,
     CallGAMCommand,
     move_user_ou,
     user_account_name,
@@ -66,6 +67,24 @@ def alumni(args: Namespace) -> int:
 
     print("Turning off 2FA")
     command = ("user", account, "turnoff2sv")
+    res += CallGAMCommand(command)
+
+    print("Resetting email signature")
+    # https://github.com/taers232c/GAMADV-XTD3/wiki/Users-Gmail-Send-As-Signature-Vacation#manage-signature
+    command = (
+        "user",
+        account,
+        "signature",
+        f"Compiler LLC<br />https://compiler.la<br />{USER_HELLO}",
+        "replyto",
+        USER_HELLO,
+        "default",
+        "treatasalias",
+        "false",
+        "name",
+        "Compiler LLC",
+        "primary",
+    )
     res += CallGAMCommand(command)
 
     return res
