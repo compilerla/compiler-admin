@@ -4,6 +4,7 @@ from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
 from compiler_admin.commands.user.reset import reset
 from compiler_admin.services.google import (
     OU_ALUMNI,
+    USER_HELLO,
     CallGAMCommand,
     move_user_ou,
     user_account_name,
@@ -33,7 +34,7 @@ def alumni(args: Namespace) -> int:
         return RESULT_FAILURE
 
     if getattr(args, "force", False) is False:
-        cont = input(f"Convert account to alumni for {account}? (Y/n)")
+        cont = input(f"Convert account to alumni: {account}? (Y/n) ")
         if not cont.lower().startswith("y"):
             print("Aborting conversion.")
             return RESULT_SUCCESS
@@ -66,6 +67,50 @@ def alumni(args: Namespace) -> int:
 
     print("Turning off 2FA")
     command = ("user", account, "turnoff2sv")
+    res += CallGAMCommand(command)
+
+    print("Resetting email signature")
+    # https://github.com/taers232c/GAMADV-XTD3/wiki/Users-Gmail-Send-As-Signature-Vacation#manage-signature
+    command = (
+        "user",
+        account,
+        "signature",
+        f"Compiler LLC<br />https://compiler.la<br />{USER_HELLO}",
+        "replyto",
+        USER_HELLO,
+        "default",
+        "treatasalias",
+        "false",
+        "name",
+        "Compiler LLC",
+        "primary",
+    )
+    res += CallGAMCommand(command)
+
+    print("Turning on email autoresponder")
+    # https://github.com/taers232c/GAMADV-XTD3/wiki/Users-Gmail-Send-As-Signature-Vacation#manage-vacation
+    message = (
+        "Thank you for contacting Compiler. This inbox is no longer actively monitored.<br /><br />"
+        + f"Please reach out to {USER_HELLO} if you need to get a hold of us."
+    )
+    command = (
+        "user",
+        account,
+        "vacation",
+        "true",
+        "subject",
+        "[This inbox is no longer active]",
+        "message",
+        message,
+        "contactsonly",
+        "false",
+        "domainonly",
+        "false",
+        "start",
+        "Started",
+        "end",
+        "2999-12-31",
+    )
     res += CallGAMCommand(command)
 
     return res
