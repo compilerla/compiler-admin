@@ -17,7 +17,6 @@ from compiler_admin.services.toggl import (
     PROJECT_INFO,
     USER_INFO,
     Toggl,
-    _harvest_client_name,
     _get_info,
     _toggl_project_info,
     _toggl_user_info,
@@ -44,11 +43,6 @@ def reset_USER_INFO():
 @pytest.fixture
 def spy_files(mocker):
     return mocker.patch.object(compiler_admin.services.toggl, "files", wraps=files)
-
-
-@pytest.fixture
-def mock_harvest_client_name(mocker):
-    return mocker.patch(f"{MODULE}._harvest_client_name")
 
 
 @pytest.fixture
@@ -169,14 +163,6 @@ def test_toggl_detailed_time_entries_dynamic_timeout(mock_requests, toggl):
     assert mock_requests.post.call_args.kwargs["timeout"] == 30
 
 
-def test_harvest_client_name(monkeypatch):
-    assert _harvest_client_name() == "Test_Client"
-
-    monkeypatch.setenv("HARVEST_CLIENT_NAME", "New Test Client")
-
-    assert _harvest_client_name() == "New Test Client"
-
-
 def test_get_info(monkeypatch):
     with NamedTemporaryFile("w") as temp:
         monkeypatch.setenv("INFO_FILE", temp.name)
@@ -286,12 +272,10 @@ def test_str_timedelta():
     assert result.total_seconds() == (1 * 60 * 60) + (30 * 60) + 15
 
 
-def test_convert_to_harvest_mocked(toggl_file, spy_files, mock_harvest_client_name, mock_google_user_info):
+def test_convert_to_harvest_mocked(toggl_file, spy_files, mock_google_user_info):
     mock_google_user_info.return_value = {}
 
     convert_to_harvest(toggl_file, client_name=None)
-
-    mock_harvest_client_name.assert_called_once()
 
     spy_files.read_csv.assert_called_once()
     call_args = spy_files.read_csv.call_args

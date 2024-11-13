@@ -130,11 +130,6 @@ class Toggl:
         return response
 
 
-def _harvest_client_name():
-    """Gets the value of the HARVEST_CLIENT_NAME env var."""
-    return os.environ.get("HARVEST_CLIENT_NAME")
-
-
 def _get_info(obj: dict, key: str, env_key: str):
     """Read key from obj, populating obj once from a file path at env_key."""
     if obj == {}:
@@ -145,19 +140,6 @@ def _get_info(obj: dict, key: str, env_key: str):
     return obj.get(key)
 
 
-def _toggl_api_token():
-    """Gets the value of the TOGGL_API_TOKEN env var."""
-    return os.environ.get("TOGGL_API_TOKEN")
-
-
-def _toggl_client_id():
-    """Gets the value of the TOGGL_CLIENT_ID env var."""
-    client_id = os.environ.get("TOGGL_CLIENT_ID")
-    if client_id:
-        return int(client_id)
-    return None
-
-
 def _toggl_project_info(project: str):
     """Return the cached project for the given project key."""
     return _get_info(PROJECT_INFO, project, "TOGGL_PROJECT_INFO")
@@ -166,11 +148,6 @@ def _toggl_project_info(project: str):
 def _toggl_user_info(email: str):
     """Return the cached user for the given email."""
     return _get_info(USER_INFO, email, "TOGGL_USER_INFO")
-
-
-def _toggl_workspace():
-    """Gets the value of the TOGGL_WORKSPACE_ID env var."""
-    return os.environ.get("TOGGL_WORKSPACE_ID")
 
 
 def _get_first_name(email: str) -> str:
@@ -228,7 +205,7 @@ def convert_to_harvest(
         None. Either prints the resulting CSV data or writes to output_path.
     """
     if client_name is None:
-        client_name = _harvest_client_name()
+        client_name = os.environ.get("HARVEST_CLIENT_NAME")
 
     # read CSV file, parsing dates and times
     source = files.read_csv(source_path, usecols=INPUT_COLUMNS, parse_dates=["Start date"], cache_dates=True)
@@ -279,11 +256,14 @@ def download_time_entries(
     Returns:
         None. Either prints the resulting CSV data or writes to output_path.
     """
-    if ("client_ids" not in kwargs or not kwargs["client_ids"]) and isinstance(_toggl_client_id(), int):
-        kwargs["client_ids"] = [_toggl_client_id()]
+    env_client_id = os.environ.get("TOGGL_CLIENT_ID")
+    if env_client_id:
+        env_client_id = int(env_client_id)
+    if ("client_ids" not in kwargs or not kwargs["client_ids"]) and isinstance(env_client_id, int):
+        kwargs["client_ids"] = [env_client_id]
 
-    token = _toggl_api_token()
-    workspace = _toggl_workspace()
+    token = os.environ.get("TOGGL_API_TOKEN")
+    workspace = os.environ.get("TOGGL_WORKSPACE_ID")
     toggl = Toggl(token, workspace)
 
     response = toggl.detailed_time_entries(start_date, end_date, **kwargs)
