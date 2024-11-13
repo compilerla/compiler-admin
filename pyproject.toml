@@ -38,6 +38,7 @@ test = [
 
 [project.scripts]
 compiler-admin = "compiler_admin.main:main"
+compiler-click = "compiler_admin.commands_click.main:cli"
 
 [build-system]
 requires = ["setuptools>=65", "setuptools-scm>=8"]
