@@ -69,10 +69,14 @@ def setup_time_command(cmd_parsers: _SubParsersAction):
 
     time_convert = add_sub_cmd(time_subcmds, "convert", help="Convert a time report from one format into another.")
     time_convert.add_argument(
-        "--input", default=sys.stdin, help="The path to the source data for conversion. Defaults to stdin."
+        "--input",
+        default=os.environ.get("TOGGL_DATA", sys.stdin),
+        help="The path to the source data for conversion. Defaults to $TOGGL_DATA or stdin.",
     )
     time_convert.add_argument(
-        "--output", default=sys.stdout, help="The path to the file where converted data should be written. Defaults to stdout."
+        "--output",
+        default=os.environ.get("HARVEST_DATA", sys.stdout),
+        help="The path to the file where converted data should be written. Defaults to $HARVEST_DATA or stdout.",
     )
     time_convert.add_argument("--client", default=None, help="The name of the client to use in converted data.")
 
@@ -92,7 +96,9 @@ def setup_time_command(cmd_parsers: _SubParsersAction):
         help="The end date of the reporting period. Defaults to the end of the prior month.",
     )
     time_download.add_argument(
-        "--output", default=sys.stdout, help="The path to the file where converted data should be written. Defaults to stdout."
+        "--output",
+        default=os.environ.get("TOGGL_DATA", sys.stdout),
+        help="The path to the file where downloaded data should be written. Defaults to $TOGGL_DATA or stdout.",
     )
     time_download.add_argument(
         "--client",
