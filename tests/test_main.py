@@ -10,6 +10,12 @@ from compiler_admin.main import main, prior_month_start, prior_month_end, TZINFO
 from compiler_admin.services.google import DOMAIN
 
 
+@pytest.fixture(autouse=True)
+def reset_env(monkeypatch):
+    monkeypatch.delenv("HARVEST_DATA", raising=False)
+    monkeypatch.delenv("TOGGL_DATA", raising=False)
+
+
 @pytest.fixture
 def mock_local_now(mocker):
     dt = datetime(2024, 9, 25, tzinfo=TZINFO)
@@ -110,6 +116,20 @@ def test_main_time_convert_default(mock_commands_time):
         Namespace(
             func=mock_commands_time, command="time", subcommand="convert", client=None, input=sys.stdin, output=sys.stdout
         )
+        in call_args
+    )
+
+
+def test_main_time_convert_env(monkeypatch, mock_commands_time):
+    monkeypatch.setenv("HARVEST_DATA", "harvest")
+    monkeypatch.setenv("TOGGL_DATA", "toggl")
+
+    main(argv=["time", "convert"])
+
+    mock_commands_time.assert_called_once()
+    call_args = mock_commands_time.call_args.args
+    assert (
+        Namespace(func=mock_commands_time, command="time", subcommand="convert", client=None, input="toggl", output="harvest")
         in call_args
     )
 
