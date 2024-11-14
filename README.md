@@ -20,7 +20,7 @@
 | compiler\_admin/commands/user/reset.py        |       24 |        0 |       10 |        0 |    100% |           |
 | compiler\_admin/commands/user/restore.py      |       16 |        0 |        4 |        0 |    100% |           |
 | compiler\_admin/commands/user/signout.py      |       18 |        0 |        8 |        1 |     96% |    24->30 |
-| compiler\_admin/main.py                       |       94 |        2 |        6 |        2 |     96% |  199, 203 |
+| compiler\_admin/main.py                       |       94 |        2 |        6 |        2 |     96% |  205, 209 |
 | compiler\_admin/services/\_\_init\_\_.py      |        0 |        0 |        0 |        0 |    100% |           |
 | compiler\_admin/services/files.py             |       12 |        0 |        0 |        0 |    100% |           |
 | compiler\_admin/services/google.py            |       76 |        2 |       22 |        1 |     97% |   116-117 |
