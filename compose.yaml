@@ -8,6 +8,6 @@ services:
       - .env
     entrypoint: sleep infinity
     volumes:
-      - .:/home/compiler/admin
-      - ./.config:/home/compiler/.config/compiler-admin
+      - .:/home/compiler/compiler-admin
+      - ~/.config/compiler-admin:/home/compiler/.config/compiler-admin
       - ./.downloads:/home/compiler/Downloads

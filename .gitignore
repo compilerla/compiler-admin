@@ -1,7 +1,6 @@
 GYB-GMail-Backup-*/
 __pycache__
 .config/*
-!.config/README.md
 .coverage
 .downloads
 .env

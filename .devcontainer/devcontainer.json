@@ -2,7 +2,7 @@
   "name": "compilerla/admin",
   "dockerComposeFile": ["../compose.yaml"],
   "service": "dev",
-  "workspaceFolder": "/home/compiler/admin",
+  "workspaceFolder": "/home/compiler/compiler-admin",
   "postAttachCommand": ["/bin/bash", ".devcontainer/postAttach.sh"],
   "customizations": {
     "vscode": {

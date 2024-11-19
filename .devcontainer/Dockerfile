@@ -9,8 +9,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN useradd --create-home --shell /bin/bash $USER
 
 USER $USER
-ENV PATH "$PATH:/home/$USER/.local/bin"
-WORKDIR /home/$USER/admin
+RUN mkdir -p /home/$USER/.config/compiler-admin
+ENV PATH="$PATH:/home/$USER/.local/bin:/home/$USER/.config/compiler-admin/gyb"
+WORKDIR /home/$USER/compiler-admin
 
 RUN python -m pip install --upgrade pip
 
@@ -20,7 +21,7 @@ COPY pyproject.toml pyproject.toml
 RUN pip install -e .[dev,test]
 
 USER root
-RUN chown -R $USER /home/$USER
+RUN chown -R $USER:$USER /home/$USER
 USER $USER
 
 CMD ["sleep", "infinity"]
