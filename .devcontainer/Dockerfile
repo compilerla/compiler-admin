@@ -9,8 +9,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN useradd --create-home --shell /bin/bash $USER
 
 USER $USER
-ENV PATH="$PATH:/home/$USER/.local/bin"
 RUN mkdir -p /home/$USER/.config/compiler-admin
+ENV PATH="$PATH:/home/$USER/.local/bin:/home/$USER/.config/compiler-admin/gyb"
 WORKDIR /home/$USER/compiler-admin
 
 RUN python -m pip install --upgrade pip
