@@ -12,11 +12,8 @@ from compiler_admin import __version__
 from compiler_admin.services.google import user_info as google_user_info
 import compiler_admin.services.files as files
 
-# cache of previously seen project information, keyed on Toggl project name
-PROJECT_INFO = {}
-
 # cache of previously seen user information, keyed on email
-USER_INFO = {}
+USER_INFO = files.JsonFileCache("TOGGL_USER_INFO")
 NOT_FOUND = "NOT FOUND"
 
 # input CSV columns needed for conversion
@@ -130,29 +127,9 @@ class Toggl:
         return response
 
 
-def _get_info(obj: dict, key: str, env_key: str):
-    """Read key from obj, populating obj once from a file path at env_key."""
-    if obj == {}:
-        file_path = os.environ.get(env_key)
-        if file_path:
-            file_info = files.read_json(file_path)
-            obj.update(file_info)
-    return obj.get(key)
-
-
-def _toggl_project_info(project: str):
-    """Return the cached project for the given project key."""
-    return _get_info(PROJECT_INFO, project, "TOGGL_PROJECT_INFO")
-
-
-def _toggl_user_info(email: str):
-    """Return the cached user for the given email."""
-    return _get_info(USER_INFO, email, "TOGGL_USER_INFO")
-
-
 def _get_first_name(email: str) -> str:
     """Get cached first name or derive from email."""
-    user = _toggl_user_info(email)
+    user = USER_INFO.get(email)
     first_name = user.get("First Name") if user else None
     if first_name is None:
         parts = email.split("@")
@@ -167,7 +144,7 @@ def _get_first_name(email: str) -> str:
 
 def _get_last_name(email: str):
     """Get cached last name or query from Google."""
-    user = _toggl_user_info(email)
+    user = USER_INFO.get(email)
     last_name = user.get("Last Name") if user else None
     if last_name is None:
         user = google_user_info(email)
@@ -179,7 +156,7 @@ def _get_last_name(email: str):
     return last_name
 
 
-def _str_timedelta(td):
+def _str_timedelta(td: str):
     """Convert a string formatted duration (e.g. 01:30) to a timedelta."""
     return pd.to_timedelta(pd.to_datetime(td, format="%H:%M:%S").strftime("%H:%M:%S"))
 
@@ -220,8 +197,9 @@ def convert_to_harvest(
     source["Client"] = client_name
     source["Task"] = "Project Consulting"
 
-    # get cached project name if any
-    source["Project"] = source["Project"].apply(lambda x: _toggl_project_info(x) or x)
+    # get cached project name if any, keyed on Toggl project name
+    project_info = files.JsonFileCache("TOGGL_PROJECT_INFO")
+    source["Project"] = source["Project"].apply(lambda x: project_info.get(key=x, default=x))
 
     # assign First and Last name
     source["First name"] = source["Email"].apply(_get_first_name)

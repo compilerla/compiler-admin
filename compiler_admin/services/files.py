@@ -1,4 +1,6 @@
 import json
+import os
+from pathlib import Path
 
 import pandas as pd
 
@@ -23,3 +25,26 @@ def write_json(file_path: str, data):
     """Write a python object as JSON to the given path."""
     with open(file_path, "w") as f:
         json.dump(data, f, indent=2)
+
+
+class JsonFileCache:
+    """Very basic in-memory cache of a JSON file."""
+
+    def __init__(self, env_file_path=None):
+        self._cache = {}
+        self._path = None
+
+        if env_file_path:
+            p = os.environ.get(env_file_path)
+            self._path = Path(p) if p else None
+        if self._path and self._path.exists():
+            self._cache.update(read_json(self._path))
+
+    def __getitem__(self, key):
+        return self._cache.get(key)
+
+    def __setitem__(self, key, value):
+        self._cache[key] = value
+
+    def get(self, key, default=None):
+        return self._cache.get(key, default)

@@ -3,7 +3,7 @@ from tempfile import NamedTemporaryFile
 import pytest
 
 import compiler_admin.services.files
-from compiler_admin.services.files import pd, read_csv, read_json, write_csv, write_json
+from compiler_admin.services.files import JsonFileCache, pd, read_csv, read_json, write_csv, write_json
 
 
 @pytest.fixture
@@ -81,3 +81,30 @@ def test_write_json(sample_data, temp_file):
 
     with open(temp_file.name, "rt") as f:
         assert json.load(f) == sample_data
+
+
+def test_JsonFileCache(monkeypatch):
+    with NamedTemporaryFile("w") as temp:
+        monkeypatch.setenv("INFO_FILE", temp.name)
+        temp.write('{"key": "value"}')
+        temp.seek(0)
+
+        cache = JsonFileCache("INFO_FILE")
+
+        assert cache._path.exists()
+        assert cache.get("key") == "value"
+        assert cache["key"] == "value"
+        assert cache.get("other") is None
+        assert cache["other"] is None
+
+        cache["key"] = "other"
+        assert cache.get("key") == "other"
+        assert cache["key"] == "other"
+
+
+def test_JsonFileCache_no_file():
+    cache = JsonFileCache("INFO_FILE")
+
+    assert cache._cache == {}
+    assert cache._path is None
+    assert cache.get("key") is None
