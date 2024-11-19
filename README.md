@@ -28,6 +28,8 @@ options:
 ## Getting started
 
 ```bash
+mkdir -p ~/.config/compiler-admin
+
 git clone https://github.com/compilerla/compiler-admin.git
 
 cd compiler-admin
