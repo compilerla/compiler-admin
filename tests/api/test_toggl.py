@@ -9,7 +9,7 @@ from compiler_admin.api.toggl import __name__ as MODULE, Toggl
 
 @pytest.fixture
 def mock_requests(mocker):
-    return mocker.patch(f"{MODULE}.requests")
+    return mocker.patch(f"{MODULE}.requests.Session").return_value
 
 
 @pytest.fixture
@@ -63,9 +63,7 @@ def test_toggl_post_reports(mock_requests, toggl):
 
     response.raise_for_status.assert_called_once()
 
-    mock_requests.post.assert_called_once_with(
-        url, json=dict(kwarg1=1, kwarg2="two"), headers=toggl.headers, timeout=toggl.timeout
-    )
+    mock_requests.post.assert_called_once_with(url, json=dict(kwarg1=1, kwarg2="two"), timeout=toggl.timeout)
 
 
 def test_toggl_detailed_time_entries(toggl_mock_post_reports):

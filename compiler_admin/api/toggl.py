@@ -24,6 +24,8 @@ class Toggl:
         self.headers = dict(Toggl.API_HEADERS)
         self.headers.update(self._authorization_header())
 
+        self.session = requests.Session()
+        self.session.headers.update(self.headers)
         self.timeout = int(kwargs.get("timeout", 5))
 
     @property
@@ -47,7 +49,7 @@ class Toggl:
         """
         return "/".join((Toggl.API_BASE_URL, Toggl.API_REPORTS_BASE_URL, self.workspace_url_fragment, endpoint))
 
-    def detailed_time_entries(self, start_date: datetime, end_date: datetime, **kwargs):
+    def detailed_time_entries(self, start_date: datetime, end_date: datetime, **kwargs) -> requests.Response:
         """Request a CSV report from Toggl of detailed time entries for the given date range.
 
         Args:
@@ -104,7 +106,7 @@ class Toggl:
         """
         url = self._make_report_url(endpoint)
 
-        response = requests.post(url, json=kwargs, timeout=self.timeout)
+        response = self.session.post(url, json=kwargs, timeout=self.timeout)
         response.raise_for_status()
 
         return response
