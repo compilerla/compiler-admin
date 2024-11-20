@@ -12,13 +12,12 @@ import compiler_admin.services.files as files
 
 # cache of previously seen user information, keyed on email
 USER_INFO = files.JsonFileCache("TOGGL_USER_INFO")
-NOT_FOUND = "NOT FOUND"
 
-# input CSV columns needed for conversion
-INPUT_COLUMNS = ["Email", "Project", "Client", "Start date", "Start time", "Duration", "Description"]
+# input columns needed for conversion
+TOGGL_COLUMNS = ["Email", "Project", "Client", "Start date", "Start time", "Duration", "Description"]
 
-# default output CSV columns
-OUTPUT_COLUMNS = ["Date", "Client", "Project", "Task", "Notes", "Hours", "First name", "Last name"]
+# default output CSV columns for Harvest
+HARVEST_COLUMNS = ["Date", "Client", "Project", "Task", "Notes", "Hours", "First name", "Last name"]
 
 
 def _get_first_name(email: str) -> str:
@@ -59,7 +58,7 @@ def convert_to_harvest(
     source_path: str | TextIO = sys.stdin,
     output_path: str | TextIO = sys.stdout,
     client_name: str = None,
-    output_cols: list[str] = OUTPUT_COLUMNS,
+    output_cols: list[str] = HARVEST_COLUMNS,
 ):
     """Convert Toggl formatted entries in source_path to equivalent Harvest formatted entries.
 
@@ -79,7 +78,7 @@ def convert_to_harvest(
         client_name = os.environ.get("HARVEST_CLIENT_NAME")
 
     # read CSV file, parsing dates and times
-    source = files.read_csv(source_path, usecols=INPUT_COLUMNS, parse_dates=["Start date"], cache_dates=True)
+    source = files.read_csv(source_path, usecols=TOGGL_COLUMNS, parse_dates=["Start date"], cache_dates=True)
     source["Start time"] = source["Start time"].apply(_str_timedelta)
     source["Duration"] = source["Duration"].apply(_str_timedelta)
     source.sort_values(["Start date", "Start time", "Email"], inplace=True)
@@ -109,7 +108,7 @@ def download_time_entries(
     start_date: datetime,
     end_date: datetime,
     output_path: str | TextIO = sys.stdout,
-    output_cols: list[str] | None = INPUT_COLUMNS,
+    output_cols: list[str] | None = TOGGL_COLUMNS,
     **kwargs,
 ):
     """Download a CSV report from Toggl of detailed time entries for the given date range.

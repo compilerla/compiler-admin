@@ -11,8 +11,8 @@ import compiler_admin.services.toggl
 from compiler_admin.services.toggl import (
     __name__ as MODULE,
     files,
-    INPUT_COLUMNS,
-    OUTPUT_COLUMNS,
+    TOGGL_COLUMNS,
+    HARVEST_COLUMNS,
     _get_first_name,
     _get_last_name,
     _str_timedelta,
@@ -145,14 +145,14 @@ def test_convert_to_harvest_mocked(toggl_file, spy_files, mock_google_user_info)
     spy_files.read_csv.assert_called_once()
     call_args = spy_files.read_csv.call_args
     assert (toggl_file,) in call_args
-    assert call_args.kwargs["usecols"] == INPUT_COLUMNS
+    assert call_args.kwargs["usecols"] == TOGGL_COLUMNS
     assert call_args.kwargs["parse_dates"] == ["Start date"]
     assert call_args.kwargs["cache_dates"] is True
 
     spy_files.write_csv.assert_called_once()
     call_args = spy_files.write_csv.call_args
     assert sys.stdout in call_args[0]
-    assert call_args.kwargs["columns"] == OUTPUT_COLUMNS
+    assert call_args.kwargs["columns"] == HARVEST_COLUMNS
 
 
 def test_convert_to_harvest_sample(toggl_file, harvest_file, mock_google_user_info):
@@ -165,7 +165,7 @@ def test_convert_to_harvest_sample(toggl_file, harvest_file, mock_google_user_in
 
     assert output
     assert isinstance(output, str)
-    assert ",".join(OUTPUT_COLUMNS) in output
+    assert ",".join(HARVEST_COLUMNS) in output
 
     order = ["Date", "First name", "Hours"]
     sample_output_df = pd.read_csv(harvest_file).sort_values(order)
