@@ -10,8 +10,8 @@ import compiler_admin.services.harvest
 from compiler_admin.services.harvest import (
     __name__ as MODULE,
     files,
-    INPUT_COLUMNS,
-    OUTPUT_COLUMNS,
+    HARVEST_COLUMNS,
+    TOGGL_COLUMNS,
     _calc_start_time,
     _duration_str,
     _toggl_client_name,
@@ -81,14 +81,14 @@ def test_convert_to_toggl_mocked(harvest_file, spy_files, mock_toggl_client_name
     spy_files.read_csv.assert_called_once()
     call_args = spy_files.read_csv.call_args
     assert (harvest_file,) in call_args
-    assert call_args.kwargs["usecols"] == INPUT_COLUMNS
+    assert call_args.kwargs["usecols"] == HARVEST_COLUMNS
     assert call_args.kwargs["parse_dates"] == ["Date"]
     assert call_args.kwargs["cache_dates"] is True
 
     spy_files.write_csv.assert_called_once()
     call_args = spy_files.write_csv.call_args
     assert call_args[0][0] == sys.stdout
-    assert call_args[0][2] == OUTPUT_COLUMNS
+    assert call_args[0][2] == TOGGL_COLUMNS
 
 
 def test_convert_to_toggl_sample(harvest_file, toggl_file):
@@ -100,7 +100,7 @@ def test_convert_to_toggl_sample(harvest_file, toggl_file):
 
     assert output
     assert isinstance(output, str)
-    assert ",".join(OUTPUT_COLUMNS) in output
+    assert ",".join(TOGGL_COLUMNS) in output
 
     order = ["Start date", "Start time", "Email"]
     sample_output_df = pd.read_csv(toggl_file).sort_values(order)
