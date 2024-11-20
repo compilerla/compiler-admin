@@ -10,14 +10,15 @@ import pytest
 import compiler_admin.services.toggl
 from compiler_admin.services.toggl import (
     __name__ as MODULE,
-    files,
-    TOGGL_COLUMNS,
-    HARVEST_COLUMNS,
     _get_first_name,
     _get_last_name,
+    _prepare_input,
     _str_timedelta,
     convert_to_harvest,
     download_time_entries,
+    TOGGL_COLUMNS,
+    HARVEST_COLUMNS,
+    files,
 )
 
 
@@ -137,10 +138,9 @@ def test_str_timedelta():
     assert result.total_seconds() == (1 * 60 * 60) + (30 * 60) + 15
 
 
-def test_convert_to_harvest_mocked(toggl_file, spy_files, mock_google_user_info):
-    mock_google_user_info.return_value = {}
-
-    convert_to_harvest(toggl_file, client_name=None)
+@pytest.mark.usefixtures("mock_google_user_info")
+def test_prepare_input(toggl_file, spy_files):
+    df = _prepare_input(toggl_file)
 
     spy_files.read_csv.assert_called_once()
     call_args = spy_files.read_csv.call_args
@@ -148,6 +148,31 @@ def test_convert_to_harvest_mocked(toggl_file, spy_files, mock_google_user_info)
     assert call_args.kwargs["usecols"] == TOGGL_COLUMNS
     assert call_args.kwargs["parse_dates"] == ["Start date"]
     assert call_args.kwargs["cache_dates"] is True
+
+    df_cols = df.columns.to_list()
+    assert set(df_cols) <= set(TOGGL_COLUMNS) or set(TOGGL_COLUMNS) <= set(df_cols)
+
+    assert "First name" in df_cols
+    assert "Last name" in df_cols
+    assert df["Start date"].dtype.name == "datetime64[ns]"
+    assert df["Start time"].dtype.name == "timedelta64[ns]"
+    assert df["Duration"].dtype.name == "timedelta64[ns]"
+    assert df["Hours"].dtype.name == "float64"
+
+    df = _prepare_input(toggl_file, column_renames={"Start date": "SD", "Start time": "ST", "Duration": "D"})
+
+    assert "Start date" not in df.columns
+    assert "Start time" not in df.columns
+    assert "Duration" not in df.columns
+    assert df["SD"].dtype.name == "datetime64[ns]"
+    assert df["ST"].dtype.name == "timedelta64[ns]"
+    assert df["D"].dtype.name == "timedelta64[ns]"
+
+
+def test_convert_to_harvest_mocked(toggl_file, spy_files, mock_google_user_info):
+    mock_google_user_info.return_value = {}
+
+    convert_to_harvest(toggl_file, client_name=None)
 
     spy_files.write_csv.assert_called_once()
     call_args = spy_files.write_csv.call_args

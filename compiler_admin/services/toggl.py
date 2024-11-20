@@ -49,6 +49,28 @@ def _get_last_name(email: str):
     return last_name
 
 
+def _prepare_input(source_path: str | TextIO, column_renames: dict = {}) -> pd.DataFrame:
+    """Parse and prepare CSV data from `source_path` into an initial `pandas.DataFrame`."""
+    df = files.read_csv(source_path, usecols=TOGGL_COLUMNS, parse_dates=["Start date"], cache_dates=True)
+
+    df["Start time"] = df["Start time"].apply(_str_timedelta)
+    df["Duration"] = df["Duration"].apply(_str_timedelta)
+
+    # assign First and Last name
+    df["First name"] = df["Email"].apply(_get_first_name)
+    df["Last name"] = df["Email"].apply(_get_last_name)
+
+    # calculate hours as a decimal from duration timedelta
+    df["Hours"] = (df["Duration"].dt.total_seconds() / 3600).round(2)
+
+    df.sort_values(["Start date", "Start time", "Email"], inplace=True)
+
+    if column_renames:
+        df.rename(columns=column_renames, inplace=True)
+
+    return df
+
+
 def _str_timedelta(td: str):
     """Convert a string formatted duration (e.g. 01:30) to a timedelta."""
     return pd.to_timedelta(pd.to_datetime(td, format="%H:%M:%S").strftime("%H:%M:%S"))
@@ -78,14 +100,9 @@ def convert_to_harvest(
     if client_name is None:
         client_name = os.environ.get("HARVEST_CLIENT_NAME")
 
-    # read CSV file, parsing dates and times
-    source = files.read_csv(source_path, usecols=TOGGL_COLUMNS, parse_dates=["Start date"], cache_dates=True)
-    source["Start time"] = source["Start time"].apply(_str_timedelta)
-    source["Duration"] = source["Duration"].apply(_str_timedelta)
-    source.sort_values(["Start date", "Start time", "Email"], inplace=True)
-
-    # rename columns that can be imported as-is
-    source.rename(columns={"Project": "Project", "Description": "Notes", "Start date": "Date"}, inplace=True)
+    source = _prepare_input(
+        source_path=source_path, column_renames={"Project": "Project", "Description": "Notes", "Start date": "Date"}
+    )
 
     # update static calculated columns
     source["Client"] = client_name
@@ -94,13 +111,6 @@ def convert_to_harvest(
     # get cached project name if any, keyed on Toggl project name
     project_info = files.JsonFileCache("TOGGL_PROJECT_INFO")
     source["Project"] = source["Project"].apply(lambda x: project_info.get(key=x, default=x))
-
-    # assign First and Last name
-    source["First name"] = source["Email"].apply(_get_first_name)
-    source["Last name"] = source["Email"].apply(_get_last_name)
-
-    # calculate hours as a decimal from duration timedelta
-    source["Hours"] = (source["Duration"].dt.total_seconds() / 3600).round(2)
 
     files.write_csv(output_path, source, columns=output_cols)
 
