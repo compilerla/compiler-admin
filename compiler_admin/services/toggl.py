@@ -57,8 +57,9 @@ def _str_timedelta(td: str):
 def convert_to_harvest(
     source_path: str | TextIO = sys.stdin,
     output_path: str | TextIO = sys.stdout,
-    client_name: str = None,
     output_cols: list[str] = HARVEST_COLUMNS,
+    client_name: str = None,
+    **kwargs,
 ):
     """Convert Toggl formatted entries in source_path to equivalent Harvest formatted entries.
 

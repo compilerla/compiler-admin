@@ -33,8 +33,9 @@ def _toggl_client_name():
 def convert_to_toggl(
     source_path: str | TextIO = sys.stdin,
     output_path: str | TextIO = sys.stdout,
-    client_name: str = None,
     output_cols: list[str] = TOGGL_COLUMNS,
+    client_name: str = None,
+    **kwargs,
 ):
     """Convert Harvest formatted entries in source_path to equivalent Toggl formatted entries.
 
