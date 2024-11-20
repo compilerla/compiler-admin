@@ -21,6 +21,6 @@ def _get_source_converter(source):
 def convert(args: Namespace, *extras):
     converter = _get_source_converter(args.input)
 
-    converter(args.input, args.output, args.client)
+    converter(source_path=args.input, output_path=args.output, client_name=args.client)
 
     return RESULT_SUCCESS

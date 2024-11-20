@@ -160,7 +160,7 @@ def test_convert_to_harvest_sample(toggl_file, harvest_file, mock_google_user_in
     output = None
 
     with StringIO() as output_data:
-        convert_to_harvest(toggl_file, output_data, "Test Client 123")
+        convert_to_harvest(toggl_file, output_data, client_name="Test Client 123")
         output = output_data.getvalue()
 
     assert output

@@ -42,4 +42,6 @@ def test_convert(mock_get_source_converter):
 
     assert res == RESULT_SUCCESS
     mock_get_source_converter.assert_called_once_with(args.input)
-    mock_get_source_converter.return_value.assert_called_once_with(args.input, args.output, args.client)
+    mock_get_source_converter.return_value.assert_called_once_with(
+        source_path=args.input, output_path=args.output, client_name=args.client
+    )

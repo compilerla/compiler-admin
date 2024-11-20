@@ -57,19 +57,20 @@ def _str_timedelta(td: str):
 def convert_to_harvest(
     source_path: str | TextIO = sys.stdin,
     output_path: str | TextIO = sys.stdout,
-    client_name: str = None,
     output_cols: list[str] = HARVEST_COLUMNS,
+    client_name: str = None,
+    **kwargs,
 ):
     """Convert Toggl formatted entries in source_path to equivalent Harvest formatted entries.
 
     Args:
         source_path: The path to a readable CSV file of Toggl time entries; or a readable buffer of the same.
 
-        client_name (str): The value to assign in the output "Client" field
+        output_path: The path to a CSV file where Harvest time entries will be written; or a writeable buffer for the same.
 
         output_cols (list[str]): A list of column names for the output
 
-        output_path: The path to a CSV file where Harvest time entries will be written; or a writeable buffer for the same.
+        client_name (str): The value to assign in the output "Client" field
 
     Returns:
         None. Either prints the resulting CSV data or writes to output_path.

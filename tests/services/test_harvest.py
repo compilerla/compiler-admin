@@ -95,7 +95,7 @@ def test_convert_to_toggl_sample(harvest_file, toggl_file):
     output = None
 
     with StringIO() as output_data:
-        convert_to_toggl(harvest_file, output_data, "Test Client 123")
+        convert_to_toggl(harvest_file, output_data, client_name="Test Client 123")
         output = output_data.getvalue()
 
     assert output
