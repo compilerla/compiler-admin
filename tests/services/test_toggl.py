@@ -13,12 +13,6 @@ from compiler_admin.services.toggl import (
     files,
     INPUT_COLUMNS,
     OUTPUT_COLUMNS,
-    PROJECT_INFO,
-    USER_INFO,
-    _harvest_client_name,
-    _get_info,
-    _toggl_project_info,
-    _toggl_user_info,
     _get_first_name,
     _get_last_name,
     _str_timedelta,
@@ -34,24 +28,14 @@ def mock_environment(monkeypatch):
     monkeypatch.setenv("TOGGL_USER_INFO", "notebooks/data/toggl-user-info-sample.json")
 
 
-@pytest.fixture(autouse=True)
-def reset_USER_INFO():
-    USER_INFO.clear()
-
-
 @pytest.fixture
 def spy_files(mocker):
     return mocker.patch.object(compiler_admin.services.toggl, "files", wraps=files)
 
 
-@pytest.fixture
-def mock_harvest_client_name(mocker):
-    return mocker.patch(f"{MODULE}._harvest_client_name")
-
-
-@pytest.fixture
-def mock_get_info(mocker):
-    return mocker.patch(f"{MODULE}._get_info")
+@pytest.fixture(autouse=True)
+def mock_USER_INFO(mocker):
+    return mocker.patch(f"{MODULE}.USER_INFO", new={})
 
 
 @pytest.fixture
@@ -60,104 +44,57 @@ def mock_google_user_info(mocker):
 
 
 @pytest.fixture
-def mock_api_env(monkeypatch):
+def mock_toggl_api(mocker):
+    t = mocker.patch(f"{MODULE}.Toggl")
+    return t.return_value
+
+
+@pytest.fixture
+def mock_toggl_api_env(monkeypatch):
     monkeypatch.setenv("TOGGL_API_TOKEN", "token")
     monkeypatch.setenv("TOGGL_CLIENT_ID", "1234")
     monkeypatch.setenv("TOGGL_WORKSPACE_ID", "workspace")
 
 
 @pytest.fixture
-def mock_requests(mocker):
-    return mocker.patch(f"{MODULE}.requests")
-
-
-@pytest.fixture
-def mock_api_post(mocker, mock_requests, toggl_file):
-    # setup a mock response to a requests.post call
+def mock_toggl_detailed_time_entries(mock_toggl_api, toggl_file):
     mock_csv_bytes = Path(toggl_file).read_bytes()
-    mock_post_response = mocker.Mock()
-    mock_post_response.raise_for_status.return_value = None
-    # prepend the BOM to the mock content
-    mock_post_response.content = b"\xef\xbb\xbf" + mock_csv_bytes
-    # override the requests.post call to return the mock response
-    mock_requests.post.return_value = mock_post_response
-    return mock_requests
+    mock_toggl_api.detailed_time_entries.return_value.content = mock_csv_bytes
+    return mock_toggl_api
 
 
-def test_harvest_client_name(monkeypatch):
-    assert _harvest_client_name() == "Test_Client"
-
-    monkeypatch.setenv("HARVEST_CLIENT_NAME", "New Test Client")
-
-    assert _harvest_client_name() == "New Test Client"
-
-
-def test_get_info(monkeypatch):
-    with NamedTemporaryFile("w") as temp:
-        monkeypatch.setenv("INFO_FILE", temp.name)
-        temp.write('{"key": "value"}')
-        temp.seek(0)
-
-        obj = {}
-        result = _get_info(obj, "key", "INFO_FILE")
-
-        assert result == "value"
-        assert obj["key"] == "value"
-
-
-def test_get_info_no_file():
-    obj = {}
-    result = _get_info(obj, "key", "INFO_FILE")
-
-    assert result is None
-    assert "key" not in obj
-
-
-def test_toggl_project_info(mock_get_info):
-    _toggl_project_info("project")
-
-    mock_get_info.assert_called_once_with(PROJECT_INFO, "project", "TOGGL_PROJECT_INFO")
-
-
-def test_toggl_user_info(mock_get_info):
-    _toggl_user_info("user")
-
-    mock_get_info.assert_called_once_with(USER_INFO, "user", "TOGGL_USER_INFO")
-
-
-def test_get_first_name_matching(mock_get_info):
-    mock_get_info.return_value = {"First Name": "User"}
+def test_get_first_name_matching(mock_USER_INFO):
+    mock_USER_INFO["email"] = {"First Name": "User"}
 
     result = _get_first_name("email")
 
     assert result == "User"
 
 
-def test_get_first_name_calcuated_with_record(mock_get_info):
+def test_get_first_name_calcuated_with_record(mock_USER_INFO):
     email = "user@email.com"
-    mock_get_info.return_value = {}
-    USER_INFO[email] = {"Data": 1234}
+    mock_USER_INFO[email] = {"Data": 1234}
 
     result = _get_first_name(email)
 
     assert result == "User"
-    assert USER_INFO[email]["First Name"] == "User"
-    assert USER_INFO[email]["Data"] == 1234
+    assert mock_USER_INFO[email]["First Name"] == "User"
+    assert mock_USER_INFO[email]["Data"] == 1234
 
 
-def test_get_first_name_calcuated_without_record(mock_get_info):
+def test_get_first_name_calcuated_without_record(mock_USER_INFO):
     email = "user@email.com"
-    mock_get_info.return_value = {}
+    mock_USER_INFO[email] = {}
 
     result = _get_first_name(email)
 
     assert result == "User"
-    assert USER_INFO[email]["First Name"] == "User"
-    assert list(USER_INFO[email].keys()) == ["First Name"]
+    assert mock_USER_INFO[email]["First Name"] == "User"
+    assert list(mock_USER_INFO[email].keys()) == ["First Name"]
 
 
-def test_get_last_name_matching(mock_get_info, mock_google_user_info):
-    mock_get_info.return_value = {"Last Name": "User"}
+def test_get_last_name_matching(mock_USER_INFO, mock_google_user_info):
+    mock_USER_INFO["email"] = {"Last Name": "User"}
 
     result = _get_last_name("email")
 
@@ -165,30 +102,29 @@ def test_get_last_name_matching(mock_get_info, mock_google_user_info):
     mock_google_user_info.assert_not_called()
 
 
-def test_get_last_name_lookup_with_record(mock_get_info, mock_google_user_info):
+def test_get_last_name_lookup_with_record(mock_USER_INFO, mock_google_user_info):
     email = "user@email.com"
-    mock_get_info.return_value = {}
-    USER_INFO[email] = {"Data": 1234}
+    mock_USER_INFO[email] = {"Data": 1234}
     mock_google_user_info.return_value = {"Last Name": "User"}
 
     result = _get_last_name(email)
 
     assert result == "User"
-    assert USER_INFO[email]["Last Name"] == "User"
-    assert USER_INFO[email]["Data"] == 1234
+    assert mock_USER_INFO[email]["Last Name"] == "User"
+    assert mock_USER_INFO[email]["Data"] == 1234
     mock_google_user_info.assert_called_once_with(email)
 
 
-def test_get_last_name_lookup_without_record(mock_get_info, mock_google_user_info):
+def test_get_last_name_lookup_without_record(mock_USER_INFO, mock_google_user_info):
     email = "user@email.com"
-    mock_get_info.return_value = {}
+    mock_USER_INFO[email] = {}
     mock_google_user_info.return_value = {"Last Name": "User"}
 
     result = _get_last_name(email)
 
     assert result == "User"
-    assert USER_INFO[email]["Last Name"] == "User"
-    assert list(USER_INFO[email].keys()) == ["Last Name"]
+    assert mock_USER_INFO[email]["Last Name"] == "User"
+    assert list(mock_USER_INFO[email].keys()) == ["Last Name"]
     mock_google_user_info.assert_called_once_with(email)
 
 
@@ -201,12 +137,10 @@ def test_str_timedelta():
     assert result.total_seconds() == (1 * 60 * 60) + (30 * 60) + 15
 
 
-def test_convert_to_harvest_mocked(toggl_file, spy_files, mock_harvest_client_name, mock_google_user_info):
+def test_convert_to_harvest_mocked(toggl_file, spy_files, mock_google_user_info):
     mock_google_user_info.return_value = {}
 
     convert_to_harvest(toggl_file, client_name=None)
-
-    mock_harvest_client_name.assert_called_once()
 
     spy_files.read_csv.assert_called_once()
     call_args = spy_files.read_csv.call_args
@@ -241,27 +175,13 @@ def test_convert_to_harvest_sample(toggl_file, harvest_file, mock_google_user_in
     assert output_df["Client"].eq("Test Client 123").all()
 
 
-@pytest.mark.usefixtures("mock_api_env")
-def test_download_time_entries(toggl_file, mock_api_post):
+@pytest.mark.usefixtures("mock_toggl_api_env", "mock_toggl_detailed_time_entries")
+def test_download_time_entries(toggl_file):
     dt = datetime.now()
     mock_csv_bytes = Path(toggl_file).read_bytes()
 
     with NamedTemporaryFile("w") as temp:
-        download_time_entries(dt, dt, temp.name, extra_1=1, extra_2="two")
-
-        json_params = mock_api_post.post.call_args.kwargs["json"]
-        assert isinstance(json_params, dict)
-        assert json_params["billable"] is True
-        assert json_params["client_ids"] == [1234]
-        assert json_params["end_date"] == dt.strftime("%Y-%m-%d")
-        assert json_params["extra_1"] == 1
-        assert json_params["extra_2"] == "two"
-        assert json_params["rounding"] == 1
-        assert json_params["rounding_minutes"] == 15
-        assert json_params["start_date"] == dt.strftime("%Y-%m-%d")
-
-        assert mock_api_post.post.call_args.kwargs["timeout"] == 5
-
+        download_time_entries(dt, dt, temp.name)
         temp.flush()
         response_csv_bytes = Path(temp.name).read_bytes()
 
@@ -276,15 +196,3 @@ def test_download_time_entries(toggl_file, mock_api_post):
         # as corresponding column values from the mock DataFrame
         for col in response_df.columns:
             assert response_df[col].equals(mock_df[col])
-
-
-@pytest.mark.usefixtures("mock_api_env")
-def test_download_time_entries_dynamic_timeout(mock_api_post):
-    # range of 6 months
-    # timeout should be 6 * 5 = 30
-    start = datetime(2024, 1, 1)
-    end = datetime(2024, 6, 30)
-
-    download_time_entries(start, end)
-
-    assert mock_api_post.post.call_args.kwargs["timeout"] == 30
