@@ -5,6 +5,7 @@
 | Name                                          |    Stmts |     Miss |   Branch |   BrPart |   Cover |   Missing |
 |---------------------------------------------- | -------: | -------: | -------: | -------: | ------: | --------: |
 | compiler\_admin/\_\_init\_\_.py               |        7 |        2 |        0 |        0 |     71% |      8-10 |
+| compiler\_admin/api/toggl.py                  |       44 |        0 |        0 |        0 |    100% |           |
 | compiler\_admin/commands/\_\_init\_\_.py      |        0 |        0 |        0 |        0 |    100% |           |
 | compiler\_admin/commands/info.py              |        8 |        0 |        0 |        0 |    100% |           |
 | compiler\_admin/commands/init.py              |       36 |        0 |       12 |        1 |     98% |    21->18 |
@@ -22,11 +23,11 @@
 | compiler\_admin/commands/user/signout.py      |       18 |        0 |        8 |        1 |     96% |    24->30 |
 | compiler\_admin/main.py                       |       94 |        2 |        6 |        2 |     96% |  205, 209 |
 | compiler\_admin/services/\_\_init\_\_.py      |        0 |        0 |        0 |        0 |    100% |           |
-| compiler\_admin/services/files.py             |       12 |        0 |        0 |        0 |    100% |           |
+| compiler\_admin/services/files.py             |       29 |        0 |        4 |        1 |     97% |    37->40 |
 | compiler\_admin/services/google.py            |       76 |        2 |       22 |        1 |     97% |   116-117 |
 | compiler\_admin/services/harvest.py           |       32 |        0 |        2 |        0 |    100% |           |
-| compiler\_admin/services/toggl.py             |      108 |        1 |       18 |        2 |     98% |90, 229->232 |
-|                                     **TOTAL** |  **661** |    **9** |  **164** |   **11** | **98%** |           |
+| compiler\_admin/services/toggl.py             |       65 |        1 |       14 |        3 |     95% |49, 132->134, 134->137 |
+|                                     **TOTAL** |  **679** |    **9** |  **164** |   **13** | **97%** |           |
 
 
 ## Setup coverage badge
