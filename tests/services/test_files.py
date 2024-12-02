@@ -92,6 +92,7 @@ def test_JsonFileCache(monkeypatch):
         cache = JsonFileCache("INFO_FILE")
 
         assert cache._path.exists()
+        assert "key" in cache
         assert cache.get("key") == "value"
         assert cache["key"] == "value"
         assert cache.get("other") is None
@@ -108,3 +109,4 @@ def test_JsonFileCache_no_file():
     assert cache._cache == {}
     assert cache._path is None
     assert cache.get("key") is None
+    assert "key" not in cache
