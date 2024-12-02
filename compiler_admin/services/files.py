@@ -40,6 +40,9 @@ class JsonFileCache:
         if self._path and self._path.exists():
             self._cache.update(read_json(self._path))
 
+    def __contains__(self, key):
+        return key in self._cache
+
     def __getitem__(self, key):
         return self._cache.get(key)
 
