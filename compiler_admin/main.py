@@ -116,6 +116,13 @@ def setup_time_command(cmd_parsers: _SubParsersAction):
         help="The path to the file where downloaded data should be written. Defaults to $TOGGL_DATA or stdout.",
     )
     time_download.add_argument(
+        "--all",
+        default=True,
+        action="store_false",
+        dest="billable",
+        help="Download all time entries. The default is to download only billable time entries.",
+    )
+    time_download.add_argument(
         "--client",
         dest="client_ids",
         metavar="CLIENT_ID",
