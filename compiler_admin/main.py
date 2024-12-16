@@ -9,6 +9,7 @@ from compiler_admin import __version__ as version
 from compiler_admin.commands.info import info
 from compiler_admin.commands.init import init
 from compiler_admin.commands.time import time
+from compiler_admin.commands.time.convert import CONVERTERS
 from compiler_admin.commands.user import user
 from compiler_admin.commands.user.convert import ACCOUNT_TYPE_OU
 
@@ -77,6 +78,20 @@ def setup_time_command(cmd_parsers: _SubParsersAction):
         "--output",
         default=os.environ.get("HARVEST_DATA", sys.stdout),
         help="The path to the file where converted data should be written. Defaults to $HARVEST_DATA or stdout.",
+    )
+    time_convert.add_argument(
+        "--from",
+        default="toggl",
+        choices=sorted(CONVERTERS.keys()),
+        dest="from_fmt",
+        help="The format of the source data. Defaults to 'toggl'.",
+    )
+    time_convert.add_argument(
+        "--to",
+        default="harvest",
+        choices=sorted([to_fmt for sub in CONVERTERS.values() for to_fmt in sub.keys()]),
+        dest="to_fmt",
+        help="The format of the converted data. Defaults to 'harvest'.",
     )
     time_convert.add_argument("--client", default=None, help="The name of the client to use in converted data.")
 

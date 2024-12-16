@@ -12,6 +12,7 @@ from compiler_admin.services.harvest import (
     files,
     HARVEST_COLUMNS,
     TOGGL_COLUMNS,
+    CONVERTERS,
     _calc_start_time,
     _duration_str,
     _toggl_client_name,
@@ -109,3 +110,7 @@ def test_convert_to_toggl_sample(harvest_file, toggl_file):
     assert set(output_df.columns.to_list()) <= set(sample_output_df.columns.to_list())
     assert output_df["Client"].eq("Test Client 123").all()
     assert output_df["Project"].eq("Test Client 123").all()
+
+
+def test_converters():
+    assert CONVERTERS.get("toggl") == convert_to_toggl

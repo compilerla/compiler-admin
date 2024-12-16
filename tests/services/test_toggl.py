@@ -9,6 +9,7 @@ import pytest
 
 import compiler_admin.services.toggl
 from compiler_admin.services.toggl import (
+    CONVERTERS,
     __name__ as MODULE,
     _get_first_name,
     _get_last_name,
@@ -251,3 +252,8 @@ def test_download_time_entries(toggl_file):
         # as corresponding column values from the mock DataFrame
         for col in response_df.columns:
             assert response_df[col].equals(mock_df[col])
+
+
+def test_converters():
+    assert CONVERTERS.get("harvest") == convert_to_harvest
+    assert CONVERTERS.get("justworks") == convert_to_justworks

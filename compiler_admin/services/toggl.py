@@ -217,3 +217,6 @@ def download_time_entries(
 
     df = pd.read_csv(io.StringIO(csv))
     files.write_csv(output_path, df, columns=output_cols)
+
+
+CONVERTERS = {"harvest": convert_to_harvest, "justworks": convert_to_justworks}

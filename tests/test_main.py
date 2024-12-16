@@ -104,7 +104,7 @@ def test_main_init_gyb(mock_commands_init):
 def test_main_init_no_username(mock_commands_init):
     with pytest.raises(SystemExit):
         main(argv=["init"])
-        assert mock_commands_init.call_count == 0
+    assert mock_commands_init.call_count == 0
 
 
 def test_main_time_convert_default(mock_commands_time):
@@ -114,7 +114,14 @@ def test_main_time_convert_default(mock_commands_time):
     call_args = mock_commands_time.call_args.args
     assert (
         Namespace(
-            func=mock_commands_time, command="time", subcommand="convert", client=None, input=sys.stdin, output=sys.stdout
+            func=mock_commands_time,
+            command="time",
+            subcommand="convert",
+            client=None,
+            input=sys.stdin,
+            output=sys.stdout,
+            from_fmt="toggl",
+            to_fmt="harvest",
         )
         in call_args
     )
@@ -129,7 +136,16 @@ def test_main_time_convert_env(monkeypatch, mock_commands_time):
     mock_commands_time.assert_called_once()
     call_args = mock_commands_time.call_args.args
     assert (
-        Namespace(func=mock_commands_time, command="time", subcommand="convert", client=None, input="toggl", output="harvest")
+        Namespace(
+            func=mock_commands_time,
+            command="time",
+            subcommand="convert",
+            client=None,
+            input="toggl",
+            output="harvest",
+            from_fmt="toggl",
+            to_fmt="harvest",
+        )
         in call_args
     )
 
@@ -231,6 +247,8 @@ def test_main_time_convert_client(mock_commands_time):
             client="client123",
             input=sys.stdin,
             output=sys.stdout,
+            from_fmt="toggl",
+            to_fmt="harvest",
         )
         in call_args
     )
@@ -249,6 +267,8 @@ def test_main_time_convert_input(mock_commands_time):
             client=None,
             input="file.csv",
             output=sys.stdout,
+            from_fmt="toggl",
+            to_fmt="harvest",
         )
         in call_args
     )
@@ -267,9 +287,61 @@ def test_main_time_convert_output(mock_commands_time):
             client=None,
             input=sys.stdin,
             output="file.csv",
+            from_fmt="toggl",
+            to_fmt="harvest",
         )
         in call_args
     )
+
+
+def test_main_time_convert_from(mock_commands_time):
+    main(argv=["time", "convert", "--from", "harvest"])
+
+    mock_commands_time.assert_called_once()
+    call_args = mock_commands_time.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_time,
+            command="time",
+            subcommand="convert",
+            client=None,
+            input=sys.stdin,
+            output=sys.stdout,
+            from_fmt="harvest",
+            to_fmt="harvest",
+        )
+        in call_args
+    )
+
+    with pytest.raises(SystemExit):
+        main(argv=["time", "convert", "--from", "nope"])
+    # it should not have been called an additional time from the first
+    mock_commands_time.assert_called_once()
+
+
+def test_main_time_convert_to(mock_commands_time):
+    main(argv=["time", "convert", "--to", "toggl"])
+
+    mock_commands_time.assert_called_once()
+    call_args = mock_commands_time.call_args.args
+    assert (
+        Namespace(
+            func=mock_commands_time,
+            command="time",
+            subcommand="convert",
+            client=None,
+            input=sys.stdin,
+            output=sys.stdout,
+            from_fmt="toggl",
+            to_fmt="toggl",
+        )
+        in call_args
+    )
+
+    with pytest.raises(SystemExit):
+        main(argv=["time", "convert", "--to", "nope"])
+    # it should not have been called an additional time from the first
+    mock_commands_time.assert_called_once()
 
 
 def test_main_user_alumni(mock_commands_user):
@@ -355,7 +427,7 @@ def test_main_user_create_extras(mock_commands_user):
 def test_main_user_create_no_username(mock_commands_user):
     with pytest.raises(SystemExit):
         main(argv=["user", "create"])
-        assert mock_commands_user.call_count == 0
+    assert mock_commands_user.call_count == 0
 
 
 def test_main_user_convert(mock_commands_user):
@@ -380,13 +452,13 @@ def test_main_user_convert(mock_commands_user):
 def test_main_user_convert_no_username(mock_commands_user):
     with pytest.raises(SystemExit):
         main(argv=["user", "convert"])
-        assert mock_commands_user.call_count == 0
+    assert mock_commands_user.call_count == 0
 
 
 def test_main_user_convert_bad_account_type(mock_commands_user):
     with pytest.raises(SystemExit):
         main(argv=["user", "convert", "username", "account_type"])
-        assert mock_commands_user.call_count == 0
+    assert mock_commands_user.call_count == 0
 
 
 def test_main_user_delete(mock_commands_user):
@@ -412,7 +484,7 @@ def test_main_user_delete_force(mock_commands_user):
 def test_main_user_delete_no_username(mock_commands_user):
     with pytest.raises(SystemExit):
         main(argv=["user", "delete"])
-        assert mock_commands_user.call_count == 0
+    assert mock_commands_user.call_count == 0
 
 
 def test_main_user_offboard(mock_commands_user):
@@ -458,7 +530,7 @@ def test_main_user_offboard_with_alias(mock_commands_user):
 def test_main_user_offboard_no_username(mock_commands_user):
     with pytest.raises(SystemExit):
         main(argv=["user", "offboard"])
-        assert mock_commands_user.call_count == 0
+    assert mock_commands_user.call_count == 0
 
 
 def test_main_user_reset(mock_commands_user):
@@ -504,7 +576,7 @@ def test_main_user_reset_force(mock_commands_user):
 def test_main_user_reset_no_username(mock_commands_user):
     with pytest.raises(SystemExit):
         main(argv=["user", "reset"])
-        assert mock_commands_user.call_count == 0
+    assert mock_commands_user.call_count == 0
 
 
 def test_main_user_restore(mock_commands_user):
@@ -518,7 +590,7 @@ def test_main_user_restore(mock_commands_user):
 def test_main_user_restore_no_username(mock_commands_user):
     with pytest.raises(SystemExit):
         main(argv=["user", "restore"])
-        assert mock_commands_user.call_count == 0
+    assert mock_commands_user.call_count == 0
 
 
 def test_main_user_signout(mock_commands_user):
@@ -544,7 +616,7 @@ def test_main_user_signout_force(mock_commands_user):
 def test_main_user_signout_no_username(mock_commands_user):
     with pytest.raises(SystemExit):
         main(argv=["user", "signout"])
-        assert mock_commands_user.call_count == 0
+    assert mock_commands_user.call_count == 0
 
 
 @pytest.mark.e2e

@@ -90,3 +90,6 @@ def convert_to_toggl(
     output_data.sort_values(["Start date", "Start time", "Email"], inplace=True)
 
     files.write_csv(output_path, output_data, output_cols)
+
+
+CONVERTERS = {"toggl": convert_to_toggl}
