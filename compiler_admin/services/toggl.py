@@ -16,6 +16,8 @@ TOGGL_COLUMNS = ["Email", "Project", "Client", "Start date", "Start time", "Dura
 
 # default output CSV columns for Harvest
 HARVEST_COLUMNS = ["Date", "Client", "Project", "Task", "Notes", "Hours", "First name", "Last name"]
+# default output CSV columns for Justworks
+JUSTWORKS_COLUMNS = ["First Name", "Last Name", "Work Email", "Start Date", "End Date", "Regular Hours"]
 
 
 @cache
@@ -119,6 +121,52 @@ def convert_to_harvest(
     source["Project"] = source["Project"].apply(lambda x: project_info.get(key=x, default=x))
 
     files.write_csv(output_path, source, columns=output_cols)
+
+
+def convert_to_justworks(
+    source_path: str | TextIO = sys.stdin,
+    output_path: str | TextIO = sys.stdout,
+    output_cols: list[str] = JUSTWORKS_COLUMNS,
+    **kwargs,
+):
+    """Convert Toggl formatted entries in source_path to equivalent Justworks formatted entries.
+
+    Args:
+        source_path: The path to a readable CSV file of Toggl time entries; or a readable buffer of the same.
+
+        output_path: The path to a CSV file where Harvest time entries will be written; or a writeable buffer for the same.
+
+        output_cols (list[str]): A list of column names for the output
+
+    Returns:
+        None. Either prints the resulting CSV data or writes to output_path.
+    """
+    source = _prepare_input(
+        source_path=source_path,
+        column_renames={
+            "Email": "Work Email",
+            "First name": "First Name",
+            "Hours": "Regular Hours",
+            "Last name": "Last Name",
+            "Start date": "Start Date",
+        },
+    )
+
+    # aggregate hours per person per day
+    cols = ["Work Email", "First Name", "Last Name", "Start Date"]
+    people = source.sort_values(cols).groupby(cols, observed=False)
+    people_agg = people.agg({"Regular Hours": "sum"})
+    people_agg.reset_index(inplace=True)
+
+    # aggregate hours per person and rollup to the week (starting on Sunday)
+    cols = ["Work Email", "First Name", "Last Name"]
+    weekly_agg = people_agg.groupby(cols).resample("W", label="left", on="Start Date")
+    weekly_agg = weekly_agg["Regular Hours"].sum().reset_index()
+
+    # calculate the week end date (the following Saturday)
+    weekly_agg["End Date"] = weekly_agg["Start Date"] + pd.Timedelta(days=6)
+
+    files.write_csv(output_path, weekly_agg, columns=output_cols)
 
 
 def download_time_entries(

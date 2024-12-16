@@ -15,9 +15,11 @@ from compiler_admin.services.toggl import (
     _prepare_input,
     _str_timedelta,
     convert_to_harvest,
+    convert_to_justworks,
     download_time_entries,
     TOGGL_COLUMNS,
     HARVEST_COLUMNS,
+    JUSTWORKS_COLUMNS,
     files,
 )
 
@@ -198,6 +200,34 @@ def test_convert_to_harvest_sample(toggl_file, harvest_file, mock_google_user_in
 
     assert set(output_df.columns.to_list()) <= set(sample_output_df.columns.to_list())
     assert output_df["Client"].eq("Test Client 123").all()
+
+
+def test_convert_to_justworks_mocked(toggl_file, spy_files):
+    convert_to_justworks(toggl_file)
+
+    spy_files.write_csv.assert_called_once()
+    call_args = spy_files.write_csv.call_args
+    assert sys.stdout in call_args[0]
+    assert call_args.kwargs["columns"] == JUSTWORKS_COLUMNS
+
+
+def test_convert_to_justworks_sample(toggl_file, justworks_file):
+    output = None
+
+    with StringIO() as output_data:
+        convert_to_justworks(toggl_file, output_data)
+        output = output_data.getvalue()
+
+    assert output
+    assert isinstance(output, str)
+    assert ",".join(JUSTWORKS_COLUMNS) in output
+
+    order = ["Start Date", "First Name", "Regular Hours"]
+    sample_output_df = pd.read_csv(justworks_file).sort_values(order)
+    output_df = pd.read_csv(StringIO(output)).sort_values(order)
+
+    assert set(output_df.columns.to_list()) <= set(sample_output_df.columns.to_list())
+    assert output_df.shape == sample_output_df.shape
 
 
 @pytest.mark.usefixtures("mock_toggl_api_env", "mock_toggl_detailed_time_entries")

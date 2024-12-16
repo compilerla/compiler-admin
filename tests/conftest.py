@@ -192,5 +192,10 @@ def harvest_file():
 
 
 @pytest.fixture
+def justworks_file():
+    return "notebooks/data/justworks-sample.csv"
+
+
+@pytest.fixture
 def toggl_file():
     return "notebooks/data/toggl-sample.csv"
