@@ -81,14 +81,17 @@ Use this command to download a time report from Toggl in CSV format:
 
 ```bash
 $ compiler-admin time download -h
-usage: compiler-admin time download [-h] [--start YYYY-MM-DD] [--end YYYY-MM-DD] [--output OUTPUT]
-                                    [--client CLIENT_ID] [--project PROJECT_ID] [--task TASK_ID] [--user USER_ID]
+usage: compiler-admin time download [-h] [--start YYYY-MM-DD] [--end YYYY-MM-DD]
+                                    [--output OUTPUT] [--all] [--client CLIENT_ID]
+                                    [--project PROJECT_ID] [--task TASK_ID]
+                                    [--user USER_ID]
 
 options:
   -h, --help            show this help message and exit
   --start YYYY-MM-DD    The start date of the reporting period. Defaults to the beginning of the prior month.
   --end YYYY-MM-DD      The end date of the reporting period. Defaults to the end of the prior month.
-  --output OUTPUT       The path to the file where converted data should be written. Defaults to stdout.
+  --output OUTPUT       The path to the file where downloaded data should be written. Defaults to $TOGGL_DATA or stdout.
+  --all                 Download all time entries. The default is to download only billable time entries.
   --client CLIENT_ID    An ID for a Toggl Client to filter for in reports. Can be supplied more than once.
   --project PROJECT_ID  An ID for a Toggl Project to filter for in reports. Can be supplied more than once.
   --task TASK_ID        An ID for a Toggl Project Task to filter for in reports. Can be supplied more than once.
@@ -101,13 +104,18 @@ With a CSV exported from either Harvest or Toggl, use this command to convert to
 
 ```bash
 $ compiler-admin time convert -h
-usage: compiler-admin time convert [-h] [--input INPUT] [--output OUTPUT] [--client CLIENT]
+usage: compiler-admin time convert [-h] [--input INPUT] [--output OUTPUT] [--from {harvest,toggl}]
+                                   [--to {harvest,justworks,toggl}] [--client CLIENT]
 
 options:
-  -h, --help       show this help message and exit
-  --input INPUT    The path to the source data for conversion. Defaults to stdin.
-  --output OUTPUT  The path to the file where converted data should be written. Defaults to stdout.
-  --client CLIENT  The name of the client to use in converted data.
+  -h, --help            show this help message and exit
+  --input INPUT         The path to the source data for conversion. Defaults to $TOGGL_DATA or stdin.
+  --output OUTPUT       The path to the file where converted data should be written. Defaults to $HARVEST_DATA or stdout.
+  --from {harvest,toggl}
+                        The format of the source data. Defaults to 'toggl'.
+  --to {harvest,justworks,toggl}
+                        The format of the converted data. Defaults to 'harvest'.
+  --client CLIENT       The name of the client to use in converted data.
 ```
 
 ## Working with users

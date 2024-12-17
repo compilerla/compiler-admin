@@ -1,11 +1,13 @@
 from argparse import Namespace
 
 from compiler_admin import RESULT_SUCCESS
-from compiler_admin.services.toggl import INPUT_COLUMNS as TOGGL_COLUMNS, download_time_entries
+from compiler_admin.services.toggl import TOGGL_COLUMNS, download_time_entries
 
 
 def download(args: Namespace, *extras):
-    params = dict(start_date=args.start, end_date=args.end, output_path=args.output, output_cols=TOGGL_COLUMNS)
+    params = dict(
+        start_date=args.start, end_date=args.end, output_path=args.output, output_cols=TOGGL_COLUMNS, billable=args.billable
+    )
 
     if args.client_ids:
         params.update(dict(client_ids=args.client_ids))
