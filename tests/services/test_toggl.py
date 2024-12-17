@@ -34,9 +34,9 @@ def spy_files(mocker):
     return mocker.patch.object(compiler_admin.services.toggl, "files", wraps=files)
 
 
-@pytest.fixture(autouse=True)
-def mock_USER_INFO(mocker):
-    return mocker.patch(f"{MODULE}.USER_INFO", new={})
+@pytest.fixture()
+def mock_user_info(mocker):
+    return mocker.patch(f"{MODULE}.user_info")
 
 
 @pytest.fixture
@@ -64,38 +64,38 @@ def mock_toggl_detailed_time_entries(mock_toggl_api, toggl_file):
     return mock_toggl_api
 
 
-def test_get_first_name_matching(mock_USER_INFO):
-    mock_USER_INFO["email"] = {"First Name": "User"}
+def test_get_first_name_matching(mock_user_info):
+    mock_user_info.return_value = {"email": {"First Name": "User"}}
 
     result = _get_first_name("email")
 
     assert result == "User"
 
 
-def test_get_first_name_calcuated_with_record(mock_USER_INFO):
+def test_get_first_name_calcuated_with_record(mock_user_info):
     email = "user@email.com"
-    mock_USER_INFO[email] = {"Data": 1234}
+    mock_user_info.return_value = {email: {"Data": 1234}}
 
     result = _get_first_name(email)
 
     assert result == "User"
-    assert mock_USER_INFO[email]["First Name"] == "User"
-    assert mock_USER_INFO[email]["Data"] == 1234
+    assert mock_user_info.return_value[email]["First Name"] == "User"
+    assert mock_user_info.return_value[email]["Data"] == 1234
 
 
-def test_get_first_name_calcuated_without_record(mock_USER_INFO):
+def test_get_first_name_calcuated_without_record(mock_user_info):
     email = "user@email.com"
-    mock_USER_INFO[email] = {}
+    mock_user_info.return_value = {email: {}}
 
     result = _get_first_name(email)
 
     assert result == "User"
-    assert mock_USER_INFO[email]["First Name"] == "User"
-    assert list(mock_USER_INFO[email].keys()) == ["First Name"]
+    assert mock_user_info.return_value[email]["First Name"] == "User"
+    assert list(mock_user_info.return_value[email].keys()) == ["First Name"]
 
 
-def test_get_last_name_matching(mock_USER_INFO, mock_google_user_info):
-    mock_USER_INFO["email"] = {"Last Name": "User"}
+def test_get_last_name_matching(mock_user_info, mock_google_user_info):
+    mock_user_info.return_value = {"email": {"Last Name": "User"}}
 
     result = _get_last_name("email")
 
@@ -103,29 +103,29 @@ def test_get_last_name_matching(mock_USER_INFO, mock_google_user_info):
     mock_google_user_info.assert_not_called()
 
 
-def test_get_last_name_lookup_with_record(mock_USER_INFO, mock_google_user_info):
+def test_get_last_name_lookup_with_record(mock_user_info, mock_google_user_info):
     email = "user@email.com"
-    mock_USER_INFO[email] = {"Data": 1234}
+    mock_user_info.return_value = {email: {"Data": 1234}}
     mock_google_user_info.return_value = {"Last Name": "User"}
 
     result = _get_last_name(email)
 
     assert result == "User"
-    assert mock_USER_INFO[email]["Last Name"] == "User"
-    assert mock_USER_INFO[email]["Data"] == 1234
+    assert mock_user_info.return_value[email]["Last Name"] == "User"
+    assert mock_user_info.return_value[email]["Data"] == 1234
     mock_google_user_info.assert_called_once_with(email)
 
 
-def test_get_last_name_lookup_without_record(mock_USER_INFO, mock_google_user_info):
+def test_get_last_name_lookup_without_record(mock_user_info, mock_google_user_info):
     email = "user@email.com"
-    mock_USER_INFO[email] = {}
+    mock_user_info.return_value = {email: {}}
     mock_google_user_info.return_value = {"Last Name": "User"}
 
     result = _get_last_name(email)
 
     assert result == "User"
-    assert mock_USER_INFO[email]["Last Name"] == "User"
-    assert list(mock_USER_INFO[email].keys()) == ["Last Name"]
+    assert mock_user_info.return_value[email]["Last Name"] == "User"
+    assert list(mock_user_info.return_value[email].keys()) == ["Last Name"]
     mock_google_user_info.assert_called_once_with(email)
 
 

@@ -1,4 +1,5 @@
 from datetime import datetime
+from functools import cache
 import io
 import os
 import sys
@@ -10,9 +11,6 @@ from compiler_admin.api.toggl import Toggl
 from compiler_admin.services.google import user_info as google_user_info
 import compiler_admin.services.files as files
 
-# cache of previously seen user information, keyed on email
-USER_INFO = files.JsonFileCache("TOGGL_USER_INFO")
-
 # input columns needed for conversion
 TOGGL_COLUMNS = ["Email", "Project", "Client", "Start date", "Start time", "Duration", "Description"]
 
@@ -20,32 +18,40 @@ TOGGL_COLUMNS = ["Email", "Project", "Client", "Start date", "Start time", "Dura
 HARVEST_COLUMNS = ["Date", "Client", "Project", "Task", "Notes", "Hours", "First name", "Last name"]
 
 
+@cache
+def user_info():
+    """Cache of previously seen user information, keyed on email."""
+    return files.JsonFileCache("TOGGL_USER_INFO")
+
+
 def _get_first_name(email: str) -> str:
     """Get cached first name or derive from email."""
-    user = USER_INFO.get(email)
+    info = user_info()
+    user = info.get(email)
     first_name = user.get("First Name") if user else None
     if first_name is None:
         parts = email.split("@")
         first_name = parts[0].capitalize()
         data = {"First Name": first_name}
-        if email in USER_INFO:
-            USER_INFO[email].update(data)
+        if email in info:
+            info[email].update(data)
         else:
-            USER_INFO[email] = data
+            info[email] = data
     return first_name
 
 
 def _get_last_name(email: str):
     """Get cached last name or query from Google."""
-    user = USER_INFO.get(email)
+    info = user_info()
+    user = info.get(email)
     last_name = user.get("Last Name") if user else None
     if last_name is None:
         user = google_user_info(email)
         last_name = user.get("Last Name") if user else None
-        if email in USER_INFO:
-            USER_INFO[email].update(user)
+        if email in info:
+            info[email].update(user)
         else:
-            USER_INFO[email] = user
+            info[email] = user
     return last_name
 
 
