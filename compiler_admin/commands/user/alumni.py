@@ -1,10 +1,9 @@
-from argparse import Namespace
+import click
 
 from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
 from compiler_admin.commands.user.reset import reset
 from compiler_admin.services.google import (
     OU_ALUMNI,
-    USER_HELLO,
     CallGAMCommand,
     move_user_ou,
     user_account_name,
@@ -12,105 +11,63 @@ from compiler_admin.services.google import (
 )
 
 
-def alumni(args: Namespace) -> int:
-    """Convert a user to a Compiler alumni.
-
-    Optionally notify an email address with the new randomly generated password.
-
-    Args:
-        username (str): the user account to convert.
-
-        notify (str): an email address to send the new password notification.
-    Returns:
-        A value indicating if the operation succeeded or failed.
+@click.command()
+@click.option("-f", "--force", is_flag=True, help="Don't ask for confirmation.")
+@click.option("-n", "--notify", help="An email address to send the new password notification.")
+@click.option(
+    "-e",
+    "--recovery-email",
+    help="An email address to use as the new recovery email. Without a value, clears the recovery email.",
+)
+@click.option(
+    "-p",
+    "--recovery-phone",
+    help="A phone number to use as the new recovery phone number. Without a value, clears the recovery phone number.",
+)
+@click.argument("username")
+@click.pass_context
+def alumni(
+    ctx: click.Context, username: str, force: bool = False, recovery_email: str = "", recovery_phone: str = "", **kwargs
+):
     """
-    if not hasattr(args, "username"):
-        raise ValueError("username is required")
-
-    account = user_account_name(args.username)
+    Convert a user to a Compiler alumni.
+    """
+    account = user_account_name(username)
 
     if not user_exists(account):
-        print(f"User does not exist: {account}")
-        return RESULT_FAILURE
+        click.echo(f"User does not exist: {account}")
+        raise SystemExit(RESULT_FAILURE)
 
-    if getattr(args, "force", False) is False:
-        cont = input(f"Convert account to alumni: {account}? (Y/n) ")
+    if not force:
+        cont = input(f"Convert account to alumni for {account}? (Y/n): ")
         if not cont.lower().startswith("y"):
-            print("Aborting conversion.")
-            return RESULT_SUCCESS
+            click.echo("Aborting conversion.")
+            raise SystemExit(RESULT_SUCCESS)
 
-    res = RESULT_SUCCESS
+    click.echo(f"User exists, converting to alumni: {account}")
 
-    print("Removing from groups")
-    res += CallGAMCommand(("user", account, "delete", "groups"))
+    click.echo("Removing from groups")
+    CallGAMCommand(("user", account, "delete", "groups"))
 
-    print(f"Moving to OU: {OU_ALUMNI}")
-    res += move_user_ou(account, OU_ALUMNI)
+    click.echo(f"Moving to OU: {OU_ALUMNI}")
+    move_user_ou(account, OU_ALUMNI)
 
     # reset password, sign out
-    res += reset(args)
+    ctx.forward(reset)
 
-    print("Clearing user profile info")
+    click.echo("Clearing user profile info")
     for prop in ["address", "location", "otheremail", "phone"]:
         command = ("update", "user", account, prop, "clear")
-        res += CallGAMCommand(command)
+        CallGAMCommand(command)
 
-    print("Resetting recovery email")
-    recovery = getattr(args, "recovery_email", "")
-    command = ("update", "user", account, "recoveryemail", recovery)
-    res += CallGAMCommand(command)
+    click.echo("Resetting recovery email")
+    command = ("update", "user", account, "recoveryemail", recovery_email)
+    CallGAMCommand(command)
 
-    print("Resetting recovery phone")
-    recovery = getattr(args, "recovery_phone", "")
-    command = ("update", "user", account, "recoveryphone", recovery)
-    res += CallGAMCommand(command)
+    click.echo("Resetting recovery phone")
+    command = ("update", "user", account, "recoveryphone", recovery_phone)
+    CallGAMCommand(command)
 
-    print("Turning off 2FA")
+    click.echo("Turning off 2FA")
     command = ("user", account, "turnoff2sv")
-    res += CallGAMCommand(command)
-
-    print("Resetting email signature")
-    # https://github.com/taers232c/GAMADV-XTD3/wiki/Users-Gmail-Send-As-Signature-Vacation#manage-signature
-    command = (
-        "user",
-        account,
-        "signature",
-        f"Compiler LLC<br />https://compiler.la<br />{USER_HELLO}",
-        "replyto",
-        USER_HELLO,
-        "default",
-        "treatasalias",
-        "false",
-        "name",
-        "Compiler LLC",
-        "primary",
-    )
-    res += CallGAMCommand(command)
-
-    print("Turning on email autoresponder")
-    # https://github.com/taers232c/GAMADV-XTD3/wiki/Users-Gmail-Send-As-Signature-Vacation#manage-vacation
-    message = (
-        "Thank you for contacting Compiler. This inbox is no longer actively monitored.<br /><br />"
-        + f"Please reach out to {USER_HELLO} if you need to get a hold of us."
-    )
-    command = (
-        "user",
-        account,
-        "vacation",
-        "true",
-        "subject",
-        "[This inbox is no longer active]",
-        "message",
-        message,
-        "contactsonly",
-        "false",
-        "domainonly",
-        "false",
-        "start",
-        "Started",
-        "end",
-        "2999-12-31",
-    )
-    res += CallGAMCommand(command)
-
-    return res
+    CallGAMCommand(command)

@@ -1,7 +1,6 @@
-from argparse import Namespace
 import pytest
 
-from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
+from compiler_admin import RESULT_SUCCESS
 from compiler_admin.commands.user.create import create, __name__ as MODULE
 from compiler_admin.services.google import USER_HELLO
 
@@ -21,29 +20,22 @@ def mock_google_add_user_to_group(mock_google_add_user_to_group):
     return mock_google_add_user_to_group(MODULE)
 
 
-def test_create_user_username_required():
-    args = Namespace()
-
-    with pytest.raises(ValueError, match="username is required"):
-        create(args)
-
-
-def test_create_user_exists(mock_google_user_exists):
+def test_create_user_exists(cli_runner, mock_google_user_exists):
     mock_google_user_exists.return_value = True
 
-    args = Namespace(username="username")
-    res = create(args)
+    result = cli_runner.invoke(create, ["username"])
 
-    assert res == RESULT_FAILURE
+    assert result.exit_code != RESULT_SUCCESS
 
 
-def test_create_user_does_not_exists(mock_google_user_exists, mock_google_CallGAMCommand, mock_google_add_user_to_group):
+def test_create_user_does_not_exists(
+    cli_runner, mock_google_user_exists, mock_google_CallGAMCommand, mock_google_add_user_to_group
+):
     mock_google_user_exists.return_value = False
 
-    args = Namespace(username="username")
-    res = create(args)
+    result = cli_runner.invoke(create, ["username"])
 
-    assert res == RESULT_SUCCESS
+    assert result.exit_code == RESULT_SUCCESS
 
     mock_google_CallGAMCommand.assert_called_once()
     call_args = " ".join(mock_google_CallGAMCommand.call_args[0][0])
@@ -53,13 +45,12 @@ def test_create_user_does_not_exists(mock_google_user_exists, mock_google_CallGA
     mock_google_add_user_to_group.assert_called_once()
 
 
-def test_create_user_notify(mock_google_user_exists, mock_google_CallGAMCommand, mock_google_add_user_to_group):
+def test_create_user_notify(cli_runner, mock_google_user_exists, mock_google_CallGAMCommand, mock_google_add_user_to_group):
     mock_google_user_exists.return_value = False
 
-    args = Namespace(username="username", notify="notification@example.com")
-    res = create(args)
+    result = cli_runner.invoke(create, ["--notify", "notification@example.com", "username"])
 
-    assert res == RESULT_SUCCESS
+    assert result.exit_code == RESULT_SUCCESS
 
     mock_google_CallGAMCommand.assert_called_once()
     call_args = " ".join(mock_google_CallGAMCommand.call_args[0][0])
@@ -70,13 +61,12 @@ def test_create_user_notify(mock_google_user_exists, mock_google_CallGAMCommand,
     mock_google_add_user_to_group.assert_called_once()
 
 
-def test_create_user_extras(mock_google_user_exists, mock_google_CallGAMCommand, mock_google_add_user_to_group):
+def test_create_user_extras(cli_runner, mock_google_user_exists, mock_google_CallGAMCommand, mock_google_add_user_to_group):
     mock_google_user_exists.return_value = False
 
-    args = Namespace(username="username")
-    res = create(args, "extra1", "extra2")
+    result = cli_runner.invoke(create, ["username", "extra1", "extra2"])
 
-    assert res == RESULT_SUCCESS
+    assert result.exit_code == RESULT_SUCCESS
 
     mock_google_CallGAMCommand.assert_called_once()
     call_args = " ".join(mock_google_CallGAMCommand.call_args[0][0])

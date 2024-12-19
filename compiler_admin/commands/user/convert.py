@@ -1,6 +1,6 @@
-from argparse import Namespace
+import click
 
-from compiler_admin import RESULT_SUCCESS, RESULT_FAILURE
+from compiler_admin import RESULT_FAILURE
 from compiler_admin.commands.user.alumni import alumni
 from compiler_admin.services.google import (
     GROUP_PARTNERS,
@@ -22,62 +22,63 @@ from compiler_admin.services.google import (
 ACCOUNT_TYPE_OU = {"alumni": OU_ALUMNI, "contractor": OU_CONTRACTORS, "partner": OU_PARTNERS, "staff": OU_STAFF}
 
 
-def convert(args: Namespace) -> int:
-    f"""Convert a user of one type to another.
-    Args:
-        username (str): The account to convert. Must exist already.
-
-        account_type (str): One of {", ".join(ACCOUNT_TYPE_OU.keys())}
-    Returns:
-        A value indicating if the operation succeeded or failed.
+@click.command()
+@click.option("-f", "--force", is_flag=True, help="Don't ask for confirmation.")
+@click.option(
+    "-n", "--notify", help="An email address to send the new password notification. Only valid for alumni conversion."
+)
+@click.option(
+    "-e",
+    "--recovery-email",
+    help="An email address to use as the new recovery email. Only valid for alumni conversion.",
+)
+@click.option(
+    "-p",
+    "--recovery-phone",
+    help="A phone number to use as the new recovery phone number. Only valid for alumni conversion.",
+)
+@click.argument("username")
+@click.argument("account_type", type=click.Choice(ACCOUNT_TYPE_OU.keys(), case_sensitive=False))
+@click.pass_context
+def convert(ctx: click.Context, username: str, account_type: str, **kwargs):
     """
-    if not hasattr(args, "username"):
-        raise ValueError("username is required")
-    if not hasattr(args, "account_type"):
-        raise ValueError("account_type is required")
-
-    account = user_account_name(args.username)
-    account_type = args.account_type
+    Convert a user of one type to another.
+    """
+    account = user_account_name(username)
 
     if not user_exists(account):
-        print(f"User does not exist: {account}")
-        return RESULT_FAILURE
+        click.echo(f"User does not exist: {account}")
+        raise SystemExit(RESULT_FAILURE)
 
-    if account_type not in ACCOUNT_TYPE_OU:
-        print(f"Unknown account type for conversion: {account_type}")
-        return RESULT_FAILURE
-
-    print(f"User exists, converting to: {account_type} for {account}")
-    res = RESULT_SUCCESS
+    click.echo(f"User exists, converting to: {account_type} for {account}")
 
     if account_type == "alumni":
-        res = alumni(args)
+        # call the alumni command
+        ctx.forward(alumni)
 
     elif account_type == "contractor":
         if user_is_partner(account):
-            res += remove_user_from_group(account, GROUP_PARTNERS)
-            res += remove_user_from_group(account, GROUP_STAFF)
+            remove_user_from_group(account, GROUP_PARTNERS)
+            remove_user_from_group(account, GROUP_STAFF)
         elif user_is_staff(account):
-            res = remove_user_from_group(account, GROUP_STAFF)
+            remove_user_from_group(account, GROUP_STAFF)
 
     elif account_type == "staff":
         if user_is_partner(account):
-            res += remove_user_from_group(account, GROUP_PARTNERS)
+            remove_user_from_group(account, GROUP_PARTNERS)
         elif user_is_staff(account):
-            print(f"User is already staff: {account}")
-            return RESULT_FAILURE
-        res += add_user_to_group(account, GROUP_STAFF)
+            click.echo(f"User is already staff: {account}")
+            raise SystemExit(RESULT_FAILURE)
+        add_user_to_group(account, GROUP_STAFF)
 
     elif account_type == "partner":
         if user_is_partner(account):
-            print(f"User is already partner: {account}")
-            return RESULT_FAILURE
+            click.echo(f"User is already partner: {account}")
+            raise SystemExit(RESULT_FAILURE)
         if not user_is_staff(account):
-            res += add_user_to_group(account, GROUP_STAFF)
-        res += add_user_to_group(account, GROUP_PARTNERS)
+            add_user_to_group(account, GROUP_STAFF)
+        add_user_to_group(account, GROUP_PARTNERS)
 
-    res += move_user_ou(account, ACCOUNT_TYPE_OU[account_type])
+    move_user_ou(account, ACCOUNT_TYPE_OU[account_type])
 
-    print(f"Account conversion complete for: {account}")
-
-    return RESULT_SUCCESS if res == RESULT_SUCCESS else RESULT_FAILURE
+    click.echo(f"Account conversion complete for: {account}")

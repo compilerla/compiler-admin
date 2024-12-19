@@ -1,7 +1,6 @@
-from argparse import Namespace
 import pytest
 
-from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
+from compiler_admin import RESULT_SUCCESS
 from compiler_admin.commands.user.restore import restore, __name__ as MODULE
 
 
@@ -15,28 +14,19 @@ def mock_google_CallGYBCommand(mock_google_CallGYBCommand):
     return mock_google_CallGYBCommand(MODULE)
 
 
-def test_restore_user_username_required():
-    args = Namespace()
-
-    with pytest.raises(ValueError, match="username is required"):
-        restore(args)
-
-
-def test_restore_backup_exists(mock_Path_exists, mock_google_CallGYBCommand):
+def test_restore_backup_exists(cli_runner, mock_Path_exists, mock_google_CallGYBCommand):
     mock_Path_exists.return_value = True
 
-    args = Namespace(username="username")
-    res = restore(args)
+    result = cli_runner.invoke(restore, ["username"])
 
-    assert res == RESULT_SUCCESS
+    assert result.exit_code == RESULT_SUCCESS
     mock_google_CallGYBCommand.assert_called_once()
 
 
-def test_restore_backup_does_not_exist(mocker, mock_Path_exists, mock_google_CallGYBCommand):
+def test_restore_backup_does_not_exist(cli_runner, mock_Path_exists, mock_google_CallGYBCommand):
     mock_Path_exists.return_value = False
 
-    args = Namespace(username="username")
-    res = restore(args)
+    result = cli_runner.invoke(restore, ["username"])
 
-    assert res == RESULT_FAILURE
+    assert result.exit_code != RESULT_SUCCESS
     assert mock_google_CallGYBCommand.call_count == 0

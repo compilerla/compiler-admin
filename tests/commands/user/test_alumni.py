@@ -1,4 +1,3 @@
-from argparse import Namespace
 import pytest
 
 from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
@@ -45,58 +44,50 @@ def mock_google_user_exists(mock_google_user_exists):
     return mock_google_user_exists(MODULE)
 
 
-def test_alumni_username_required():
-    args = Namespace()
-
-    with pytest.raises(ValueError, match="username is required"):
-        alumni(args)
-
-
-def test_alumni_user_does_not_exists(mock_google_user_exists, mock_google_CallGAMCommand):
+def test_alumni_user_does_not_exists(cli_runner, mock_google_user_exists, mock_google_CallGAMCommand):
     mock_google_user_exists.return_value = False
 
-    args = Namespace(username="username")
-    res = alumni(args)
+    result = cli_runner.invoke(alumni, ["username"])
 
-    assert res == RESULT_FAILURE
+    assert result.exit_code == RESULT_FAILURE
+    assert result.exception
+    assert "User does not exist: username@compiler.la" in result.output
     mock_google_CallGAMCommand.assert_not_called()
 
 
 @pytest.mark.usefixtures("mock_input_yes")
 def test_alumni_confirm_yes(
-    mock_google_user_exists, mock_google_CallGAMCommand, mock_commands_reset, mock_google_move_user_ou
+    cli_runner, mock_google_user_exists, mock_google_CallGAMCommand, mock_google_move_user_ou, mock_commands_reset
 ):
     mock_google_user_exists.return_value = True
 
-    args = Namespace(username="username", force=False)
-    res = alumni(args)
+    result = cli_runner.invoke(alumni, ["username"])
 
-    assert res == RESULT_SUCCESS
+    assert result.exit_code == RESULT_SUCCESS
     mock_google_CallGAMCommand.assert_called()
     mock_google_move_user_ou.assert_called_once_with("username@compiler.la", OU_ALUMNI)
-    mock_commands_reset.assert_called_once_with(args)
 
 
 @pytest.mark.usefixtures("mock_input_no")
-def test_alumni_confirm_no(mock_google_user_exists, mock_google_CallGAMCommand, mock_commands_reset, mock_google_move_user_ou):
+def test_alumni_confirm_no(
+    cli_runner, mock_google_user_exists, mock_google_CallGAMCommand, mock_google_move_user_ou, mock_commands_reset
+):
     mock_google_user_exists.return_value = True
 
-    args = Namespace(username="username", force=False)
-    res = alumni(args)
+    result = cli_runner.invoke(alumni, ["username"])
 
-    assert res == RESULT_SUCCESS
+    assert result.exit_code == RESULT_SUCCESS
     mock_google_CallGAMCommand.assert_not_called()
-    mock_commands_reset.assert_not_called()
     mock_google_move_user_ou.assert_not_called()
 
 
-def test_alumni_force(mock_google_user_exists, mock_google_CallGAMCommand, mock_commands_reset, mock_google_move_user_ou):
+def test_alumni_force(
+    cli_runner, mock_google_user_exists, mock_google_CallGAMCommand, mock_google_move_user_ou, mock_commands_reset
+):
     mock_google_user_exists.return_value = True
 
-    args = Namespace(username="username", force=True)
-    res = alumni(args)
+    result = cli_runner.invoke(alumni, ["--force", "username"])
 
-    assert res == RESULT_SUCCESS
+    assert result.exit_code == RESULT_SUCCESS
     mock_google_CallGAMCommand.assert_called()
     mock_google_move_user_ou.assert_called_once_with("username@compiler.la", OU_ALUMNI)
-    mock_commands_reset.assert_called_once_with(args)
