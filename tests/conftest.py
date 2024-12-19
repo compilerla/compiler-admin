@@ -1,3 +1,6 @@
+import click
+from click.testing import CliRunner
+
 import pytest
 from pytest_socket import disable_socket
 
@@ -33,76 +36,44 @@ def mock_input(mock_module_name):
     return mock_module_name("input")
 
 
+@click.command
+def dummy_command(**kwargs):
+    return RESULT_SUCCESS
+
+
 @pytest.fixture
-def mock_commands_alumni(mock_module_name):
+def mock_command(mocker):
+    def _mock_command(command):
+        def __mock_command(module):
+            return mocker.patch(f"{module}.{command}", new=mocker.MagicMock(spec=dummy_command))
+
+        return __mock_command
+
+    return _mock_command
+
+
+@pytest.fixture
+def mock_commands_alumni(mock_command):
     """Fixture returns a function that patches the alumni function in a given module."""
-    return mock_module_name("alumni")
+    return mock_command("alumni")
 
 
 @pytest.fixture
-def mock_commands_create(mock_module_name):
-    """Fixture returns a function that patches the create function in a given module."""
-    return mock_module_name("create")
-
-
-@pytest.fixture
-def mock_commands_convert(mock_module_name):
-    """Fixture returns a function that patches the convert command function in a given module."""
-    return mock_module_name("convert")
-
-
-@pytest.fixture
-def mock_commands_delete(mock_module_name):
+def mock_commands_delete(mock_command):
     """Fixture returns a function that patches the delete command function in a given module."""
-    return mock_module_name("delete")
+    return mock_command("delete")
 
 
 @pytest.fixture
-def mock_commands_info(mock_module_name):
-    """Fixture returns a function that patches the info command function in a given module."""
-    return mock_module_name("info")
-
-
-@pytest.fixture
-def mock_commands_init(mock_module_name):
-    """Fixture returns a function that patches the init command function in a given module."""
-    return mock_module_name("init")
-
-
-@pytest.fixture
-def mock_commands_offboard(mock_module_name):
-    """Fixture returns a function that patches the offboard command function in a given module."""
-    return mock_module_name("offboard")
-
-
-@pytest.fixture
-def mock_commands_reset(mock_module_name):
+def mock_commands_reset(mock_command):
     """Fixture returns a function that patches the reset command function in a given module."""
-    return mock_module_name("reset")
+    return mock_command("reset")
 
 
 @pytest.fixture
-def mock_commands_restore(mock_module_name):
-    """Fixture returns a function that patches the restore command function in a given module."""
-    return mock_module_name("restore")
-
-
-@pytest.fixture
-def mock_commands_signout(mock_module_name):
+def mock_commands_signout(mock_command):
     """Fixture returns a function that patches the signout command function in a given module."""
-    return mock_module_name("signout")
-
-
-@pytest.fixture
-def mock_commands_time(mock_module_name):
-    """Fixture returns a function that patches the time command function in a given module."""
-    return mock_module_name("time")
-
-
-@pytest.fixture
-def mock_commands_user(mock_module_name):
-    """Fixture returns a function that patches the user command function in a given module."""
-    return mock_module_name("user")
+    return mock_command("signout")
 
 
 @pytest.fixture
@@ -184,6 +155,11 @@ def mock_NamedTemporaryFile_with_readlines(mocker):
         return patched
 
     return _mock_NamedTemporaryFile
+
+
+@pytest.fixture
+def cli_runner():
+    return CliRunner()
 
 
 @pytest.fixture

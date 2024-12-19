@@ -1,46 +1,38 @@
-from argparse import Namespace
+import click
 
-from compiler_admin import RESULT_SUCCESS, RESULT_FAILURE
+from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
 from compiler_admin.commands.user.signout import signout
 from compiler_admin.services.google import USER_HELLO, CallGAMCommand, user_account_name, user_exists
 
 
-def reset(args: Namespace) -> int:
-    """Reset a user's password.
-
-    Optionally notify an email address with the new randomly generated password.
-
-    Args:
-        username (str): the user account to reset.
-
-        notify (str): an email address to send the new password notification.
-    Returns:
-        A value indicating if the operation succeeded or failed.
+@click.command()
+@click.option("-f", "--force", is_flag=True, help="Don't ask for confirmation.")
+@click.option("-n", "--notify", help="An email address to send the new password notification.")
+@click.argument("username")
+@click.pass_context
+def reset(ctx: click.Context, username: str, force: bool = False, notify: str = "", **kwargs):
     """
-    if not hasattr(args, "username"):
-        raise ValueError("username is required")
-
-    account = user_account_name(args.username)
+    Reset a user's password.
+    """
+    account = user_account_name(username)
 
     if not user_exists(account):
-        print(f"User does not exist: {account}")
-        return RESULT_FAILURE
+        click.echo(f"User does not exist: {account}")
+        raise SystemExit(RESULT_FAILURE)
 
-    if getattr(args, "force", False) is False:
-        cont = input(f"Reset password for {account}? (Y/n)")
+    if not force:
+        cont = input(f"Reset password for {account}? (Y/n): ")
         if not cont.lower().startswith("y"):
-            print("Aborting password reset.")
-            return RESULT_SUCCESS
+            click.echo("Aborting password reset.")
+            raise SystemExit(RESULT_SUCCESS)
+
+    click.echo(f"User exists, resetting password: {account}")
 
     command = ("update", "user", account, "password", "random", "changepassword")
-
-    notify = getattr(args, "notify", None)
     if notify:
         command += ("notify", notify, "from", USER_HELLO)
 
-    print(f"User exists, resetting password: {account}")
+    CallGAMCommand(command)
 
-    res = CallGAMCommand(command)
-    res += signout(args)
-
-    return RESULT_SUCCESS if res == RESULT_SUCCESS else RESULT_FAILURE
+    # call the signout command
+    ctx.forward(signout)
