@@ -1,3 +1,5 @@
+from click.testing import CliRunner
+
 import pytest
 from pytest_socket import disable_socket
 
@@ -184,6 +186,11 @@ def mock_NamedTemporaryFile_with_readlines(mocker):
         return patched
 
     return _mock_NamedTemporaryFile
+
+
+@pytest.fixture
+def cli_runner():
+    return CliRunner()
 
 
 @pytest.fixture

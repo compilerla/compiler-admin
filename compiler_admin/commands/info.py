@@ -1,17 +1,16 @@
-from compiler_admin import __version__ as version, RESULT_SUCCESS, RESULT_FAILURE
+import click
+
+from compiler_admin import __version__ as version
 from compiler_admin.services.google import CallGAMCommand, CallGYBCommand
 
 
-def info(*args, **kwargs) -> int:
-    """Print information about this package and the GAM environment.
-
-    Returns:
-        A value indicating if the operation succeeded or failed.
+@click.command()
+def info():
     """
-    print(f"compiler-admin: {version}")
+    Print information about the configured environment.
+    """
+    click.echo(f"compiler-admin, version {version}")
 
-    res = CallGAMCommand(("version",))
-    res += CallGAMCommand(("info", "domain"))
-    res += CallGYBCommand(("--version",))
-
-    return RESULT_SUCCESS if res == RESULT_SUCCESS else RESULT_FAILURE
+    CallGAMCommand(("version",))
+    CallGAMCommand(("info", "domain"))
+    CallGYBCommand(("--version",))
