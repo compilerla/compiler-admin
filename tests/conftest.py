@@ -59,39 +59,9 @@ def mock_commands_alumni(mock_command):
 
 
 @pytest.fixture
-def mock_commands_create(mock_command):
-    """Fixture returns a function that patches the create function in a given module."""
-    return mock_command("create")
-
-
-@pytest.fixture
-def mock_commands_convert(mock_command):
-    """Fixture returns a function that patches the convert command function in a given module."""
-    return mock_command("convert")
-
-
-@pytest.fixture
 def mock_commands_delete(mock_command):
     """Fixture returns a function that patches the delete command function in a given module."""
     return mock_command("delete")
-
-
-@pytest.fixture
-def mock_commands_info(mock_command):
-    """Fixture returns a function that patches the info command function in a given module."""
-    return mock_command("info")
-
-
-@pytest.fixture
-def mock_commands_init(mock_command):
-    """Fixture returns a function that patches the init command function in a given module."""
-    return mock_command("init")
-
-
-@pytest.fixture
-def mock_commands_offboard(mock_command):
-    """Fixture returns a function that patches the offboard command function in a given module."""
-    return mock_command("offboard")
 
 
 @pytest.fixture
@@ -101,27 +71,9 @@ def mock_commands_reset(mock_command):
 
 
 @pytest.fixture
-def mock_commands_restore(mock_command):
-    """Fixture returns a function that patches the restore command function in a given module."""
-    return mock_command("restore")
-
-
-@pytest.fixture
 def mock_commands_signout(mock_command):
     """Fixture returns a function that patches the signout command function in a given module."""
     return mock_command("signout")
-
-
-@pytest.fixture
-def mock_commands_time(mock_command):
-    """Fixture returns a function that patches the time command function in a given module."""
-    return mock_command("time")
-
-
-@pytest.fixture
-def mock_commands_user(mock_command):
-    """Fixture returns a function that patches the user command function in a given module."""
-    return mock_command("user")
 
 
 @pytest.fixture
