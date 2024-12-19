@@ -1,16 +1,16 @@
-from argparse import Namespace
+import click
 
-from compiler_admin.commands.time.convert import convert  # noqa: F401
-from compiler_admin.commands.time.download import download  # noqa: F401
+from compiler_admin.commands.time.convert import convert
+from compiler_admin.commands.time.download import download
 
 
-def time(args: Namespace, *extra):
-    # try to call the subcommand function directly from global (module) symbols
-    # if the subcommand function was imported above, it should exist in globals()
-    global_env = globals()
+@click.group
+def time():
+    """
+    Work with Compiler time entries.
+    """
+    pass
 
-    if args.subcommand in global_env:
-        cmd_func = global_env[args.subcommand]
-        cmd_func(args, *extra)
-    else:
-        raise NotImplementedError(f"Unknown time subcommand: {args.subcommand}")
+
+time.add_command(convert)
+time.add_command(download)
