@@ -1,4 +1,3 @@
-from argparse import Namespace
 import pytest
 
 from compiler_admin import RESULT_SUCCESS
@@ -40,14 +39,15 @@ def test_get_source_converter_mismatch():
         _get_source_converter("toggl", "nope")
 
 
-def test_convert(mock_get_source_converter):
-    args = Namespace(input="input", output="output", client="client", from_fmt="from", to_fmt="to")
-    res = convert(args)
+def test_convert(cli_runner, mock_get_source_converter):
+    result = cli_runner.invoke(
+        convert, ["--input", "input", "--output", "output", "--client", "client", "--from", "harvest", "--to", "toggl"]
+    )
 
-    assert res == RESULT_SUCCESS
-    mock_get_source_converter.assert_called_once_with(args.from_fmt, args.to_fmt)
+    assert result.exit_code == RESULT_SUCCESS
+    mock_get_source_converter.assert_called_once_with("harvest", "toggl")
     mock_get_source_converter.return_value.assert_called_once_with(
-        source_path=args.input, output_path=args.output, client_name=args.client
+        source_path="input", output_path="output", client_name="client"
     )
 
 
