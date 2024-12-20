@@ -60,7 +60,6 @@ class Toggl:
         Extra `kwargs` are passed through as a POST json body.
 
         By default, requests a report with the following configuration:
-            * `billable=True`
             * `rounding=1` (True, but this is an int param)
             * `rounding_minutes=15`
 
@@ -82,7 +81,6 @@ class Toggl:
         self.timeout = max(current_timeout, dynamic_timeout)
 
         params = dict(
-            billable=True,
             start_date=start,
             end_date=end,
             rounding=1,

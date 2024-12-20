@@ -72,7 +72,6 @@ def test_toggl_detailed_time_entries(toggl_mock_post_reports):
 
     toggl_mock_post_reports.post_reports.assert_called_once_with(
         "search/time_entries.csv",
-        billable=True,
         start_date="2024-09-25",
         end_date="2024-09-25",
         rounding=1,

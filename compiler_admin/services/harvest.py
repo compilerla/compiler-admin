@@ -8,10 +8,10 @@ import pandas as pd
 import compiler_admin.services.files as files
 
 # input CSV columns needed for conversion
-INPUT_COLUMNS = ["Date", "Client", "Project", "Notes", "Hours", "First name", "Last name"]
+HARVEST_COLUMNS = ["Date", "Client", "Project", "Notes", "Hours", "First name", "Last name"]
 
 # default output CSV columns
-OUTPUT_COLUMNS = ["Email", "Start date", "Start time", "Duration", "Project", "Task", "Client", "Billable", "Description"]
+TOGGL_COLUMNS = ["Email", "Start date", "Start time", "Duration", "Project", "Task", "Client", "Billable", "Description"]
 
 
 def _calc_start_time(group: pd.DataFrame):
@@ -33,8 +33,9 @@ def _toggl_client_name():
 def convert_to_toggl(
     source_path: str | TextIO = sys.stdin,
     output_path: str | TextIO = sys.stdout,
+    output_cols: list[str] = TOGGL_COLUMNS,
     client_name: str = None,
-    output_cols: list[str] = OUTPUT_COLUMNS,
+    **kwargs,
 ):
     """Convert Harvest formatted entries in source_path to equivalent Toggl formatted entries.
 
@@ -52,7 +53,7 @@ def convert_to_toggl(
         client_name = _toggl_client_name()
 
     # read CSV file, parsing dates
-    source = files.read_csv(source_path, usecols=INPUT_COLUMNS, parse_dates=["Date"], cache_dates=True)
+    source = files.read_csv(source_path, usecols=HARVEST_COLUMNS, parse_dates=["Date"], cache_dates=True)
 
     # rename columns that can be imported as-is
     source.rename(columns={"Project": "Task", "Notes": "Description", "Date": "Start date"}, inplace=True)
@@ -89,3 +90,6 @@ def convert_to_toggl(
     output_data.sort_values(["Start date", "Start time", "Email"], inplace=True)
 
     files.write_csv(output_path, output_data, output_cols)
+
+
+CONVERTERS = {"toggl": convert_to_toggl}
