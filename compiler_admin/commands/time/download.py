@@ -56,9 +56,10 @@ def prior_month_start():
     "-c",
     "--client",
     "client_ids",
-    multiple=True,
+    envvar="TOGGL_CLIENT_ID",
     help="An ID for a Toggl Client to filter for in reports. Can be supplied more than once.",
     metavar="CLIENT_ID",
+    multiple=True,
     type=int,
 )
 @click.option(
