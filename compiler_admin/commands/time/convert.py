@@ -1,7 +1,3 @@
-import os
-import sys
-from typing import TextIO
-
 import click
 
 from compiler_admin.services.harvest import CONVERTERS as HARVEST_CONVERTERS
@@ -27,12 +23,12 @@ def _get_source_converter(from_fmt: str, to_fmt: str):
 @click.command()
 @click.option(
     "--input",
-    default=os.environ.get("TOGGL_DATA", sys.stdin),
+    envvar="TOGGL_DATA",
     help="The path to the source data for conversion. Defaults to $TOGGL_DATA or stdin.",
 )
 @click.option(
     "--output",
-    default=os.environ.get("HARVEST_DATA", sys.stdout),
+    envvar="HARVEST_DATA",
     help="The path to the file where converted data should be written. Defaults to $HARVEST_DATA or stdout.",
 )
 @click.option(
@@ -53,8 +49,8 @@ def _get_source_converter(from_fmt: str, to_fmt: str):
 )
 @click.option("--client", help="The name of the client to use in converted data.")
 def convert(
-    input: str | TextIO = os.environ.get("TOGGL_DATA", sys.stdin),
-    output: str | TextIO = os.environ.get("HARVEST_DATA", sys.stdout),
+    input: str,
+    output: str,
     from_fmt="toggl",
     to_fmt="harvest",
     client="",
