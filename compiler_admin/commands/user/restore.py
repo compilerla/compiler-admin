@@ -1,31 +1,27 @@
-from argparse import Namespace
 import pathlib
 
-from compiler_admin import RESULT_SUCCESS, RESULT_FAILURE
+import click
+
+from compiler_admin import RESULT_FAILURE
 from compiler_admin.services.google import USER_ARCHIVE, CallGYBCommand, user_account_name
 
 
-def restore(args: Namespace) -> int:
-    """Restore an email backup from a prior offboarding.
-
-    Args:
-        username (str): the user account with a local email backup to restore.
-    Returns:
-        A value indicating if the operation succeeded or failed.
+@click.command()
+@click.argument("username")
+def restore(username: str):
     """
-    if not hasattr(args, "username"):
-        raise ValueError("username is required")
-
-    account = user_account_name(args.username)
+    Restore an email backup from a prior offboarding.
+    """
+    account = user_account_name(username)
     backup_dir = f"GYB-GMail-Backup-{account}"
 
     if not pathlib.Path(backup_dir).exists():
-        print(f"Couldn't find a local backup: {backup_dir}")
-        return RESULT_FAILURE
+        click.echo(f"Couldn't find a local backup: {backup_dir}")
+        raise SystemExit(RESULT_FAILURE)
 
-    print(f"Found backup, starting restore process with dest: {USER_ARCHIVE} for account: {account}")
+    click.echo(f"Found backup, starting restore process with dest: {USER_ARCHIVE} for account: {account}")
 
-    res = CallGYBCommand(
+    CallGYBCommand(
         (
             "--service-account",
             "--email",
@@ -39,6 +35,4 @@ def restore(args: Namespace) -> int:
         )
     )
 
-    print(f"Email restore complete for: {account}")
-
-    return RESULT_SUCCESS if res == RESULT_SUCCESS else RESULT_FAILURE
+    click.echo(f"Email restore complete for: {account}")

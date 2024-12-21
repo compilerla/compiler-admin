@@ -1,7 +1,8 @@
-from argparse import Namespace
 from tempfile import NamedTemporaryFile
 
-from compiler_admin import RESULT_SUCCESS, RESULT_FAILURE
+import click
+
+from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
 from compiler_admin.commands.user.alumni import alumni
 from compiler_admin.commands.user.delete import delete
 from compiler_admin.services.google import (
@@ -13,7 +14,13 @@ from compiler_admin.services.google import (
 )
 
 
-def offboard(args: Namespace) -> int:
+@click.command()
+@click.option("-a", "--alias", help="Another account to assign username as an alias.")
+@click.option("-f", "--force", is_flag=True, help="Don't ask for confirmation.")
+@click.option("-n", "--notify", help="An email address to send the new password notification.")
+@click.argument("username")
+@click.pass_context
+def offboard(ctx: click.Context, username: str, alias: str = "", force: bool = False, **kwargs):
     """Fully offboard a user from Compiler.
 
     Args:
@@ -23,55 +30,49 @@ def offboard(args: Namespace) -> int:
     Returns:
         A value indicating if the operation succeeded or failed.
     """
-    if not hasattr(args, "username"):
-        raise ValueError("username is required")
-
-    username = args.username
     account = user_account_name(username)
 
     if not user_exists(account):
-        print(f"User does not exist: {account}")
-        return RESULT_FAILURE
+        click.echo(f"User does not exist: {account}")
+        raise SystemExit(RESULT_FAILURE)
 
-    alias = getattr(args, "alias", None)
     alias_account = user_account_name(alias)
-    if alias_account is not None and not user_exists(alias_account):
-        print(f"Alias target user does not exist: {alias_account}")
-        return RESULT_FAILURE
+    if alias_account and not user_exists(alias_account):
+        click.echo(f"Alias target user does not exist: {alias_account}")
+        raise SystemExit(RESULT_FAILURE)
 
-    if getattr(args, "force", False) is False:
-        cont = input(f"Offboard account {account} {' (assigning alias to ' + alias_account + ')' if alias else ''}? (Y/n)")
+    if not force:
+        cont = input(f"Offboard account {account} {' (assigning alias to ' + alias_account + ')' if alias else ''}? (Y/n): ")
         if not cont.lower().startswith("y"):
-            print("Aborting offboard.")
-            return RESULT_SUCCESS
+            click.echo("Aborting offboard.")
+            raise SystemExit(RESULT_SUCCESS)
 
-    print(f"User exists, offboarding: {account}")
-    res = RESULT_SUCCESS
+    click.echo(f"User exists, offboarding: {account}")
 
-    res += alumni(args)
+    # call the alumni command
+    ctx.forward(alumni)
 
-    print("Backing up email")
-    res += CallGYBCommand(("--service-account", "--email", account, "--action", "backup"))
+    click.echo("Backing up email")
+    CallGYBCommand(("--service-account", "--email", account, "--action", "backup"))
 
-    print("Starting Drive and Calendar transfer")
-    res += CallGAMCommand(("create", "transfer", account, "calendar,drive", USER_ARCHIVE, "all", "releaseresources"))
+    click.echo("Starting Drive and Calendar transfer")
+    CallGAMCommand(("create", "transfer", account, "calendar,drive", USER_ARCHIVE, "all", "releaseresources"))
 
     status = ""
     with NamedTemporaryFile("w+") as stdout:
         while "Overall Transfer Status: completed" not in status:
-            print("Transfer in progress")
-            res += CallGAMCommand(("show", "transfers", "olduser", username), stdout=stdout.name, stderr="stdout")
+            click.echo("Transfer in progress")
+            CallGAMCommand(("show", "transfers", "olduser", username), stdout=stdout.name, stderr="stdout")
             status = " ".join(stdout.readlines())
             stdout.seek(0)
 
-    res += CallGAMCommand(("user", account, "deprovision", "popimap"))
+    CallGAMCommand(("user", account, "deprovision", "popimap"))
 
-    res += delete(args)
+    # call the delete command
+    ctx.forward(delete)
 
     if alias_account:
-        print(f"Adding an alias to account: {alias_account}")
-        res += CallGAMCommand(("create", "alias", account, "user", alias_account))
+        click.echo(f"Adding an alias to account: {alias_account}")
+        CallGAMCommand(("create", "alias", account, "user", alias_account))
 
-    print(f"Offboarding for user complete: {account}")
-
-    return RESULT_SUCCESS if res == RESULT_SUCCESS else RESULT_FAILURE
+    click.echo(f"Offboarding for user complete: {account}")

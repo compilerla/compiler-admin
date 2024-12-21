@@ -1,22 +1,28 @@
-from argparse import Namespace
+import click
 
-from compiler_admin.commands.user.alumni import alumni  # noqa: F401
-from compiler_admin.commands.user.create import create  # noqa: F401
-from compiler_admin.commands.user.convert import convert  # noqa: F401
-from compiler_admin.commands.user.delete import delete  # noqa: F401
-from compiler_admin.commands.user.offboard import offboard  # noqa: F401
-from compiler_admin.commands.user.reset import reset  # noqa: F401
-from compiler_admin.commands.user.restore import restore  # noqa: F401
-from compiler_admin.commands.user.signout import signout  # noqa: F401
+from compiler_admin.commands.user.alumni import alumni
+from compiler_admin.commands.user.convert import convert
+from compiler_admin.commands.user.create import create
+from compiler_admin.commands.user.delete import delete
+from compiler_admin.commands.user.offboard import offboard
+from compiler_admin.commands.user.reset import reset
+from compiler_admin.commands.user.restore import restore
+from compiler_admin.commands.user.signout import signout
 
 
-def user(args: Namespace, *extra):
-    # try to call the subcommand function directly from global (module) symbols
-    # if the subcommand function was imported above, it should exist in globals()
-    global_env = globals()
+@click.group
+def user():
+    """
+    Work with users in the Compiler org.
+    """
+    pass
 
-    if args.subcommand in global_env:
-        cmd_func = global_env[args.subcommand]
-        cmd_func(args, *extra)
-    else:
-        raise NotImplementedError(f"Unknown user subcommand: {args.subcommand}")
+
+user.add_command(alumni)
+user.add_command(convert)
+user.add_command(create)
+user.add_command(delete)
+user.add_command(offboard)
+user.add_command(reset)
+user.add_command(restore)
+user.add_command(signout)

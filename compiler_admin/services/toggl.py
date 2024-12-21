@@ -192,12 +192,6 @@ def download_time_entries(
     Returns:
         None. Either prints the resulting CSV data or writes to output_path.
     """
-    env_client_id = os.environ.get("TOGGL_CLIENT_ID")
-    if env_client_id:
-        env_client_id = int(env_client_id)
-    if ("client_ids" not in kwargs or not kwargs["client_ids"]) and isinstance(env_client_id, int):
-        kwargs["client_ids"] = [env_client_id]
-
     token = os.environ.get("TOGGL_API_TOKEN")
     workspace = os.environ.get("TOGGL_WORKSPACE_ID")
     toggl = Toggl(token, workspace)

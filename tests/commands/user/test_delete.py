@@ -1,7 +1,6 @@
-from argparse import Namespace
 import pytest
 
-from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
+from compiler_admin import RESULT_SUCCESS
 from compiler_admin.commands.user.delete import delete, __name__ as MODULE
 
 
@@ -29,21 +28,13 @@ def mock_google_CallGAMCommand(mock_google_CallGAMCommand):
     return mock_google_CallGAMCommand(MODULE)
 
 
-def test_delete_user_username_required():
-    args = Namespace()
-
-    with pytest.raises(ValueError, match="username is required"):
-        delete(args)
-
-
 @pytest.mark.usefixtures("mock_input_yes")
-def test_delete_confirm_yes(mock_google_user_exists, mock_google_CallGAMCommand):
+def test_delete_confirm_yes(cli_runner, mock_google_user_exists, mock_google_CallGAMCommand):
     mock_google_user_exists.return_value = True
 
-    args = Namespace(username="username")
-    res = delete(args)
+    result = cli_runner.invoke(delete, ["username"])
 
-    assert res == RESULT_SUCCESS
+    assert result.exit_code == RESULT_SUCCESS
     mock_google_CallGAMCommand.assert_called_once()
     call_args = mock_google_CallGAMCommand.call_args.args[0]
     assert "delete" in call_args
@@ -52,21 +43,19 @@ def test_delete_confirm_yes(mock_google_user_exists, mock_google_CallGAMCommand)
 
 
 @pytest.mark.usefixtures("mock_input_no")
-def test_delete_confirm_no(mock_google_user_exists, mock_google_CallGAMCommand):
+def test_delete_confirm_no(cli_runner, mock_google_user_exists, mock_google_CallGAMCommand):
     mock_google_user_exists.return_value = True
 
-    args = Namespace(username="username")
-    res = delete(args)
+    result = cli_runner.invoke(delete, ["username"])
 
-    assert res == RESULT_SUCCESS
+    assert result.exit_code == RESULT_SUCCESS
     mock_google_CallGAMCommand.assert_not_called()
 
 
-def test_delete_user_does_not_exist(mock_google_user_exists, mock_google_CallGAMCommand):
+def test_delete_user_does_not_exist(cli_runner, mock_google_user_exists, mock_google_CallGAMCommand):
     mock_google_user_exists.return_value = False
 
-    args = Namespace(username="username")
-    res = delete(args)
+    result = cli_runner.invoke(delete, ["username"])
 
-    assert res == RESULT_FAILURE
+    assert result.exit_code != RESULT_SUCCESS
     assert mock_google_CallGAMCommand.call_count == 0

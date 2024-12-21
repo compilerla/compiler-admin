@@ -1,6 +1,9 @@
-from argparse import Namespace
+import os
+import sys
+from typing import TextIO
 
-from compiler_admin import RESULT_SUCCESS
+import click
+
 from compiler_admin.services.harvest import CONVERTERS as HARVEST_CONVERTERS
 from compiler_admin.services.toggl import CONVERTERS as TOGGL_CONVERTERS
 
@@ -21,9 +24,46 @@ def _get_source_converter(from_fmt: str, to_fmt: str):
         )
 
 
-def convert(args: Namespace, *extras):
-    converter = _get_source_converter(args.from_fmt, args.to_fmt)
+@click.command()
+@click.option(
+    "--input",
+    default=os.environ.get("TOGGL_DATA", sys.stdin),
+    help="The path to the source data for conversion. Defaults to $TOGGL_DATA or stdin.",
+)
+@click.option(
+    "--output",
+    default=os.environ.get("HARVEST_DATA", sys.stdout),
+    help="The path to the file where converted data should be written. Defaults to $HARVEST_DATA or stdout.",
+)
+@click.option(
+    "--from",
+    "from_fmt",
+    default="toggl",
+    help="The format of the source data.",
+    show_default=True,
+    type=click.Choice(sorted(CONVERTERS.keys()), case_sensitive=False),
+)
+@click.option(
+    "--to",
+    "to_fmt",
+    default="harvest",
+    help="The format of the converted data.",
+    show_default=True,
+    type=click.Choice(sorted([to_fmt for sub in CONVERTERS.values() for to_fmt in sub.keys()]), case_sensitive=False),
+)
+@click.option("--client", help="The name of the client to use in converted data.")
+def convert(
+    input: str | TextIO = os.environ.get("TOGGL_DATA", sys.stdin),
+    output: str | TextIO = os.environ.get("HARVEST_DATA", sys.stdout),
+    from_fmt="toggl",
+    to_fmt="harvest",
+    client="",
+):
+    """
+    Convert a time report from one format into another.
+    """
+    converter = _get_source_converter(from_fmt, to_fmt)
 
-    converter(source_path=args.input, output_path=args.output, client_name=args.client)
+    click.echo(f"Converting data from format: {from_fmt} to format: {to_fmt}")
 
-    return RESULT_SUCCESS
+    converter(source_path=input, output_path=output, client_name=client)

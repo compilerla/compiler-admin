@@ -1,10 +1,10 @@
-from argparse import Namespace
 import os
 from pathlib import Path
 from shutil import rmtree
 import subprocess
 
-from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
+import click
+
 from compiler_admin.services.google import USER_ARCHIVE, CallGAMCommand
 
 
@@ -22,48 +22,37 @@ def _clean_config_dir(config_dir: Path) -> None:
             rmtree(path)
 
 
-def init(args: Namespace, *extras) -> int:
-    """Initialize a new GAM project.
+@click.command()
+@click.option("--gam", "init_gam", is_flag=True)
+@click.option("--gyb", "init_gyb", is_flag=True)
+@click.argument("username")
+def init(username: str, init_gam: bool = False, init_gyb: bool = False):
+    """Initialize a new GAM and/or GYB project.
 
-    See https://github.com/taers232c/GAMADV-XTD3/wiki/How-to-Install-Advanced-GAM
+    See:
 
-    Args:
-        username (str): The Compiler admin with which to initialize a new project.
-
-        gam (bool): If True, initialize a new GAM project.
-
-        gyb (bool): If True, initialize a new GYB project.
-
-    Returns:
-        A value indicating if the operation succeeded or failed.
+    - https://github.com/taers232c/GAMADV-XTD3/wiki/How-to-Install-Advanced-GAM
+    - https://github.com/GAM-team/got-your-back/wiki
     """
-    if not hasattr(args, "username"):
-        raise ValueError("username is required")
-
-    admin_user = args.username
-    res = RESULT_SUCCESS
-
-    if getattr(args, "gam", False):
+    if init_gam:
         _clean_config_dir(GAM_CONFIG_PATH)
         # GAM is already installed via pyproject.toml
-        res += CallGAMCommand(("config", "drive_dir", str(GAM_CONFIG_PATH), "verify"))
-        res += CallGAMCommand(("create", "project"))
-        res += CallGAMCommand(("oauth", "create"))
-        res += CallGAMCommand(("user", admin_user, "check", "serviceaccount"))
+        CallGAMCommand(("config", "drive_dir", str(GAM_CONFIG_PATH), "verify"))
+        CallGAMCommand(("create", "project"))
+        CallGAMCommand(("oauth", "create"))
+        CallGAMCommand(("user", username, "check", "serviceaccount"))
 
-    if getattr(args, "gyb", False):
+    if init_gyb:
         _clean_config_dir(GYB_CONFIG_PATH)
         # download GYB installer to config directory
         gyb = GYB_CONFIG_PATH / "gyb-install.sh"
         with gyb.open("w+") as dest:
-            res += subprocess.call(("curl", "-s", "-S", "-L", "https://gyb-shortn.jaylee.us/gyb-install"), stdout=dest)
+            subprocess.call(("curl", "-s", "-S", "-L", "https://gyb-shortn.jaylee.us/gyb-install"), stdout=dest)
 
-        res += subprocess.call(("chmod", "+x", str(gyb.absolute())))
+        subprocess.call(("chmod", "+x", str(gyb.absolute())))
 
         # install, giving values to some options
         # https://github.com/GAM-team/got-your-back/blob/main/install-gyb.sh
         #
         # use GYB_CONFIG_PATH.parent for the install directory option, otherwise we get a .config/gyb/gyb directory structure
-        res += subprocess.call((gyb, "-u", admin_user, "-r", USER_ARCHIVE, "-d", str(GYB_CONFIG_PATH.parent)))
-
-    return RESULT_SUCCESS if res == RESULT_SUCCESS else RESULT_FAILURE
+        subprocess.call((gyb, "-u", username, "-r", USER_ARCHIVE, "-d", str(GYB_CONFIG_PATH.parent)))
