@@ -31,14 +31,14 @@ def prior_month_start():
     "--start",
     metavar="YYYY-MM-DD",
     default=prior_month_start(),
-    callback=lambda ctx, param, val: datetime.strptime(val, "%Y-%m-%d %H:%M:%S%z"),
+    callback=lambda ctx, param, val: datetime.strptime(val.split()[0], "%Y-%m-%d"),
     help="The start date of the reporting period. Defaults to the beginning of the prior month.",
 )
 @click.option(
     "--end",
     metavar="YYYY-MM-DD",
     default=prior_month_end(),
-    callback=lambda ctx, param, val: datetime.strptime(val, "%Y-%m-%d %H:%M:%S%z"),
+    callback=lambda ctx, param, val: datetime.strptime(val.split()[0], "%Y-%m-%d"),
     help="The end date of the reporting period. Defaults to the end of the prior month.",
 )
 @click.option(

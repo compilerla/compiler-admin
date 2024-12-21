@@ -47,12 +47,12 @@ def test_prior_month_end(mock_end):
 
 
 def test_download(cli_runner, mock_download_time_entries):
-    date = datetime.now(tz=TZINFO).replace(hour=0, minute=0, second=0, microsecond=0)
+    date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
     args = [
         "--start",
-        date.strftime("%Y-%m-%d %H:%M:%S%z"),
+        date.strftime("%Y-%m-%d"),
         "--end",
-        date.strftime("%Y-%m-%d %H:%M:%S%z"),
+        date.strftime("%Y-%m-%d"),
         "--output",
         "output",
         "-c",
@@ -92,12 +92,12 @@ def test_download(cli_runner, mock_download_time_entries):
 def test_download_client_envvar(cli_runner, monkeypatch, mock_download_time_entries):
     monkeypatch.setenv("TOGGL_CLIENT_ID", 1234)
 
-    date = datetime.now(tz=TZINFO).replace(hour=0, minute=0, second=0, microsecond=0)
+    date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
     args = [
         "--start",
-        date.strftime("%Y-%m-%d %H:%M:%S%z"),
+        date.strftime("%Y-%m-%d"),
         "--end",
-        date.strftime("%Y-%m-%d %H:%M:%S%z"),
+        date.strftime("%Y-%m-%d"),
         "--output",
         "output",
     ]
@@ -112,12 +112,12 @@ def test_download_client_envvar(cli_runner, monkeypatch, mock_download_time_entr
 
 def test_download_all(cli_runner, monkeypatch, mock_download_time_entries):
     monkeypatch.delenv("TOGGL_CLIENT_ID", raising=False)
-    date = datetime.now(tz=TZINFO).replace(hour=0, minute=0, second=0, microsecond=0)
+    date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
     args = [
         "--start",
-        date.strftime("%Y-%m-%d %H:%M:%S%z"),
+        date.strftime("%Y-%m-%d"),
         "--end",
-        date.strftime("%Y-%m-%d %H:%M:%S%z"),
+        date.strftime("%Y-%m-%d"),
         "--output",
         "output",
         "--all",
