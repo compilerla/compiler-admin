@@ -45,6 +45,7 @@ def mock_google_CallGYBCommand(mock_google_CallGYBCommand):
 
 
 @pytest.mark.usefixtures("mock_input_yes")
+@pytest.mark.parametrize("should_delete", [True, False])
 def test_offboard_confirm_yes(
     cli_runner,
     mock_google_user_exists,
@@ -53,10 +54,15 @@ def test_offboard_confirm_yes(
     mock_NamedTemporaryFile,
     mock_commands_deactivate,
     mock_commands_delete,
+    should_delete,
 ):
     mock_google_user_exists.return_value = True
 
-    result = cli_runner.invoke(offboard, ["username"])
+    args = ["username"]
+    if should_delete:
+        args.append("--delete")
+
+    result = cli_runner.invoke(offboard, args)
 
     assert result.exit_code == RESULT_SUCCESS
     assert mock_google_CallGAMCommand.call_count > 0
@@ -64,7 +70,11 @@ def test_offboard_confirm_yes(
     mock_NamedTemporaryFile.assert_called_once()
 
     mock_commands_deactivate.callback.assert_called_once()
-    mock_commands_delete.callback.assert_called_once()
+
+    if should_delete:
+        mock_commands_delete.callback.assert_called_once()
+    else:
+        mock_commands_delete.callback.assert_not_called()
 
 
 @pytest.mark.usefixtures("mock_input_no")
