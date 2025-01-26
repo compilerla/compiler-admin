@@ -153,9 +153,54 @@ def user_in_group(username: str, group: str) -> bool:
         return False
 
 
+def user_in_ou(username: str, ou: str) -> bool:
+    """Checks if a user is in an OU.
+
+    Args:
+        username (str): The user@compiler.la to check for membership in the group.
+        ou (str): The name of an OU to check for username's membership.
+    Returns:
+        True if the user is a member of the OU. False otherwise.
+    """
+    if user_exists(username):
+        with NamedTemporaryFile("w+") as stdout:
+            CallGAMCommand(("info", "ou", ou), stdout=stdout.name, stderr="stdout")
+            output = "\n".join(stdout.readlines())
+        return username in output
+    else:
+        print(f"User does not exist: {username}")
+        return False
+
+
+def user_is_deactivated(username: str) -> bool:
+    """Checks if a user is in an OU.
+
+    Args:
+        username (str): The user@compiler.la to check for membership in the group.
+        ou (str): The name of an OU to check for username's membership.
+    Returns:
+        True if the user is a member of the OU. False otherwise.
+    """
+    return user_in_ou(username, OU_ALUMNI)
+
+
 def user_is_partner(username: str) -> bool:
+    """Checks if a user is a Compiler Partner.
+
+    Args:
+        username (str): The user@compiler.la to check for partner status.
+    Returns:
+        True if the user is a Partner. False otherwise.
+    """
     return user_in_group(username, GROUP_PARTNERS)
 
 
 def user_is_staff(username: str) -> bool:
+    """Checks if a user is a Compiler Staff.
+
+    Args:
+        username (str): The user@compiler.la to check for staff status.
+    Returns:
+        True if the user is a Staff. False otherwise.
+    """
     return user_in_group(username, GROUP_STAFF)

@@ -20,6 +20,7 @@ from compiler_admin.services.google import (
     remove_user_from_group,
     user_exists,
     user_in_group,
+    user_in_ou,
     user_info,
     user_is_partner,
     user_is_staff,
@@ -245,6 +246,33 @@ def test_user_in_group_user_exists_not_in_group(mock_NamedTemporaryFile_with_rea
     mock_NamedTemporaryFile_with_readlines(MODULE, ["group"])
 
     res = user_in_group("username", "nope")
+
+    assert res is False
+
+
+@pytest.mark.usefixtures("mock_google_user_exists_no")
+def test_user_in_ou_user_does_not_exist(capfd):
+    res = user_in_ou("username", "ou")
+    captured = capfd.readouterr()
+
+    assert res is False
+    assert "User does not exist" in captured.out
+
+
+@pytest.mark.usefixtures("mock_google_user_exists_yes")
+def test_user_in_ou_user_exists_in_ou(mock_NamedTemporaryFile_with_readlines):
+    mock_NamedTemporaryFile_with_readlines(MODULE, ["username"])
+
+    res = user_in_ou("username", "ou")
+
+    assert res is True
+
+
+@pytest.mark.usefixtures("mock_google_user_exists_yes")
+def test_user_in_ou_user_exists_not_in_ou(mock_NamedTemporaryFile_with_readlines):
+    mock_NamedTemporaryFile_with_readlines(MODULE, ["nope"])
+
+    res = user_in_ou("username", "ou")
 
     assert res is False
 
