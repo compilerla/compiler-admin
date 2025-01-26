@@ -5,11 +5,6 @@ from compiler_admin.commands.user.convert import convert, __name__ as MODULE
 
 
 @pytest.fixture
-def mock_commands_alumni(mock_commands_alumni):
-    return mock_commands_alumni(MODULE)
-
-
-@pytest.fixture
 def mock_google_user_exists(mock_google_user_exists):
     return mock_google_user_exists(MODULE)
 
@@ -84,15 +79,6 @@ def test_convert_user_exists_bad_account_type(cli_runner, mock_google_move_user_
 
     assert result.exit_code != RESULT_SUCCESS
     assert mock_google_move_user_ou.call_count == 0
-
-
-@pytest.mark.usefixtures("mock_google_user_exists_true")
-def test_convert_alumni(cli_runner, mock_commands_alumni, mock_google_move_user_ou):
-    result = cli_runner.invoke(convert, ["username", "alumni"])
-
-    assert result.exit_code == RESULT_SUCCESS
-    mock_commands_alumni.callback.assert_called_once()
-    mock_google_move_user_ou.assert_called_once()
 
 
 @pytest.mark.usefixtures(

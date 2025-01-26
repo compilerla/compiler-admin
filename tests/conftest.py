@@ -77,9 +77,9 @@ def mock_command(mocker):
 
 
 @pytest.fixture
-def mock_commands_alumni(mock_command):
-    """Fixture returns a function that patches the alumni function in a given module."""
-    return mock_command("alumni")
+def mock_commands_deactivate(mock_command):
+    """Fixture returns a function that patches the deactivate function in a given module."""
+    return mock_command("deactivate")
 
 
 @pytest.fixture
