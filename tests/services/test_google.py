@@ -38,8 +38,13 @@ def mock_google_CallGAMCommand(mock_google_CallGAMCommand):
 
 
 @pytest.fixture
-def mock_google_user_exists(mock_google_user_exists):
-    return mock_google_user_exists(MODULE)
+def mock_google_user_exists_no(mock_google_user_exists_no):
+    return mock_google_user_exists_no(MODULE)
+
+
+@pytest.fixture
+def mock_google_user_exists_yes(mock_google_user_exists_yes):
+    return mock_google_user_exists_yes(MODULE)
 
 
 @pytest.fixture
@@ -217,9 +222,8 @@ def test_user_info_user_does_not_exists(mock_gam_CallGAMCommand):
     assert res == {}
 
 
-def test_user_in_group_user_does_not_exist(mock_google_user_exists, capfd):
-    mock_google_user_exists.return_value = False
-
+@pytest.mark.usefixtures("mock_google_user_exists_no")
+def test_user_in_group_user_does_not_exist(capfd):
     res = user_in_group("username", "group")
     captured = capfd.readouterr()
 
@@ -227,9 +231,8 @@ def test_user_in_group_user_does_not_exist(mock_google_user_exists, capfd):
     assert "User does not exist" in captured.out
 
 
-@pytest.mark.usefixtures("mock_google_CallGAMCommand")
-def test_user_in_group_user_exists_in_group(mock_google_user_exists, mock_NamedTemporaryFile_with_readlines):
-    mock_google_user_exists.return_value = True
+@pytest.mark.usefixtures("mock_google_CallGAMCommand", "mock_google_user_exists_yes")
+def test_user_in_group_user_exists_in_group(mock_NamedTemporaryFile_with_readlines):
     mock_NamedTemporaryFile_with_readlines(MODULE, ["group"])
 
     res = user_in_group("username", "group")
@@ -237,9 +240,8 @@ def test_user_in_group_user_exists_in_group(mock_google_user_exists, mock_NamedT
     assert res is True
 
 
-@pytest.mark.usefixtures("mock_google_CallGAMCommand")
-def test_user_in_group_user_exists_not_in_group(mock_google_user_exists, mock_NamedTemporaryFile_with_readlines):
-    mock_google_user_exists.return_value = True
+@pytest.mark.usefixtures("mock_google_CallGAMCommand", "mock_google_user_exists_yes")
+def test_user_in_group_user_exists_not_in_group(mock_NamedTemporaryFile_with_readlines):
     mock_NamedTemporaryFile_with_readlines(MODULE, ["group"])
 
     res = user_in_group("username", "nope")

@@ -137,6 +137,30 @@ def mock_google_user_exists(mock_module_name):
 
 
 @pytest.fixture
+def mock_google_user_exists_no(mock_google_user_exists):
+    """Fixture returns a function that patches the user_exists function from a given module to return False."""
+
+    def _mock_google_user_exists_no(module):
+        exists = mock_google_user_exists(module)
+        exists.return_value = False
+        return exists
+
+    return _mock_google_user_exists_no
+
+
+@pytest.fixture
+def mock_google_user_exists_yes(mock_google_user_exists):
+    """Fixture returns a function that patches the user_exists function from a given module to return True."""
+
+    def _mock_google_user_exists_yes(module):
+        exists = mock_google_user_exists(module)
+        exists.return_value = True
+        return exists
+
+    return _mock_google_user_exists_yes
+
+
+@pytest.fixture
 def mock_google_user_info(mock_module_name):
     """Fixture returns a function that patches the user_info function from a given module."""
     return mock_module_name("user_info")
