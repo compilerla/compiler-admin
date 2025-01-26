@@ -8,6 +8,7 @@ from compiler_admin.services.google import (
     move_user_ou,
     user_account_name,
     user_exists,
+    user_is_deactivated,
 )
 
 
@@ -17,20 +18,22 @@ from compiler_admin.services.google import (
 @click.option(
     "-e",
     "--recovery-email",
+    default="",
     help="An email address to use as the new recovery email. Without a value, clears the recovery email.",
 )
 @click.option(
     "-p",
     "--recovery-phone",
+    default="",
     help="A phone number to use as the new recovery phone number. Without a value, clears the recovery phone number.",
 )
 @click.argument("username")
 @click.pass_context
-def alumni(
+def deactivate(
     ctx: click.Context, username: str, force: bool = False, recovery_email: str = "", recovery_phone: str = "", **kwargs
 ):
     """
-    Convert a user to a Compiler alumni.
+    Deactivate (but do not delete) a user.
     """
     account = user_account_name(username)
 
@@ -38,13 +41,17 @@ def alumni(
         click.echo(f"User does not exist: {account}")
         raise SystemExit(RESULT_FAILURE)
 
+    if user_is_deactivated(account):
+        click.echo("User is already deactivated")
+        raise SystemExit(RESULT_FAILURE)
+
     if not force:
-        cont = input(f"Convert account to alumni for {account}? (Y/n): ")
+        cont = input(f"Deactivate account {account}? (Y/n): ")
         if not cont.lower().startswith("y"):
-            click.echo("Aborting conversion.")
+            click.echo("Aborting deactivation")
             raise SystemExit(RESULT_SUCCESS)
 
-    click.echo(f"User exists, converting to alumni: {account}")
+    click.echo(f"User exists, deactivating: {account}")
 
     click.echo("Removing from groups")
     CallGAMCommand(("user", account, "delete", "groups"))
@@ -71,3 +78,5 @@ def alumni(
     click.echo("Turning off 2FA")
     command = ("user", account, "turnoff2sv")
     CallGAMCommand(command)
+
+    click.echo(f"User is deactivated: {account}")

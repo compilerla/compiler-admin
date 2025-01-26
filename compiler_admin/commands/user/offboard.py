@@ -3,7 +3,7 @@ from tempfile import NamedTemporaryFile
 import click
 
 from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
-from compiler_admin.commands.user.alumni import alumni
+from compiler_admin.commands.user.deactivate import deactivate
 from compiler_admin.commands.user.delete import delete
 from compiler_admin.services.google import (
     USER_ARCHIVE,
@@ -49,8 +49,8 @@ def offboard(ctx: click.Context, username: str, alias: str = "", force: bool = F
 
     click.echo(f"User exists, offboarding: {account}")
 
-    # call the alumni command
-    ctx.forward(alumni)
+    # call the deactivate command
+    ctx.forward(deactivate)
 
     click.echo("Backing up email")
     CallGYBCommand(("--service-account", "--email", account, "--action", "backup"))
