@@ -5,17 +5,13 @@ from compiler_admin.commands.user.signout import signout, __name__ as MODULE
 
 
 @pytest.fixture
-def mock_input_yes(mock_input):
-    fix = mock_input(MODULE)
-    fix.return_value = "y"
-    return fix
+def mock_input_yes(mock_input_yes):
+    return mock_input_yes(MODULE)
 
 
 @pytest.fixture
-def mock_input_no(mock_input):
-    fix = mock_input(MODULE)
-    fix.return_value = "n"
-    return fix
+def mock_input_no(mock_input_no):
+    return mock_input_no(MODULE)
 
 
 @pytest.fixture

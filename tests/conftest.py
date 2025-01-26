@@ -36,6 +36,30 @@ def mock_input(mock_module_name):
     return mock_module_name("input")
 
 
+@pytest.fixture
+def mock_input_yes(mock_input):
+    """Fixture returns a function that patches the input return value to Yes in a give module."""
+
+    def _mock_input_yes(module):
+        fix = mock_input(module)
+        fix.return_value = "y"
+        return fix
+
+    return _mock_input_yes
+
+
+@pytest.fixture
+def mock_input_no(mock_input):
+    """Fixture returns a function that patches the input return value to No in a give module."""
+
+    def _mock_input_no(module):
+        fix = mock_input(module)
+        fix.return_value = "n"
+        return fix
+
+    return _mock_input_no
+
+
 @click.command
 def dummy_command(**kwargs):
     return RESULT_SUCCESS
