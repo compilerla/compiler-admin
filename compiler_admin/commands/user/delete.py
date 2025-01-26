@@ -7,7 +7,7 @@ from compiler_admin.services.google import CallGAMCommand, user_account_name, us
 @click.command()
 @click.option("-f", "--force", is_flag=True, help="Don't ask for confirmation.")
 @click.argument("username")
-def delete(username: str, force: bool = False):
+def delete(username: str, force: bool = False, **kwargs):
     """
     Delete a user account.
     """
