@@ -77,6 +77,26 @@ def add_user_to_group(username: str, group: str) -> int:
     return CallGAMCommand(("user", username, "add", "groups", "member", group))
 
 
+def get_backup_codes(username: str) -> str:
+    if not user_exists(username):
+        print(f"User does not exist: {username}")
+        return ""
+
+    output = ""
+    command = ("user", username, "show", "backupcodes")
+    with NamedTemporaryFile("w+") as stdout:
+        CallGAMCommand(command, stdout=stdout.name, stderr="stdout")
+        output = "".join(stdout.readlines())
+
+    if "Show 0 Backup Verification Codes" in output:
+        command = ("user", username, "update", "backupcodes")
+        with NamedTemporaryFile("w+") as stdout:
+            CallGAMCommand(command, stdout=stdout.name, stderr="stdout")
+            output = "".join(stdout.readlines())
+
+    return output
+
+
 def move_user_ou(username: str, ou: str) -> int:
     """Move a user into a new OU."""
     return CallGAMCommand(("update", "ou", ou, "move", username))
