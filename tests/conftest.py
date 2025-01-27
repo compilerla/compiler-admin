@@ -77,6 +77,12 @@ def mock_command(mocker):
 
 
 @pytest.fixture
+def mock_commands_backupcodes(mock_command):
+    """Fixture returns a function that patches the backupcodes function in a given module."""
+    return mock_command("backupcodes")
+
+
+@pytest.fixture
 def mock_commands_deactivate(mock_command):
     """Fixture returns a function that patches the deactivate function in a given module."""
     return mock_command("deactivate")
