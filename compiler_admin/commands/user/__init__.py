@@ -1,5 +1,6 @@
 import click
 
+from compiler_admin.commands.user.backupcodes import backupcodes
 from compiler_admin.commands.user.convert import convert
 from compiler_admin.commands.user.create import create
 from compiler_admin.commands.user.deactivate import deactivate
@@ -18,6 +19,7 @@ def user():
     pass
 
 
+user.add_command(backupcodes)
 user.add_command(convert)
 user.add_command(create)
 user.add_command(deactivate)
