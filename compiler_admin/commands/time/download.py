@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-import os
 from typing import List
 
 import click
@@ -8,7 +7,7 @@ from pytz import timezone
 from compiler_admin.services.toggl import TOGGL_COLUMNS, download_time_entries
 
 
-TZINFO = timezone(os.environ.get("TZ_NAME", "America/Los_Angeles"))
+TZINFO = timezone("America/Los_Angeles")
 
 
 def local_now():
