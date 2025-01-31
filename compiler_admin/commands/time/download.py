@@ -16,7 +16,7 @@ def local_now():
 
 def prior_month_end():
     now = local_now()
-    first = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    first = now.replace(day=1)
     return first - timedelta(days=1)
 
 
@@ -29,15 +29,15 @@ def prior_month_start():
 @click.option(
     "--start",
     metavar="YYYY-MM-DD",
-    default=prior_month_start(),
-    callback=lambda ctx, param, val: datetime.strptime(val, "%Y-%m-%d %H:%M:%S%z"),
+    default=prior_month_start().strftime("%Y-%m-%d"),
+    callback=lambda ctx, param, val: datetime.strptime(val, "%Y-%m-%d").replace(tzinfo=TZINFO),
     help="The start date of the reporting period. Defaults to the beginning of the prior month.",
 )
 @click.option(
     "--end",
     metavar="YYYY-MM-DD",
-    default=prior_month_end(),
-    callback=lambda ctx, param, val: datetime.strptime(val, "%Y-%m-%d %H:%M:%S%z"),
+    default=prior_month_end().strftime("%Y-%m-%d"),
+    callback=lambda ctx, param, val: datetime.strptime(val, "%Y-%m-%d").replace(tzinfo=TZINFO),
     help="The end date of the reporting period. Defaults to the end of the prior month.",
 )
 @click.option(
@@ -122,3 +122,6 @@ def download(
         click.echo(f"  {k}: {v}")
 
     download_time_entries(**params)
+
+    click.echo()
+    click.echo(f"Download complete: ./{output}")

@@ -55,7 +55,7 @@ class Toggl:
         Args:
             start_date (datetime): The beginning of the reporting period.
 
-            end_date (str): The end of the reporting period.
+            end_date (datetime): The end of the reporting period.
 
         Extra `kwargs` are passed through as a POST json body.
 
