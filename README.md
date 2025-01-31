@@ -11,7 +11,7 @@
 | compiler\_admin/commands/init.py              |       34 |        0 |       10 |        1 |     98% |    21->18 |
 | compiler\_admin/commands/time/\_\_init\_\_.py |        8 |        1 |        0 |        0 |     88% |        12 |
 | compiler\_admin/commands/time/convert.py      |       24 |        0 |        2 |        0 |    100% |           |
-| compiler\_admin/commands/time/download.py     |       43 |        1 |       14 |        1 |     96% |       106 |
+| compiler\_admin/commands/time/download.py     |       44 |        0 |       14 |        0 |    100% |           |
 | compiler\_admin/commands/user/\_\_init\_\_.py |       20 |        1 |        0 |        0 |     95% |        18 |
 | compiler\_admin/commands/user/alumni.py       |       40 |        0 |        8 |        0 |    100% |           |
 | compiler\_admin/commands/user/convert.py      |       43 |        0 |       22 |        1 |     98% |    74->82 |
@@ -27,7 +27,7 @@
 | compiler\_admin/services/google.py            |       76 |        2 |       22 |        1 |     97% |   116-117 |
 | compiler\_admin/services/harvest.py           |       33 |        0 |        2 |        0 |    100% |           |
 | compiler\_admin/services/toggl.py             |       81 |        2 |       12 |        2 |     96% |    41, 56 |
-|                                     **TOTAL** |  **650** |   **13** |  **136** |   **12** | **97%** |           |
+|                                     **TOTAL** |  **651** |   **12** |  **136** |   **11** | **97%** |           |
 
 
 ## Setup coverage badge
