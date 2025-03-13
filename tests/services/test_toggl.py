@@ -153,7 +153,6 @@ def test_prepare_input(toggl_file, spy_files):
     assert call_args.kwargs["cache_dates"] is True
 
     df_cols = df.columns.to_list()
-    assert set(df_cols) <= set(TOGGL_COLUMNS) or set(TOGGL_COLUMNS) <= set(df_cols)
 
     assert "First name" in df_cols
     assert "Last name" in df_cols

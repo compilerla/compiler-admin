@@ -12,7 +12,7 @@ from compiler_admin.services.google import user_info as google_user_info
 import compiler_admin.services.files as files
 
 # input columns needed for conversion
-TOGGL_COLUMNS = ["Email", "Project", "Client", "Start date", "Start time", "Duration", "Description"]
+TOGGL_COLUMNS = ["Email", "Project", "Task", "Client", "Start date", "Start time", "Duration", "Description"]
 
 # default output CSV columns for Harvest
 HARVEST_COLUMNS = ["Date", "Client", "Project", "Task", "Notes", "Hours", "First name", "Last name"]
@@ -70,6 +70,13 @@ def _prepare_input(source_path: str | TextIO, column_renames: dict = {}) -> pd.D
 
     # calculate hours as a decimal from duration timedelta
     df["Hours"] = (df["Duration"].dt.total_seconds() / 3600).round(2)
+
+    # if there is a Task column, prepend to the Description column and remove
+    if "Task" in df.columns:
+        df["Description"] = df.apply(
+            lambda row: (f"[{row['Task']}] {row['Description']}" if pd.notna(row["Task"]) else row["Description"]), axis=1
+        )
+        df.drop(columns=["Task"], inplace=True)
 
     df.sort_values(["Start date", "Start time", "Email"], inplace=True)
 
