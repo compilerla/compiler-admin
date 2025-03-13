@@ -26,8 +26,8 @@
 | compiler\_admin/services/files.py             |       31 |        0 |        4 |        1 |     97% |    37->40 |
 | compiler\_admin/services/google.py            |       76 |        2 |       22 |        1 |     97% |   116-117 |
 | compiler\_admin/services/harvest.py           |       33 |        0 |        2 |        0 |    100% |           |
-| compiler\_admin/services/toggl.py             |       81 |        2 |       12 |        2 |     96% |    41, 56 |
-|                                     **TOTAL** |  **651** |   **12** |  **136** |   **11** | **97%** |           |
+| compiler\_admin/services/toggl.py             |       84 |        2 |       14 |        3 |     95% |41, 56, 75->81 |
+|                                     **TOTAL** |  **654** |   **12** |  **138** |   **12** | **97%** |           |
 
 
 ## Setup coverage badge
