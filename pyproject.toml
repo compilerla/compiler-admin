@@ -12,7 +12,7 @@ authors = [
 requires-python = ">=3.11"
 dependencies = [
     "advanced-gam-for-google-workspace @ git+https://github.com/taers232c/GAMADV-XTD3.git@v7.05.08#subdirectory=src",
-    "click==8.1.8",
+    "click==8.2.1",
     "pandas==2.3.2",
     "tzdata",
 ]
