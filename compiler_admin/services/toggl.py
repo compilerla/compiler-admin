@@ -1,15 +1,16 @@
-from datetime import datetime
-from functools import cache
 import io
 import os
 import sys
+from datetime import datetime
+from functools import cache
 from typing import TextIO
 
 import pandas as pd
 
+import compiler_admin.services.files as files
 from compiler_admin.api.toggl import Toggl
 from compiler_admin.services.google import user_info as google_user_info
-import compiler_admin.services.files as files
+from compiler_admin.services.time import TimeSummary
 
 # input columns needed for conversion
 TOGGL_COLUMNS = ["Email", "Project", "Task", "Client", "Start date", "Start time", "Duration", "Description"]
@@ -18,6 +19,12 @@ TOGGL_COLUMNS = ["Email", "Project", "Task", "Client", "Start date", "Start time
 HARVEST_COLUMNS = ["Date", "Client", "Project", "Task", "Notes", "Hours", "First name", "Last name"]
 # default output CSV columns for Justworks
 JUSTWORKS_COLUMNS = ["First Name", "Last Name", "Work Email", "Start Date", "End Date", "Regular Hours"]
+
+
+@cache
+def project_info():
+    """Cache of previously seen project information, keyed on Toggl project name."""
+    return files.JsonFileCache("TOGGL_PROJECT_INFO")
 
 
 @cache
@@ -124,8 +131,8 @@ def convert_to_harvest(
     source["Task"] = "Project Consulting"
 
     # get cached project name if any, keyed on Toggl project name
-    project_info = files.JsonFileCache("TOGGL_PROJECT_INFO")
-    source["Project"] = source["Project"].apply(lambda x: project_info.get(key=x, default=x))
+    info = project_info()
+    source["Project"] = source["Project"].apply(lambda x: info.get(key=x, default=x))
 
     files.write_csv(output_path, source, columns=output_cols)
 
@@ -218,6 +225,68 @@ def download_time_entries(
 
     df = pd.read_csv(io.StringIO(csv))
     files.write_csv(output_path, df, columns=output_cols)
+
+
+def normalize_summary(toggl_summary: TimeSummary) -> TimeSummary:
+    """Normalize a Toggl TimeSummary to match the Harvest format."""
+    info = project_info()
+    new_summary = TimeSummary(
+        earliest_date=toggl_summary.earliest_date,
+        latest_date=toggl_summary.latest_date,
+        total_rows=toggl_summary.total_rows,
+        total_hours=toggl_summary.total_hours,
+    )
+
+    for project, hours in toggl_summary.hours_per_project.items():
+        harvest_project = info.get(key=project, default=project)
+        new_summary.hours_per_project[harvest_project] = hours
+
+    for email, projects in toggl_summary.hours_per_user_project.items():
+        first_name = _get_first_name(email)
+        last_name = _get_last_name(email)
+        user = f"{first_name} {last_name}"
+        new_summary.hours_per_user_project[user] = {}
+        for project, hours in projects.items():
+            harvest_project = info.get(key=project, default=project)
+            new_summary.hours_per_user_project[user][harvest_project] = hours
+
+    return new_summary
+
+
+def summarize(path: str | TextIO) -> TimeSummary:
+    """Summarize a Toggl CSV file.
+
+    Args:
+        path (str | TextIO): The path to a readable CSV file of Toggl time entries; or a readable buffer of the same.
+
+    Returns:
+        TimeSummary: A summary of the time entries.
+    """
+    source = files.read_csv(path, usecols=TOGGL_COLUMNS, parse_dates=["Start date"], cache_dates=True)
+
+    # calculate hours as a decimal from duration string
+    source["Hours"] = (pd.to_timedelta(source["Duration"]).dt.total_seconds() / 3600).round(2)
+
+    summary = TimeSummary(
+        earliest_date=source["Start date"].min().date(),
+        latest_date=source["Start date"].max().date(),
+        total_rows=len(source),
+        total_hours=source["Hours"].sum(),
+    )
+
+    # Group by Project to get hours per project
+    project_hours = source.groupby(["Project"])["Hours"].sum().to_dict()
+    summary.hours_per_project = project_hours
+
+    # Group by User and Project to get hours per user/project
+    user_project_hours = source.groupby(["Email", "Project"])["Hours"].sum().to_dict()
+    # create a nested dict of the form {user: {project: hours}}
+    for (email, project), hours in user_project_hours.items():
+        if email not in summary.hours_per_user_project:
+            summary.hours_per_user_project[email] = {}
+        summary.hours_per_user_project[email][project] = hours
+
+    return summary
 
 
 CONVERTERS = {"harvest": convert_to_harvest, "justworks": convert_to_justworks}

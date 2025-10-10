@@ -1,5 +1,6 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from io import BytesIO, StringIO
+import math
 import sys
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -18,6 +19,7 @@ from compiler_admin.services.toggl import (
     convert_to_harvest,
     convert_to_justworks,
     download_time_entries,
+    summarize,
     TOGGL_COLUMNS,
     HARVEST_COLUMNS,
     JUSTWORKS_COLUMNS,
@@ -251,6 +253,18 @@ def test_download_time_entries(toggl_file):
         # as corresponding column values from the mock DataFrame
         for col in response_df.columns:
             assert response_df[col].equals(mock_df[col])
+
+
+def test_summarize(toggl_file):
+    """Test that summarize returns a valid TimeSummary object."""
+    summary = summarize(toggl_file)
+
+    assert summary.earliest_date == date(2023, 1, 2)
+    assert summary.latest_date == date(2023, 1, 30)
+    assert summary.total_rows == 250
+    assert math.isclose(summary.total_hours, 518.32, rel_tol=1e-5)
+    assert len(summary.hours_per_project) > 0
+    assert len(summary.hours_per_user_project) > 0
 
 
 def test_converters():
