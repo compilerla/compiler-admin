@@ -63,16 +63,18 @@ Additionally, GYB is used for Gmail backup/restore. See the [GYB Wiki](https://g
 The `time` command provides an interface for working with time entries from Compiler's various systems:
 
 ```bash
-$ compiler-admin time -h
-usage: compiler-admin time [-h] {convert,download} ...
+$ compiler-admin time --help
+Usage: compiler-admin time [OPTIONS] COMMAND [ARGS]...
 
-positional arguments:
-  {convert,download}  The time command to run.
-    convert           Convert a time report from one format into another.
-    download          Download a Toggl report in CSV format.
+  Work with Compiler time entries.
 
-options:
-  -h, --help          show this help message and exit
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  convert   Convert a time report from one format into another.
+  download  Download a Toggl time report in CSV format.
+  verify    Verify time entry CSV files.
 ```
 
 ### Downloading a Toggl report
@@ -80,22 +82,30 @@ options:
 Use this command to download a time report from Toggl in CSV format:
 
 ```bash
-$ compiler-admin time download -h
-usage: compiler-admin time download [-h] [--start YYYY-MM-DD] [--end YYYY-MM-DD]
-                                    [--output OUTPUT] [--all] [--client CLIENT_ID]
-                                    [--project PROJECT_ID] [--task TASK_ID]
-                                    [--user USER_ID]
+$ compiler-admin time download --help
+Usage: compiler-admin time download [OPTIONS]
 
-options:
-  -h, --help            show this help message and exit
-  --start YYYY-MM-DD    The start date of the reporting period. Defaults to the beginning of the prior month.
-  --end YYYY-MM-DD      The end date of the reporting period. Defaults to the end of the prior month.
-  --output OUTPUT       The path to the file where downloaded data should be written. Defaults to $TOGGL_DATA or stdout.
-  --all                 Download all time entries. The default is to download only billable time entries.
-  --client CLIENT_ID    An ID for a Toggl Client to filter for in reports. Can be supplied more than once.
-  --project PROJECT_ID  An ID for a Toggl Project to filter for in reports. Can be supplied more than once.
-  --task TASK_ID        An ID for a Toggl Project Task to filter for in reports. Can be supplied more than once.
-  --user USER_ID        An ID for a Toggl User to filter for in reports. Can be supplied more than once.
+  Download a Toggl time report in CSV format.
+
+Options:
+  --start YYYY-MM-DD        The start date of the reporting period. Defaults
+                            to the beginning of the prior month.
+  --end YYYY-MM-DD          The end date of the reporting period. Defaults to
+                            the end of the prior month.
+  --output TEXT             The path to the file where downloaded data should
+                            be written. Defaults to a path calculated from the
+                            date range.
+  --all                     Download all time entries. The default is to
+                            download only billable time entries.
+  -c, --client CLIENT_ID    An ID for a Toggl Client to filter for in reports.
+                            Can be supplied more than once.
+  -p, --project PROJECT_ID  An ID for a Toggl Project to filter for in
+                            reports. Can be supplied more than once.
+  -t, --task TASK_ID        An ID for a Toggl Project Task to filter for in
+                            reports. Can be supplied more than once.
+  -u, --user USER_ID        An ID for a Toggl User to filter for in reports.
+                            Can be supplied more than once.
+  --help                    Show this message and exit.
 ```
 
 ### Converting an hours report
@@ -103,19 +113,36 @@ options:
 With a CSV exported from either Harvest or Toggl, use this command to convert to the opposite format:
 
 ```bash
-$ compiler-admin time convert -h
-usage: compiler-admin time convert [-h] [--input INPUT] [--output OUTPUT] [--from {harvest,toggl}]
-                                   [--to {harvest,justworks,toggl}] [--client CLIENT]
+$ compiler-admin time convert --help
+Usage: compiler-admin time convert [OPTIONS]
 
-options:
-  -h, --help            show this help message and exit
-  --input INPUT         The path to the source data for conversion. Defaults to $TOGGL_DATA or stdin.
-  --output OUTPUT       The path to the file where converted data should be written. Defaults to $HARVEST_DATA or stdout.
-  --from {harvest,toggl}
-                        The format of the source data. Defaults to 'toggl'.
-  --to {harvest,justworks,toggl}
-                        The format of the converted data. Defaults to 'harvest'.
-  --client CLIENT       The name of the client to use in converted data.
+  Convert a time report from one format into another.
+
+Options:
+  --input TEXT                    The path to the source data for conversion.
+                                  Defaults to $TOGGL_DATA or stdin.
+  --output TEXT                   The path to the file where converted data
+                                  should be written. Defaults to $HARVEST_DATA
+                                  or stdout.
+  --from [harvest|toggl]          The format of the source data.  [default:
+                                  toggl]
+  --to [harvest|justworks|toggl]  The format of the converted data.  [default:
+                                  harvest]
+  --client TEXT                   The name of the client to use in converted
+                                  data.
+  --help                          Show this message and exit.
+```
+
+### Verifying an hours conversion
+
+```bash
+$ compiler-admin time verify --help
+Usage: compiler-admin time verify [OPTIONS] [FILES]...
+
+  Verify time entry CSV files.
+
+Options:
+  --help  Show this message and exit.
 ```
 
 ## Working with users
