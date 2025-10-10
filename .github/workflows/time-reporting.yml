@@ -1,0 +1,135 @@
+name: Monthly Time Reporting
+description: Downloads and converts a time report from Toggl to Harvest format.
+
+on:
+  workflow_dispatch:
+    inputs:
+      start-date:
+        description: "Start date for the report period (YYYY-MM-DD)"
+        required: false
+      end-date:
+        description: "End date for the report period (YYYY-MM-DD)"
+        required: false
+
+jobs:
+  time-reporting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .github/workflows/.python-version
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Prep configuration
+        id: config
+        run: |
+          mkdir -p .config/gam/gamcache
+
+          cat > .config/toggl-project-info.json <<- EOM
+          ${{ secrets.TOGGL_PROJECT_INFO }}
+          EOM
+          echo "TOGGL_PROJECT_INFO=.config/toggl-project-info.json" >> $GITHUB_OUTPUT
+
+          cat > .config/toggl-user-info.json <<- EOM
+          ${{ secrets.TOGGL_USER_INFO }}
+          EOM
+          echo "TOGGL_USER_INFO=.config/toggl-user-info.json" >> $GITHUB_OUTPUT
+
+          cat > .config/gam/gam.cfg <<- EOM
+          ${{ secrets.GAM_CFG }}
+          EOM
+          echo "GAMCFGDIR=.config/gam" >> $GITHUB_OUTPUT
+
+          cat > .config/gam/client_secrets.json <<- EOM
+          ${{ secrets.GOOGLE_CREDENTIALS }}
+          EOM
+          cat > .config/gam/oauth2.txt <<- EOM
+          ${{ secrets.GOOGLE_OAUTH2 }}
+          EOM
+          cat > .config/gam/oauth2service.json <<- EOM
+          ${{ secrets.GOOGLE_OAUTH2_SERVICE }}
+          EOM
+
+      - name: Download Toggl time entries
+        id: download
+        env:
+          GAMCFGDIR: "${{ steps.config.outputs.GAMCFGDIR }}"
+          TOGGL_API_TOKEN: "${{ secrets.TOGGL_API_TOKEN }}"
+          TOGGL_CLIENT_ID: "${{ secrets.TOGGL_CLIENT_ID }}"
+          TOGGL_USER_AGENT: "compilerla/compiler-admin"
+          TOGGL_WORKSPACE_ID: "${{ secrets.TOGGL_WORKSPACE_ID }}"
+        run: |
+          ARGS=""
+          if [[ -n "${{ github.event.inputs.start-date }}" ]]; then
+            ARGS="$ARGS --start=${{ github.event.inputs.start-date }}"
+          fi
+          if [[ -n "${{ github.event.inputs.end-date }}" ]]; then
+            ARGS="$ARGS --end=${{ github.event.inputs.end-date }}"
+          fi
+
+          OUTPUT=$(compiler-admin time download $ARGS)
+          echo "$OUTPUT"
+
+          FILENAME=$(echo "$OUTPUT" | grep "Download complete:" | cut -d' ' -f3)
+          echo "filename=$FILENAME" >> $GITHUB_OUTPUT
+
+      - name: Convert Toggl entries to Harvest format
+        id: convert
+        env:
+          HARVEST_CLIENT_NAME: "${{ secrets.HARVEST_CLIENT_NAME }}"
+          GAMCFGDIR: "${{ steps.config.outputs.GAMCFGDIR }}"
+          TOGGL_PROJECT_INFO: "${{ steps.config.outputs.TOGGL_PROJECT_INFO }}"
+          TOGGL_USER_INFO: "${{ steps.config.outputs.TOGGL_USER_INFO }}"
+        run: |
+          INPUT_FILENAME="${{ steps.download.outputs.filename }}"
+          OUTPUT_FILENAME=${INPUT_FILENAME/Toggl/Harvest}
+          compiler-admin time convert --input "$INPUT_FILENAME" --output "$OUTPUT_FILENAME"
+          echo "filename=$OUTPUT_FILENAME" >> $GITHUB_OUTPUT
+
+      - name: Verify time entries
+        id: verify
+        env:
+          HARVEST_CLIENT_NAME: "${{ secrets.HARVEST_CLIENT_NAME }}"
+          GAMCFGDIR: "${{ steps.config.outputs.GAMCFGDIR }}"
+          TOGGL_PROJECT_INFO: "${{ steps.config.outputs.TOGGL_PROJECT_INFO }}"
+          TOGGL_USER_INFO: "${{ steps.config.outputs.TOGGL_USER_INFO }}"
+        run: |
+          # First, verify that the files match. This will fail the job if there's a mismatch.
+          compiler-admin time verify \
+            "${{ steps.download.outputs.filename }}" \
+            "${{ steps.convert.outputs.filename }}"
+
+          # If verification passes, generate the summary for Slack from just the converted file.
+          SUMMARY_FULL=$(compiler-admin time verify "${{ steps.convert.outputs.filename }}")
+
+          # Truncate the summary to exclude the per-person details.
+          SUMMARY_TRUNCATED=$(echo "$SUMMARY_FULL" | awk 'BEGIN{RS=""; ORS="\n\n"} NR<=2')
+
+          echo "summary<<EOF" >> $GITHUB_OUTPUT
+          echo "$SUMMARY_TRUNCATED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Post to Slack
+        id: slack
+        if: success()
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          file: ${{ steps.convert.outputs.filename }}
+          initial-comment: "${{ steps.verify.outputs.summary }}"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Cleanup
+        id: cleanup
+        if: always()
+        run: |
+          rm -rf .config/
