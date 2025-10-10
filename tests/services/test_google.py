@@ -11,17 +11,20 @@ from compiler_admin.services.google import (
     GROUP_STAFF,
     GROUP_TEAM,
     GYB,
+    OU_ALUMNI,
     USER_ARCHIVE,
     user_account_name,
     CallGAMCommand,
     CallGYBCommand,
     add_user_to_group,
+    get_backup_codes,
     move_user_ou,
     remove_user_from_group,
     user_exists,
     user_in_group,
     user_in_ou,
     user_info,
+    user_is_deactivated,
     user_is_partner,
     user_is_staff,
     __name__ as MODULE,
@@ -56,6 +59,11 @@ def mock_google_user_info(mock_google_user_info):
 @pytest.fixture
 def mock_google_user_in_group(mock_google_user_in_group):
     return mock_google_user_in_group(MODULE)
+
+
+@pytest.fixture
+def mock_google_user_in_ou(mocker):
+    return mocker.patch(f"{MODULE}.user_in_ou")
 
 
 @pytest.fixture
@@ -170,6 +178,53 @@ def test_add_user_to_group(mock_google_CallGAMCommand):
     mock_google_CallGAMCommand.assert_called_once()
 
 
+def test_get_backup_codes_user_does_not_exist(mock_google_user_exists_no, capfd):
+    username = "nonexistent"
+    res = get_backup_codes(username)
+    captured = capfd.readouterr()
+
+    mock_google_user_exists_no.assert_called_once_with(username)
+    assert res == ""
+    assert f"User does not exist: {username}" in captured.out
+
+
+@pytest.mark.usefixtures("mock_google_user_exists_yes")
+def test_get_backup_codes_user_exists_has_codes(mock_gam_CallGAMCommand, mock_NamedTemporaryFile_with_readlines):
+    username = "existent"
+    codes = "12345678"
+    mock_NamedTemporaryFile_with_readlines(MODULE, [codes])
+
+    res = get_backup_codes(username)
+
+    assert mock_gam_CallGAMCommand.call_count == 1
+    assert "show" in mock_gam_CallGAMCommand.call_args[0][0]
+    assert res == codes
+
+
+@pytest.mark.usefixtures("mock_google_user_exists_yes")
+def test_get_backup_codes_user_exists_no_codes(mocker, mock_gam_CallGAMCommand):
+    username = "existent"
+    no_codes_output = "Show 0 Backup Verification Codes"
+    new_codes = "87654321"
+
+    mock_file_handler = mocker.MagicMock()
+    mock_file_handler.readlines.side_effect = [[no_codes_output], [new_codes]]
+    mock_file_handler.name = "tempfile"
+
+    mock_temp_file_context = mocker.MagicMock()
+    mock_temp_file_context.__enter__.return_value = mock_file_handler
+    mock_temp_file_context.__exit__.return_value = None
+
+    mocker.patch(f"{MODULE}.NamedTemporaryFile", return_value=mock_temp_file_context)
+
+    res = get_backup_codes(username)
+
+    assert mock_gam_CallGAMCommand.call_count == 2
+    assert "show" in mock_gam_CallGAMCommand.call_args_list[0].args[0]
+    assert "update" in mock_gam_CallGAMCommand.call_args_list[1].args[0]
+    assert res == new_codes
+
+
 def test_move_user_ou(mock_google_CallGAMCommand):
     move_user_ou("username", "theou")
 
@@ -275,6 +330,13 @@ def test_user_in_ou_user_exists_not_in_ou(mock_NamedTemporaryFile_with_readlines
     res = user_in_ou("username", "ou")
 
     assert res is False
+
+
+def test_user_is_deactivated_checks_alumni_ou(mock_google_user_in_ou):
+    user_is_deactivated("username")
+
+    mock_google_user_in_ou.assert_called_once()
+    assert mock_google_user_in_ou.call_args.args == ("username", OU_ALUMNI)
 
 
 def test_user_is_partner_checks_partner_group(mock_google_user_in_group):
