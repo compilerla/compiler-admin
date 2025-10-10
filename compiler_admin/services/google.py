@@ -77,6 +77,26 @@ def add_user_to_group(username: str, group: str) -> int:
     return CallGAMCommand(("user", username, "add", "groups", "member", group))
 
 
+def get_backup_codes(username: str) -> str:
+    if not user_exists(username):
+        print(f"User does not exist: {username}")
+        return ""
+
+    output = ""
+    command = ("user", username, "show", "backupcodes")
+    with NamedTemporaryFile("w+") as stdout:
+        CallGAMCommand(command, stdout=stdout.name, stderr="stdout")
+        output = "".join(stdout.readlines())
+
+    if "Show 0 Backup Verification Codes" in output:
+        command = ("user", username, "update", "backupcodes")
+        with NamedTemporaryFile("w+") as stdout:
+            CallGAMCommand(command, stdout=stdout.name, stderr="stdout")
+            output = "".join(stdout.readlines())
+
+    return output
+
+
 def move_user_ou(username: str, ou: str) -> int:
     """Move a user into a new OU."""
     return CallGAMCommand(("update", "ou", ou, "move", username))
@@ -153,9 +173,54 @@ def user_in_group(username: str, group: str) -> bool:
         return False
 
 
+def user_in_ou(username: str, ou: str) -> bool:
+    """Checks if a user is in an OU.
+
+    Args:
+        username (str): The user@compiler.la to check for membership in the group.
+        ou (str): The name of an OU to check for username's membership.
+    Returns:
+        True if the user is a member of the OU. False otherwise.
+    """
+    if user_exists(username):
+        with NamedTemporaryFile("w+") as stdout:
+            CallGAMCommand(("info", "ou", ou), stdout=stdout.name, stderr="stdout")
+            output = "\n".join(stdout.readlines())
+        return username in output
+    else:
+        print(f"User does not exist: {username}")
+        return False
+
+
+def user_is_deactivated(username: str) -> bool:
+    """Checks if a user is in an OU.
+
+    Args:
+        username (str): The user@compiler.la to check for membership in the group.
+        ou (str): The name of an OU to check for username's membership.
+    Returns:
+        True if the user is a member of the OU. False otherwise.
+    """
+    return user_in_ou(username, OU_ALUMNI)
+
+
 def user_is_partner(username: str) -> bool:
+    """Checks if a user is a Compiler Partner.
+
+    Args:
+        username (str): The user@compiler.la to check for partner status.
+    Returns:
+        True if the user is a Partner. False otherwise.
+    """
     return user_in_group(username, GROUP_PARTNERS)
 
 
 def user_is_staff(username: str) -> bool:
+    """Checks if a user is a Compiler Staff.
+
+    Args:
+        username (str): The user@compiler.la to check for staff status.
+    Returns:
+        True if the user is a Staff. False otherwise.
+    """
     return user_in_group(username, GROUP_STAFF)

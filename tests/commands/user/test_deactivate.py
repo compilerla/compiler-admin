@@ -1,7 +1,7 @@
 import pytest
 
 from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
-from compiler_admin.commands.user.alumni import alumni, __name__ as MODULE
+from compiler_admin.commands.user.deactivate import deactivate, __name__ as MODULE
 from compiler_admin.services.google import OU_ALUMNI
 
 
@@ -11,17 +11,13 @@ def mock_commands_reset(mock_commands_reset):
 
 
 @pytest.fixture
-def mock_input_yes(mock_input):
-    fix = mock_input(MODULE)
-    fix.return_value = "y"
-    return fix
+def mock_input_yes(mock_input_yes):
+    return mock_input_yes(MODULE)
 
 
 @pytest.fixture
-def mock_input_no(mock_input):
-    fix = mock_input(MODULE)
-    fix.return_value = "n"
-    return fix
+def mock_input_no(mock_input_no):
+    return mock_input_no(MODULE)
 
 
 @pytest.fixture
@@ -44,10 +40,10 @@ def mock_google_user_exists(mock_google_user_exists):
     return mock_google_user_exists(MODULE)
 
 
-def test_alumni_user_does_not_exists(cli_runner, mock_google_user_exists, mock_google_CallGAMCommand):
+def test_deactivate_user_does_not_exists(cli_runner, mock_google_user_exists, mock_google_CallGAMCommand):
     mock_google_user_exists.return_value = False
 
-    result = cli_runner.invoke(alumni, ["username"])
+    result = cli_runner.invoke(deactivate, ["username"])
 
     assert result.exit_code == RESULT_FAILURE
     assert result.exception
@@ -56,12 +52,12 @@ def test_alumni_user_does_not_exists(cli_runner, mock_google_user_exists, mock_g
 
 
 @pytest.mark.usefixtures("mock_input_yes")
-def test_alumni_confirm_yes(
+def test_deactivate_confirm_yes(
     cli_runner, mock_google_user_exists, mock_google_CallGAMCommand, mock_google_move_user_ou, mock_commands_reset
 ):
     mock_google_user_exists.return_value = True
 
-    result = cli_runner.invoke(alumni, ["username"])
+    result = cli_runner.invoke(deactivate, ["username"])
 
     assert result.exit_code == RESULT_SUCCESS
     mock_google_CallGAMCommand.assert_called()
@@ -69,24 +65,24 @@ def test_alumni_confirm_yes(
 
 
 @pytest.mark.usefixtures("mock_input_no")
-def test_alumni_confirm_no(
+def test_deactivate_confirm_no(
     cli_runner, mock_google_user_exists, mock_google_CallGAMCommand, mock_google_move_user_ou, mock_commands_reset
 ):
     mock_google_user_exists.return_value = True
 
-    result = cli_runner.invoke(alumni, ["username"])
+    result = cli_runner.invoke(deactivate, ["username"])
 
     assert result.exit_code == RESULT_SUCCESS
     mock_google_CallGAMCommand.assert_not_called()
     mock_google_move_user_ou.assert_not_called()
 
 
-def test_alumni_force(
+def test_deactivate_force(
     cli_runner, mock_google_user_exists, mock_google_CallGAMCommand, mock_google_move_user_ou, mock_commands_reset
 ):
     mock_google_user_exists.return_value = True
 
-    result = cli_runner.invoke(alumni, ["--force", "username"])
+    result = cli_runner.invoke(deactivate, ["--force", "username"])
 
     assert result.exit_code == RESULT_SUCCESS
     mock_google_CallGAMCommand.assert_called()

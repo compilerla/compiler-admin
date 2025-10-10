@@ -3,7 +3,7 @@ from tempfile import NamedTemporaryFile
 import click
 
 from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
-from compiler_admin.commands.user.alumni import alumni
+from compiler_admin.commands.user.deactivate import deactivate
 from compiler_admin.commands.user.delete import delete
 from compiler_admin.services.google import (
     USER_ARCHIVE,
@@ -16,19 +16,16 @@ from compiler_admin.services.google import (
 
 @click.command()
 @click.option("-a", "--alias", help="Another account to assign username as an alias.")
+@click.option("-d", "--delete", "_delete", is_flag=True, help="Also delete the account.")
 @click.option("-f", "--force", is_flag=True, help="Don't ask for confirmation.")
 @click.option("-n", "--notify", help="An email address to send the new password notification.")
 @click.argument("username")
 @click.pass_context
-def offboard(ctx: click.Context, username: str, alias: str = "", force: bool = False, **kwargs):
-    """Fully offboard a user from Compiler.
+def offboard(ctx: click.Context, username: str, alias: str = "", _delete: bool = False, force: bool = False, **kwargs):
+    """
+    Fully offboard a user from Compiler.
 
-    Args:
-        username (str): The user account to offboard.
-
-        alias (str): [Optional] account to assign username as an alias
-    Returns:
-        A value indicating if the operation succeeded or failed.
+    Deactivate, back up email, transfer Calendar/Drive, and optionally delete.
     """
     account = user_account_name(username)
 
@@ -49,8 +46,8 @@ def offboard(ctx: click.Context, username: str, alias: str = "", force: bool = F
 
     click.echo(f"User exists, offboarding: {account}")
 
-    # call the alumni command
-    ctx.forward(alumni)
+    # call the deactivate command
+    ctx.forward(deactivate)
 
     click.echo("Backing up email")
     CallGYBCommand(("--service-account", "--email", account, "--action", "backup"))
@@ -65,11 +62,14 @@ def offboard(ctx: click.Context, username: str, alias: str = "", force: bool = F
             CallGAMCommand(("show", "transfers", "olduser", username), stdout=stdout.name, stderr="stdout")
             status = " ".join(stdout.readlines())
             stdout.seek(0)
+        click.echo("Transfer complete")
 
+    click.echo("Deprovisioning POP/IMAP")
     CallGAMCommand(("user", account, "deprovision", "popimap"))
 
     # call the delete command
-    ctx.forward(delete)
+    if _delete:
+        ctx.forward(delete)
 
     if alias_account:
         click.echo(f"Adding an alias to account: {alias_account}")

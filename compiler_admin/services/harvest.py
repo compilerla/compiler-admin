@@ -1,6 +1,7 @@
-from datetime import datetime, timedelta
 import os
 import sys
+import time
+from datetime import timedelta
 from typing import TextIO
 
 import pandas as pd
@@ -22,7 +23,7 @@ def _calc_start_time(group: pd.DataFrame):
 
 def _duration_str(duration: timedelta) -> str:
     """Use total seconds to convert to a datetime and format as a string e.g. 01:30."""
-    return datetime.fromtimestamp(duration.total_seconds()).strftime("%H:%M")
+    return time.strftime("%H:%M", time.gmtime(duration.total_seconds()))
 
 
 def _toggl_client_name():

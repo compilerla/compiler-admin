@@ -5,17 +5,13 @@ from compiler_admin.commands.user.offboard import offboard, __name__ as MODULE
 
 
 @pytest.fixture
-def mock_input_yes(mock_input):
-    fix = mock_input(MODULE)
-    fix.return_value = "y"
-    return fix
+def mock_input_yes(mock_input_yes):
+    return mock_input_yes(MODULE)
 
 
 @pytest.fixture
-def mock_input_no(mock_input):
-    fix = mock_input(MODULE)
-    fix.return_value = "n"
-    return fix
+def mock_input_no(mock_input_no):
+    return mock_input_no(MODULE)
 
 
 @pytest.fixture
@@ -24,8 +20,8 @@ def mock_NamedTemporaryFile(mock_NamedTemporaryFile_with_readlines):
 
 
 @pytest.fixture
-def mock_commands_alumni(mock_commands_alumni):
-    return mock_commands_alumni(MODULE)
+def mock_commands_deactivate(mock_commands_deactivate):
+    return mock_commands_deactivate(MODULE)
 
 
 @pytest.fixture
@@ -49,26 +45,36 @@ def mock_google_CallGYBCommand(mock_google_CallGYBCommand):
 
 
 @pytest.mark.usefixtures("mock_input_yes")
+@pytest.mark.parametrize("should_delete", [True, False])
 def test_offboard_confirm_yes(
     cli_runner,
     mock_google_user_exists,
     mock_google_CallGAMCommand,
     mock_google_CallGYBCommand,
     mock_NamedTemporaryFile,
-    mock_commands_alumni,
+    mock_commands_deactivate,
     mock_commands_delete,
+    should_delete,
 ):
     mock_google_user_exists.return_value = True
 
-    result = cli_runner.invoke(offboard, ["username"])
+    args = ["username"]
+    if should_delete:
+        args.append("--delete")
+
+    result = cli_runner.invoke(offboard, args)
 
     assert result.exit_code == RESULT_SUCCESS
     assert mock_google_CallGAMCommand.call_count > 0
     mock_google_CallGYBCommand.assert_called_once()
     mock_NamedTemporaryFile.assert_called_once()
 
-    mock_commands_alumni.callback.assert_called_once()
-    mock_commands_delete.callback.assert_called_once()
+    mock_commands_deactivate.callback.assert_called_once()
+
+    if should_delete:
+        mock_commands_delete.callback.assert_called_once()
+    else:
+        mock_commands_delete.callback.assert_not_called()
 
 
 @pytest.mark.usefixtures("mock_input_no")
@@ -77,7 +83,7 @@ def test_offboard_confirm_no(
     mock_google_user_exists,
     mock_google_CallGAMCommand,
     mock_google_CallGYBCommand,
-    mock_commands_alumni,
+    mock_commands_deactivate,
     mock_commands_delete,
 ):
     mock_google_user_exists.return_value = True
@@ -88,7 +94,7 @@ def test_offboard_confirm_no(
     mock_google_CallGAMCommand.assert_not_called()
     mock_google_CallGYBCommand.assert_not_called()
 
-    mock_commands_alumni.callback.assert_not_called()
+    mock_commands_deactivate.callback.assert_not_called()
     mock_commands_delete.callback.assert_not_called()
 
 

@@ -36,6 +36,30 @@ def mock_input(mock_module_name):
     return mock_module_name("input")
 
 
+@pytest.fixture
+def mock_input_yes(mock_input):
+    """Fixture returns a function that patches the input return value to Yes in a give module."""
+
+    def _mock_input_yes(module):
+        fix = mock_input(module)
+        fix.return_value = "y"
+        return fix
+
+    return _mock_input_yes
+
+
+@pytest.fixture
+def mock_input_no(mock_input):
+    """Fixture returns a function that patches the input return value to No in a give module."""
+
+    def _mock_input_no(module):
+        fix = mock_input(module)
+        fix.return_value = "n"
+        return fix
+
+    return _mock_input_no
+
+
 @click.command
 def dummy_command(**kwargs):
     return RESULT_SUCCESS
@@ -53,9 +77,15 @@ def mock_command(mocker):
 
 
 @pytest.fixture
-def mock_commands_alumni(mock_command):
-    """Fixture returns a function that patches the alumni function in a given module."""
-    return mock_command("alumni")
+def mock_commands_backupcodes(mock_command):
+    """Fixture returns a function that patches the backupcodes function in a given module."""
+    return mock_command("backupcodes")
+
+
+@pytest.fixture
+def mock_commands_deactivate(mock_command):
+    """Fixture returns a function that patches the deactivate function in a given module."""
+    return mock_command("deactivate")
 
 
 @pytest.fixture
@@ -110,6 +140,30 @@ def mock_google_remove_user_from_group(mock_module_name):
 def mock_google_user_exists(mock_module_name):
     """Fixture returns a function that patches the user_exists function from a given module."""
     return mock_module_name("user_exists")
+
+
+@pytest.fixture
+def mock_google_user_exists_no(mock_google_user_exists):
+    """Fixture returns a function that patches the user_exists function from a given module to return False."""
+
+    def _mock_google_user_exists_no(module):
+        exists = mock_google_user_exists(module)
+        exists.return_value = False
+        return exists
+
+    return _mock_google_user_exists_no
+
+
+@pytest.fixture
+def mock_google_user_exists_yes(mock_google_user_exists):
+    """Fixture returns a function that patches the user_exists function from a given module to return True."""
+
+    def _mock_google_user_exists_yes(module):
+        exists = mock_google_user_exists(module)
+        exists.return_value = True
+        return exists
+
+    return _mock_google_user_exists_yes
 
 
 @pytest.fixture

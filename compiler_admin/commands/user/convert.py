@@ -1,11 +1,9 @@
 import click
 
 from compiler_admin import RESULT_FAILURE
-from compiler_admin.commands.user.alumni import alumni
 from compiler_admin.services.google import (
     GROUP_PARTNERS,
     GROUP_STAFF,
-    OU_ALUMNI,
     OU_CONTRACTORS,
     OU_PARTNERS,
     OU_STAFF,
@@ -19,24 +17,11 @@ from compiler_admin.services.google import (
 )
 
 
-ACCOUNT_TYPE_OU = {"alumni": OU_ALUMNI, "contractor": OU_CONTRACTORS, "partner": OU_PARTNERS, "staff": OU_STAFF}
+ACCOUNT_TYPE_OU = {"contractor": OU_CONTRACTORS, "partner": OU_PARTNERS, "staff": OU_STAFF}
 
 
 @click.command()
 @click.option("-f", "--force", is_flag=True, help="Don't ask for confirmation.")
-@click.option(
-    "-n", "--notify", help="An email address to send the new password notification. Only valid for alumni conversion."
-)
-@click.option(
-    "-e",
-    "--recovery-email",
-    help="An email address to use as the new recovery email. Only valid for alumni conversion.",
-)
-@click.option(
-    "-p",
-    "--recovery-phone",
-    help="A phone number to use as the new recovery phone number. Only valid for alumni conversion.",
-)
 @click.argument("username")
 @click.argument("account_type", type=click.Choice(ACCOUNT_TYPE_OU.keys(), case_sensitive=False))
 @click.pass_context
@@ -52,11 +37,7 @@ def convert(ctx: click.Context, username: str, account_type: str, **kwargs):
 
     click.echo(f"User exists, converting to: {account_type} for {account}")
 
-    if account_type == "alumni":
-        # call the alumni command
-        ctx.forward(alumni)
-
-    elif account_type == "contractor":
+    if account_type == "contractor":
         if user_is_partner(account):
             remove_user_from_group(account, GROUP_PARTNERS)
             remove_user_from_group(account, GROUP_STAFF)
