@@ -1,5 +1,6 @@
+import math
 import sys
-from datetime import timedelta
+from datetime import timedelta, date
 from io import StringIO
 
 import numpy as np
@@ -17,6 +18,7 @@ from compiler_admin.services.harvest import (
     _duration_str,
     _toggl_client_name,
     convert_to_toggl,
+    summarize,
 )
 
 
@@ -57,21 +59,8 @@ def test_calc_start_time():
     ]
 
 
-def test_duration_str():
-    td = timedelta(hours=1, minutes=30, seconds=15)
-
-    result = _duration_str(td)
-
-    assert isinstance(result, str)
-    assert result == "01:30"
-
-
-def test_toggl_client_name(monkeypatch):
-    assert _toggl_client_name() == "Test_Client"
-
-    monkeypatch.setenv("TOGGL_CLIENT_NAME", "New Test Client")
-
-    assert _toggl_client_name() == "New Test Client"
+def test_converters():
+    assert CONVERTERS.get("toggl") == convert_to_toggl
 
 
 def test_convert_to_toggl_mocked(harvest_file, spy_files, mock_toggl_client_name):
@@ -112,5 +101,30 @@ def test_convert_to_toggl_sample(harvest_file, toggl_file):
     assert output_df["Project"].eq("Test Client 123").all()
 
 
-def test_converters():
-    assert CONVERTERS.get("toggl") == convert_to_toggl
+def test_duration_str():
+    td = timedelta(hours=1, minutes=30, seconds=15)
+
+    result = _duration_str(td)
+
+    assert isinstance(result, str)
+    assert result == "01:30"
+
+
+def test_summarize(harvest_file):
+    """Test that summarize returns a valid TimeSummary object."""
+    summary = summarize(harvest_file)
+
+    assert summary.earliest_date == date(2023, 1, 2)
+    assert summary.latest_date == date(2023, 1, 30)
+    assert summary.total_rows == 250
+    assert math.isclose(summary.total_hours, 518.32, rel_tol=1e-5)
+    assert len(summary.hours_per_project) > 0
+    assert len(summary.hours_per_user_project) > 0
+
+
+def test_toggl_client_name(monkeypatch):
+    assert _toggl_client_name() == "Test_Client"
+
+    monkeypatch.setenv("TOGGL_CLIENT_NAME", "New Test Client")
+
+    assert _toggl_client_name() == "New Test Client"

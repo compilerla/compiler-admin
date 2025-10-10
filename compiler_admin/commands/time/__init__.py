@@ -2,6 +2,7 @@ import click
 
 from compiler_admin.commands.time.convert import convert
 from compiler_admin.commands.time.download import download
+from compiler_admin.commands.time.verify import verify
 
 
 @click.group
@@ -14,3 +15,4 @@ def time():
 
 time.add_command(convert)
 time.add_command(download)
+time.add_command(verify)
