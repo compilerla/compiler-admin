@@ -7,6 +7,7 @@ from typing import TextIO
 import pandas as pd
 
 import compiler_admin.services.files as files
+from compiler_admin.services.time import TimeSummary
 
 # input CSV columns needed for conversion
 HARVEST_COLUMNS = ["Date", "Client", "Project", "Notes", "Hours", "First name", "Last name"]
@@ -91,6 +92,42 @@ def convert_to_toggl(
     output_data.sort_values(["Start date", "Start time", "Email"], inplace=True)
 
     files.write_csv(output_path, output_data, output_cols)
+
+
+def summarize(path: str | TextIO) -> "TimeSummary":
+    """Summarize a Harvest CSV file.
+
+    Args:
+        path (str | TextIO): The path to a readable CSV file of Harvest time entries; or a readable buffer of the same.
+
+    Returns:
+        TimeSummary: A summary of the time entries.
+    """
+
+    # read CSV file, parsing dates
+    source = files.read_csv(path, usecols=HARVEST_COLUMNS, parse_dates=["Date"], cache_dates=True)
+
+    summary = TimeSummary(
+        earliest_date=source["Date"].min().date(),
+        latest_date=source["Date"].max().date(),
+        total_rows=len(source),
+        total_hours=source["Hours"].sum(),
+    )
+
+    # Group by Project to get hours per project
+    project_hours = source.groupby(["Project"])["Hours"].sum().to_dict()
+    summary.hours_per_project = project_hours
+
+    # Group by User and Project to get hours per user/project
+    user_project_hours = source.groupby(["First name", "Last name", "Project"])["Hours"].sum().to_dict()
+    # create a nested dict of the form {user: {project: hours}}
+    for (first, last, project), hours in user_project_hours.items():
+        user = f"{first} {last}"
+        if user not in summary.hours_per_user_project:
+            summary.hours_per_user_project[user] = {}
+        summary.hours_per_user_project[user][project] = hours
+
+    return summary
 
 
 CONVERTERS = {"toggl": convert_to_toggl}
