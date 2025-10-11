@@ -129,7 +129,7 @@ jobs:
           method: files.uploadV2
           token: ${{ secrets.SLACK_BOT_TOKEN }}
           payload: |
-            channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+            channel_id: ${{ secrets.SLACK_CHANNEL_ID }}
             initial_comment: "${{ steps.verify.outputs.summary }}"
             file: ${{ steps.convert.outputs.filename }}
             filename: ${{ steps.convert.outputs.filename }}
