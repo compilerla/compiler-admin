@@ -74,12 +74,29 @@ Options:
 Commands:
   convert   Convert a time report from one format into another.
   download  Download a Toggl time report in CSV format.
+  lock      Lock Toggl time entries.
   verify    Verify time entry CSV files.
+```
+
+### Locking time entries
+
+Use this command to lock Toggl time entries up to some date (defaulting to the last day of the prior month).
+
+```bash
+$ compiler-admin time lock --help
+Usage: compiler-admin time lock [OPTIONS]
+
+  Lock Toggl time entries.
+
+Options:
+  --date TEXT  The date to lock time entries, formatted as YYYY-MM-DD.
+               Defaults to the last day of the previous month.
+  --help       Show this message and exit.
 ```
 
 ### Downloading a Toggl report
 
-Use this command to download a time report from Toggl in CSV format:
+Use this command to download a time report from Toggl in CSV format (defaulting to the prior month):
 
 ```bash
 $ compiler-admin time download --help
