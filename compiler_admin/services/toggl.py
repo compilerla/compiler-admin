@@ -227,6 +227,20 @@ def download_time_entries(
     files.write_csv(output_path, df, columns=output_cols)
 
 
+def lock_time_entries(lock_date: datetime):
+    """Lock time entries on the given date.
+
+    Args:
+        lock_date (datetime): The date to lock time entries.
+    """
+    token = os.environ.get("TOGGL_API_TOKEN")
+    workspace = os.environ.get("TOGGL_WORKSPACE_ID")
+    toggl = Toggl(token, workspace)
+
+    lock_date_str = lock_date.strftime("%Y-%m-%d")
+    toggl.update_workspace_preferences(report_locked_at=lock_date_str)
+
+
 def normalize_summary(toggl_summary: TimeSummary) -> TimeSummary:
     """Normalize a Toggl TimeSummary to match the Harvest format."""
     info = project_info()
