@@ -14,7 +14,9 @@ class Toggl:
 
     API_BASE_URL = "https://api.track.toggl.com"
     API_REPORTS_BASE_URL = "reports/api/v3"
+    API_VERSION_URL = "api/v9"
     API_WORKSPACE = "workspace/{}"
+    API_WORKSPACES = "workspaces/{}"
     API_HEADERS = {"Content-Type": "application/json", "User-Agent": "compilerla/compiler-admin:{}".format(__version__)}
 
     def __init__(self, api_token: str, workspace_id: int, **kwargs):
@@ -33,6 +35,11 @@ class Toggl:
         """The workspace portion of an API URL."""
         return Toggl.API_WORKSPACE.format(self.workspace_id)
 
+    @property
+    def workspaces_url_fragment(self):
+        """The workspaces portion of an API URL."""
+        return Toggl.API_WORKSPACES.format(self.workspace_id)
+
     def _authorization_header(self):
         """Gets an `Authorization: Basic xyz` header using the Toggl API token.
 
@@ -41,6 +48,10 @@ class Toggl:
         creds = f"{self._token}:api_token"
         creds64 = b64encode(bytes(creds, "utf-8")).decode("utf-8")
         return {"Authorization": "Basic {}".format(creds64)}
+
+    def _make_api_url(self, endpoint: str):
+        """Get a fully formed URL for the Toggl API version endpoint."""
+        return "/".join((Toggl.API_BASE_URL, Toggl.API_VERSION_URL, self.workspaces_url_fragment, endpoint))
 
     def _make_report_url(self, endpoint: str):
         """Get a fully formed URL for the Toggl Reports API v3 endpoint.
@@ -103,6 +114,18 @@ class Toggl:
         See https://engineering.toggl.com/docs/reports_start.
         """
         url = self._make_report_url(endpoint)
+
+        response = self.session.post(url, json=kwargs, timeout=self.timeout)
+        response.raise_for_status()
+
+        return response
+
+    def update_workspace_preferences(self, **kwargs) -> requests.Response:
+        """Update workspace preferences.
+
+        See https://engineering.toggl.com/docs/api/preferences/#post-update-workspace-preferences.
+        """
+        url = self._make_api_url("preferences")
 
         response = self.session.post(url, json=kwargs, timeout=self.timeout)
         response.raise_for_status()

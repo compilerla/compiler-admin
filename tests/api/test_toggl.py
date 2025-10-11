@@ -4,7 +4,8 @@ from pathlib import Path
 import pytest
 
 from compiler_admin import __version__
-from compiler_admin.api.toggl import __name__ as MODULE, Toggl
+from compiler_admin.api.toggl import Toggl
+from compiler_admin.api.toggl import __name__ as MODULE
 
 
 @pytest.fixture
@@ -46,6 +47,15 @@ def test_toggl_init(toggl):
     assert toggl.headers["Authorization"] == f"Basic {token64}"
 
     assert toggl.timeout == 5
+
+
+def test_toggl_make_api_url(toggl):
+    url = toggl._make_api_url("endpoint")
+
+    assert url.startswith(toggl.API_BASE_URL)
+    assert toggl.API_VERSION_URL in url
+    assert toggl.workspaces_url_fragment in url
+    assert "/endpoint" in url
 
 
 def test_toggl_make_report_url(toggl):
@@ -90,3 +100,14 @@ def test_toggl_detailed_time_entries_dynamic_timeout(mock_requests, toggl):
 
     mock_requests.post.assert_called_once()
     assert mock_requests.post.call_args.kwargs["timeout"] == 30
+
+
+def test_toggl_update_workspace_preferences(mock_requests, toggl, mocker):
+    url = "http://fake.url"
+    mocker.patch.object(toggl, "_make_api_url", return_value=url)
+    prefs = {"pref1": "value1", "pref2": True}
+    response = toggl.update_workspace_preferences(**prefs)
+
+    response.raise_for_status.assert_called_once()
+    toggl._make_api_url.assert_called_once_with("preferences")
+    mock_requests.post.assert_called_once_with(url, json=prefs, timeout=toggl.timeout)

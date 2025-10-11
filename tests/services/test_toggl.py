@@ -19,6 +19,7 @@ from compiler_admin.services.toggl import (
     convert_to_harvest,
     convert_to_justworks,
     download_time_entries,
+    lock_time_entries,
     summarize,
     TOGGL_COLUMNS,
     HARVEST_COLUMNS,
@@ -253,6 +254,14 @@ def test_download_time_entries(toggl_file):
         # as corresponding column values from the mock DataFrame
         for col in response_df.columns:
             assert response_df[col].equals(mock_df[col])
+
+
+@pytest.mark.usefixtures("mock_toggl_api_env")
+def test_lock_time_entries(mock_toggl_api):
+    lock_date = datetime(2025, 10, 11)
+    lock_time_entries(lock_date)
+
+    mock_toggl_api.update_workspace_preferences.assert_called_once_with(report_locked_at="2025-10-11")
 
 
 def test_summarize(toggl_file):

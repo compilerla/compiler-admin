@@ -62,6 +62,19 @@ jobs:
           ${{ secrets.GOOGLE_OAUTH2_SERVICE }}
           EOM
 
+      - name: Lock Toggl time entries
+        id: lock
+        env:
+          TOGGL_API_TOKEN: "${{ secrets.TOGGL_API_TOKEN }}"
+          TOGGL_WORKSPACE_ID: "${{ secrets.TOGGL_WORKSPACE_ID }}"
+        run: |
+          ARGS=""
+          if [[ -n "${{ github.event.inputs.end-date }}" ]]; then
+            ARGS="$ARGS --date=${{ github.event.inputs.end-date }}"
+          fi
+
+          compiler-admin time lock $ARGS
+
       - name: Download Toggl time entries
         id: download
         env:
