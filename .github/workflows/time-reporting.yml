@@ -30,31 +30,35 @@ jobs:
 
       - name: Prep configuration
         id: config
+        env:
+          CFGDIR: "${{ github.workspace }}/.config"
+          GAMCFGDIR: "${{ github.workspace }}/.config/gam"
         run: |
-          mkdir -p .config/gam/gamcache
+          mkdir -p $GAMCFGDIR/gamcache
+          mkdir -p $GAMCFGDIR/Downloads
 
-          cat > .config/toggl-project-info.json <<- EOM
+          cat > $CFGDIR/toggl-project-info.json <<- EOM
           ${{ secrets.TOGGL_PROJECT_INFO }}
           EOM
-          echo "TOGGL_PROJECT_INFO=.config/toggl-project-info.json" >> $GITHUB_OUTPUT
+          echo "TOGGL_PROJECT_INFO=$CFGDIR/toggl-project-info.json" >> $GITHUB_OUTPUT
 
-          cat > .config/toggl-user-info.json <<- EOM
+          cat > $CFGDIR/toggl-user-info.json <<- EOM
           ${{ secrets.TOGGL_USER_INFO }}
           EOM
-          echo "TOGGL_USER_INFO=.config/toggl-user-info.json" >> $GITHUB_OUTPUT
+          echo "TOGGL_USER_INFO=$CFGDIR/toggl-user-info.json" >> $GITHUB_OUTPUT
 
-          cat > .config/gam/gam.cfg <<- EOM
+          cat > $GAMCFGDIR/gam.cfg <<- EOM
           ${{ secrets.GAM_CFG }}
           EOM
-          echo "GAMCFGDIR=.config/gam" >> $GITHUB_OUTPUT
+          echo "GAMCFGDIR=$GAMCFGDIR" >> $GITHUB_OUTPUT
 
-          cat > .config/gam/client_secrets.json <<- EOM
+          cat > $GAMCFGDIR/client_secrets.json <<- EOM
           ${{ secrets.GOOGLE_CREDENTIALS }}
           EOM
-          cat > .config/gam/oauth2.txt <<- EOM
+          cat > $GAMCFGDIR/oauth2.txt <<- EOM
           ${{ secrets.GOOGLE_OAUTH2 }}
           EOM
-          cat > .config/gam/oauth2service.json <<- EOM
+          cat > $GAMCFGDIR/oauth2service.json <<- EOM
           ${{ secrets.GOOGLE_OAUTH2_SERVICE }}
           EOM
 
