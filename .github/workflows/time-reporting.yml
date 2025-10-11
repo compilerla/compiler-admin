@@ -124,13 +124,15 @@ jobs:
       - name: Post to Slack
         id: slack
         if: success()
-        uses: slackapi/slack-github-action@v1.26.0
+        uses: slackapi/slack-github-action@v2.1.1
         with:
-          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
-          file: ${{ steps.convert.outputs.filename }}
-          initial-comment: "${{ steps.verify.outputs.summary }}"
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          method: files.uploadV2
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+            initial_comment: "${{ steps.verify.outputs.summary }}"
+            file: ${{ steps.convert.outputs.filename }}
+            filename: ${{ steps.convert.outputs.filename }}
 
       - name: Cleanup
         id: cleanup
