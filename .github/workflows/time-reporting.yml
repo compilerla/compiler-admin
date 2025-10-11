@@ -117,9 +117,10 @@ jobs:
           # Truncate the summary to exclude the per-person details.
           SUMMARY_TRUNCATED=$(echo "$SUMMARY_FULL" | awk 'BEGIN{RS=""; ORS="\n\n"} NR<=2')
 
-          echo "summary<<EOF" >> $GITHUB_OUTPUT
-          echo "$SUMMARY_TRUNCATED" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          # Format for Slack: add backticks to numbers and escape newlines for the JSON payload.
+          SUMMARY_SLACK=$(echo "$SUMMARY_TRUNCATED" | sed -E 's/: ([0-9.]+)/: `\1`/' | sed -z 's/\n/\\n/g')
+
+          echo "summary=$SUMMARY_SLACK" >> $GITHUB_OUTPUT
 
       - name: Post to Slack
         id: slack
