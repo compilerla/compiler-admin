@@ -10,6 +10,13 @@ nav:
       - Monthly Time Reporting: tutorials/monthly-time-reporting.md
       - Onboarding a User: tutorials/onboarding-a-user.md
       - Offboarding a User: tutorials/offboarding-a-user.md
+  - How-to Guides:
+      - Time Management:
+          - Download a Toggl Report: guides/time/download.md
+          - Convert Time Reports: guides/time/convert.md
+          - Lock Time Entries: guides/time/lock.md
+          - Verify Time Reports: guides/time/verify.md
+          - Run GitHub Actions Workflow: guides/time/run-github-workflow.md
   - Reference:
       - Configuration: reference/configuration.md
       - CLI Reference:
