@@ -28,6 +28,29 @@ def test_verify_two_files(cli_runner, harvest_file, toggl_file):
     assert "Summaries match." in result.output
 
 
+def test_verify_two_files_mismatched_details(cli_runner, tmp_path):
+    """Test that verify shows detailed differences for mismatched files."""
+    file1_content = """Date,Client,Project,Notes,Hours,First name,Last name
+2025-01-01,ClientA,ProjectX,Note1,8.0,John,Doe
+2025-01-01,ClientA,ProjectY,Note2,4.0,John,Doe
+"""
+    file2_content = """Date,Client,Project,Notes,Hours,First name,Last name
+2025-01-01,ClientA,ProjectX,Note1,8.0,John,Doe
+2025-01-01,ClientA,ProjectY,Note2,5.0,John,Doe
+"""
+    file1 = tmp_path / "file1.csv"
+    file2 = tmp_path / "file2.csv"
+    file1.write_text(file1_content)
+    file2.write_text(file2_content)
+
+    result = cli_runner.invoke(verify, [str(file1), str(file2)])
+    assert result.exit_code == 1
+    assert "Summaries do not match:" in result.output
+    assert "- Total hours: 12.0 vs 13.0" in result.output
+    assert "  Project 'ProjectY' hours: 4.0 vs 5.0" in result.output
+    assert "  User 'John Doe', Project 'ProjectY' hours: 4.0 vs 5.0" in result.output
+
+
 def test_verify_invalid_file_count(cli_runner, tmp_path):
     """Test that verify fails with an invalid number of files."""
     result = cli_runner.invoke(verify, [])
