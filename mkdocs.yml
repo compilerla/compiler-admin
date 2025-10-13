@@ -6,6 +6,7 @@ site_url: https://docs.compiler.la/compiler-admin
 nav:
   - Home: index.md
   - Reference:
+      - Configuration: reference/configuration.md
       - CLI Reference:
           - init: reference/cli/init.md
           - info: reference/cli/info.md
