@@ -1,5 +1,6 @@
-import click
 import sys
+
+import click
 
 from compiler_admin.services import harvest, toggl
 from compiler_admin.services.time import TimeSummary
@@ -40,10 +41,28 @@ def _diff_summaries(summary1: TimeSummary, summary2: TimeSummary):
         diffs.append(f"Total rows: {summary1.total_rows} vs {summary2.total_rows}")
     if summary1.total_hours != summary2.total_hours:
         diffs.append(f"Total hours: {summary1.total_hours} vs {summary2.total_hours}")
+    # Detailed diff for hours_per_project
     if summary1.hours_per_project != summary2.hours_per_project:
-        diffs.append("Hours per project differ.")
+        all_projects = sorted(set(summary1.hours_per_project.keys()) | set(summary2.hours_per_project.keys()))
+        for project in all_projects:
+            hours1 = summary1.hours_per_project.get(project, 0.0)
+            hours2 = summary2.hours_per_project.get(project, 0.0)
+            if hours1 != hours2:
+                diffs.append(f"  Project '{project}' hours: {hours1} vs {hours2}")
+
+    # Detailed diff for hours_per_user_project
     if summary1.hours_per_user_project != summary2.hours_per_user_project:
-        diffs.append("Hours per user/project differ.")
+        all_users = sorted(set(summary1.hours_per_user_project.keys()) | set(summary2.hours_per_user_project.keys()))
+        for user in all_users:
+            projects1 = summary1.hours_per_user_project.get(user, {})
+            projects2 = summary2.hours_per_user_project.get(user, {})
+            all_user_projects = sorted(set(projects1.keys()) | set(projects2.keys()))
+            for project in all_user_projects:
+                hours1 = projects1.get(project, 0.0)
+                hours2 = projects2.get(project, 0.0)
+                if hours1 != hours2:
+                    diffs.append(f"  User '{user}', Project '{project}' hours: {hours1} vs {hours2}")
+
     return diffs
 
 

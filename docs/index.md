@@ -6,10 +6,6 @@ Built on top of [GAM7](https://github.com/GAM-team/GAM) and [GYB](https://github
 
 **Note:** This tool can only be used by those with administrator access to Compiler's Google Workspace.
 
-## Documentation
-
-For full installation, usage, and command reference, please see the [docs site](https://docs.compiler.la/compiler-admin).
-
 ## Basic Usage
 
 ```bash

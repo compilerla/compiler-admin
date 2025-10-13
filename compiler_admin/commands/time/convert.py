@@ -7,7 +7,6 @@ import click
 from compiler_admin.services.harvest import CONVERTERS as HARVEST_CONVERTERS
 from compiler_admin.services.toggl import CONVERTERS as TOGGL_CONVERTERS
 
-
 CONVERTERS = {"harvest": HARVEST_CONVERTERS, "toggl": TOGGL_CONVERTERS}
 
 
@@ -59,9 +58,7 @@ def convert(
     to_fmt="harvest",
     client="",
 ):
-    """
-    Convert a time report from one format into another.
-    """
+    """Convert a time report from one format into another."""
     converter = _get_source_converter(from_fmt, to_fmt)
 
     click.echo(f"Converting data from format: {from_fmt} to format: {to_fmt}")

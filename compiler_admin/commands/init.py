@@ -1,12 +1,11 @@
 import os
+import subprocess
 from pathlib import Path
 from shutil import rmtree
-import subprocess
 
 import click
 
 from compiler_admin.services.google import USER_ARCHIVE, CallGAMCommand
-
 
 GAM_CONFIG_DIR = os.environ.get("GAMCFGDIR", "./.config/gam")
 GAM_CONFIG_PATH = Path(GAM_CONFIG_DIR)
@@ -31,8 +30,8 @@ def init(username: str, init_gam: bool = False, init_gyb: bool = False):
 
     See:
 
-    - https://github.com/taers232c/GAMADV-XTD3/wiki/How-to-Install-Advanced-GAM
-    - https://github.com/GAM-team/got-your-back/wiki
+    - [https://github.com/GAM-team/GAM/wiki/How-to-Install-GAM7](https://github.com/GAM-team/GAM/wiki/How-to-Install-GAM7)
+    - [https://github.com/GAM-team/got-your-back/wiki](https://github.com/GAM-team/got-your-back/wiki)
     """
     if init_gam:
         _clean_config_dir(GAM_CONFIG_PATH)

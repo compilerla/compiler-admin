@@ -6,7 +6,6 @@ from pytz import timezone
 
 from compiler_admin.services.toggl import TOGGL_COLUMNS, download_time_entries
 
-
 TZINFO = timezone("America/Los_Angeles")
 
 
@@ -98,9 +97,7 @@ def download(
     task_ids: List[int] = [],
     user_ids: List[int] = [],
 ):
-    """
-    Download a Toggl time report in CSV format.
-    """
+    """Download a Toggl time report in CSV format."""
     if not output:
         output = f"Toggl_time_entries_{start.strftime('%Y-%m-%d')}_{end.strftime('%Y-%m-%d')}.csv"
 

@@ -1,0 +1,99 @@
+site_name: "compiler/compiler-admin: Documentation"
+repo_url: https://github.com/compilerla/compiler-admin
+edit_uri: edit/main/docs
+site_url: https://docs.compiler.la/compiler-admin
+
+nav:
+  - Home: index.md
+  - Tutorials:
+      - Getting Started: tutorials/getting-started.md
+      - Monthly Time Reporting: tutorials/monthly-time-reporting.md
+      - Onboarding a User: tutorials/onboarding-a-user.md
+      - Offboarding a User: tutorials/offboarding-a-user.md
+  - How-to Guides:
+      - Time Management:
+          - Download a Toggl Report: guides/time/download.md
+          - Convert Time Reports: guides/time/convert.md
+          - Lock Time Entries: guides/time/lock.md
+          - Verify Time Reports: guides/time/verify.md
+          - Run GitHub Actions Workflow: guides/time/run-github-workflow.md
+      - User Management:
+          - Create a User: guides/user/create.md
+          - Convert User Account Type: guides/user/convert.md
+          - Deactivate a User: guides/user/deactivate.md
+          - Reactivate a User: guides/user/reactivate.md
+          - Offboard a User: guides/user/offboard.md
+          - Restore an Email Backup: guides/user/restore.md
+          - Reset a Password: guides/user/reset.md
+          - Get Backup Codes: guides/user/backupcodes.md
+          - Sign Out a User: guides/user/signout.md
+          - Delete a User: guides/user/delete.md
+  - Reference:
+      - Configuration: reference/configuration.md
+      - CLI Reference:
+          - init: reference/cli/init.md
+          - info: reference/cli/info.md
+          - time: reference/cli/time.md
+          - user: reference/cli/user.md
+  - Explanation:
+      - Core Concepts: explanation/concepts.md
+      - Architecture: explanation/architecture.md
+
+theme:
+  name: material
+  features:
+    - content.code.copy
+    - navigation.expand
+    - navigation.tabs
+    - toc.integrate
+  palette:
+    scheme: default
+
+extra:
+  analytics:
+    provider: google
+    property: G-VR1QBF67SK
+
+plugins:
+  - search
+  - awesome-pages
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_root_heading: true
+            show_root_toc_entry: false
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+  - redirects:
+      redirect_maps:
+
+extra_css:
+  - https://use.fontawesome.com/releases/v6.1.2/css/all.css
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - codehilite:
+      linenums: true
+  - mdx_truly_sane_lists
+  - meta
+  - mkdocs-click
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.inlinehilite
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tabbed
+  - smarty
+  - toc:
+      # insert a blank space before the character
+      permalink: " ¶"

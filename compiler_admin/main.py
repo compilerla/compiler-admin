@@ -1,7 +1,6 @@
 import click
 
 from compiler_admin import __version__
-
 from compiler_admin.commands.info import info
 from compiler_admin.commands.init import init
 from compiler_admin.commands.time import time
