@@ -17,6 +17,17 @@ nav:
           - Lock Time Entries: guides/time/lock.md
           - Verify Time Reports: guides/time/verify.md
           - Run GitHub Actions Workflow: guides/time/run-github-workflow.md
+      - User Management:
+          - Create a User: guides/user/create.md
+          - Convert User Account Type: guides/user/convert.md
+          - Deactivate a User: guides/user/deactivate.md
+          - Reactivate a User: guides/user/reactivate.md
+          - Offboard a User: guides/user/offboard.md
+          - Restore an Email Backup: guides/user/restore.md
+          - Reset a Password: guides/user/reset.md
+          - Get Backup Codes: guides/user/backupcodes.md
+          - Sign Out a User: guides/user/signout.md
+          - Delete a User: guides/user/delete.md
   - Reference:
       - Configuration: reference/configuration.md
       - CLI Reference:
