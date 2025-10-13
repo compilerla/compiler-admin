@@ -9,9 +9,7 @@ from compiler_admin.services.google import USER_ARCHIVE, CallGYBCommand, user_ac
 @click.command()
 @click.argument("username")
 def restore(username: str):
-    """
-    Restore an email backup from a prior offboarding.
-    """
+    """Restore an email backup from a prior offboarding."""
     account = user_account_name(username)
     backup_dir = f"GYB-GMail-Backup-{account}"
 

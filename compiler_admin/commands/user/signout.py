@@ -8,9 +8,7 @@ from compiler_admin.services.google import CallGAMCommand, user_account_name, us
 @click.option("-f", "--force", is_flag=True, help="Don't ask for confirmation.")
 @click.argument("username")
 def signout(username: str, force: bool = False, **kwargs):
-    """
-    Sign a user out from all active sessions.
-    """
+    """Sign a user out from all active sessions."""
     account = user_account_name(username)
 
     if not user_exists(account):

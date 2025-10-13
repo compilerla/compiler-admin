@@ -32,9 +32,7 @@ from compiler_admin.services.google import (
 def deactivate(
     ctx: click.Context, username: str, force: bool = False, recovery_email: str = "", recovery_phone: str = "", **kwargs
 ):
-    """
-    Deactivate (but do not delete) a user.
-    """
+    """Deactivate (but do not delete) a user."""
     account = user_account_name(username)
 
     if not user_exists(account):

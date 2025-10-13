@@ -30,8 +30,8 @@ def init(username: str, init_gam: bool = False, init_gyb: bool = False):
 
     See:
 
-    - [https://github.com/GAM-team/GAM/wiki/How-to-Install-GAM7](https://github.com/GAM-team/GAM/wiki/How-to-Install-GAM7)
-    - [https://github.com/GAM-team/got-your-back/wiki](https://github.com/GAM-team/got-your-back/wiki)
+    - <https://github.com/GAM-team/GAM/wiki/How-to-Install-GAM7>
+    - <https://github.com/GAM-team/got-your-back/wiki>
     """
     if init_gam:
         _clean_config_dir(GAM_CONFIG_PATH)

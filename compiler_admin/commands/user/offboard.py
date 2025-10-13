@@ -5,13 +5,7 @@ import click
 from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
 from compiler_admin.commands.user.deactivate import deactivate
 from compiler_admin.commands.user.delete import delete
-from compiler_admin.services.google import (
-    USER_ARCHIVE,
-    CallGAMCommand,
-    CallGYBCommand,
-    user_account_name,
-    user_exists,
-)
+from compiler_admin.services.google import USER_ARCHIVE, CallGAMCommand, CallGYBCommand, user_account_name, user_exists
 
 
 @click.command()
@@ -22,8 +16,7 @@ from compiler_admin.services.google import (
 @click.argument("username")
 @click.pass_context
 def offboard(ctx: click.Context, username: str, alias: str = "", _delete: bool = False, force: bool = False, **kwargs):
-    """
-    Fully offboard a user from Compiler.
+    """Fully offboard a user from Compiler.
 
     Deactivate, back up email, transfer Calendar/Drive, and optionally delete.
     """

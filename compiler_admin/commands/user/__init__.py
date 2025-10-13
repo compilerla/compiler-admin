@@ -6,17 +6,15 @@ from compiler_admin.commands.user.create import create
 from compiler_admin.commands.user.deactivate import deactivate
 from compiler_admin.commands.user.delete import delete
 from compiler_admin.commands.user.offboard import offboard
-from compiler_admin.commands.user.reset import reset
 from compiler_admin.commands.user.reactivate import reactivate
+from compiler_admin.commands.user.reset import reset
 from compiler_admin.commands.user.restore import restore
 from compiler_admin.commands.user.signout import signout
 
 
 @click.group
 def user():
-    """
-    Work with users in the Compiler org.
-    """
+    """Work with users in the Compiler org."""
     pass
 
 

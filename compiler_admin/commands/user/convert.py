@@ -16,7 +16,6 @@ from compiler_admin.services.google import (
     user_is_staff,
 )
 
-
 ACCOUNT_TYPE_OU = {"contractor": OU_CONTRACTORS, "partner": OU_PARTNERS, "staff": OU_STAFF}
 
 
@@ -26,9 +25,7 @@ ACCOUNT_TYPE_OU = {"contractor": OU_CONTRACTORS, "partner": OU_PARTNERS, "staff"
 @click.argument("account_type", type=click.Choice(ACCOUNT_TYPE_OU.keys(), case_sensitive=False))
 @click.pass_context
 def convert(ctx: click.Context, username: str, account_type: str, **kwargs):
-    """
-    Convert a user of one type to another.
-    """
+    """Convert a user of one type to another."""
     account = user_account_name(username)
 
     if not user_exists(account):

@@ -44,9 +44,7 @@ def reactivate(
     staff: bool = False,
     **kwargs,
 ):
-    """
-    Reactivate a previously deactivated user.
-    """
+    """Reactivate a previously deactivated user."""
     account = user_account_name(username)
 
     if not user_exists(account):

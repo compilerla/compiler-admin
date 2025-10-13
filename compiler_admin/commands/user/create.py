@@ -4,8 +4,8 @@ from compiler_admin import RESULT_FAILURE
 from compiler_admin.services.google import (
     GROUP_TEAM,
     USER_HELLO,
-    add_user_to_group,
     CallGAMCommand,
+    add_user_to_group,
     user_account_name,
     user_exists,
 )
@@ -22,7 +22,7 @@ def create(username: str, notify: str = "", gam_args: list = []):
 
     Extra args are passed along to GAM as options.
 
-    https://github.com/GAM-team/GAM/wiki/Users#create-a-user
+    <https://github.com/GAM-team/GAM/wiki/Users#create-a-user>
     """
     account = user_account_name(username)
 

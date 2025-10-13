@@ -11,9 +11,7 @@ from compiler_admin.services.google import USER_HELLO, CallGAMCommand, user_acco
 @click.argument("username")
 @click.pass_context
 def reset(ctx: click.Context, username: str, force: bool = False, notify: str = "", **kwargs):
-    """
-    Reset a user's password.
-    """
+    """Reset a user's password."""
     account = user_account_name(username)
 
     if not user_exists(account):

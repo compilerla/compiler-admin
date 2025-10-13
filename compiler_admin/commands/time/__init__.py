@@ -8,9 +8,7 @@ from compiler_admin.commands.time.verify import verify
 
 @click.group
 def time():
-    """
-    Work with Compiler time entries.
-    """
+    """Work with Compiler time entries."""
     pass
 
 
