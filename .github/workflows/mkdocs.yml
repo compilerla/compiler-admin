@@ -16,6 +16,8 @@ on:
       - "docs/**"
       - ".markdownlint.yaml"
       - "mkdocs.yml"
+      - "compiler_admin/**/*.py"
+      - "pyproject.toml"
 
 jobs:
   docs-preview:
