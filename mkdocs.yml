@@ -5,6 +5,12 @@ site_url: https://docs.compiler.la/compiler-admin
 
 nav:
   - Home: index.md
+  - Reference:
+      - CLI Reference:
+          - init: reference/cli/init.md
+          - info: reference/cli/info.md
+          - time: reference/cli/time.md
+          - user: reference/cli/user.md
   - Explanation:
       - Core Concepts: explanation/concepts.md
       - Architecture: explanation/architecture.md
