@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: .devcontainer/Dockerfile
-    image: compiler_admin:dev
+    image: compiler/admin:dev
     env_file:
       - .env
     entrypoint: sleep infinity
@@ -11,3 +11,15 @@ services:
       - .:/home/compiler/compiler-admin
       - ~/.config/compiler-admin:/home/compiler/.config/compiler-admin
       - ./.downloads:/home/compiler/Downloads
+
+  docs:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    image: compiler/admin:dev
+    entrypoint: mkdocs
+    command: serve --dev-addr "0.0.0.0:8000"
+    ports:
+      - "8000"
+    volumes:
+      - ./:/home/compiler/compiler-admin

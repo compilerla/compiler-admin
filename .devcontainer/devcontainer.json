@@ -2,6 +2,8 @@
   "name": "compilerla/admin",
   "dockerComposeFile": ["../compose.yaml"],
   "service": "dev",
+  "runServices": ["dev", "docs"],
+  "forwardPorts": ["docs:8000"],
   "workspaceFolder": "/home/compiler/compiler-admin",
   "postAttachCommand": ["/bin/bash", ".devcontainer/postAttach.sh"],
   "customizations": {
