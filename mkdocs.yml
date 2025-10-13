@@ -5,6 +5,11 @@ site_url: https://docs.compiler.la/compiler-admin
 
 nav:
   - Home: index.md
+  - Tutorials:
+      - Getting Started: tutorials/getting-started.md
+      - Monthly Time Reporting: tutorials/monthly-time-reporting.md
+      - Onboarding a User: tutorials/onboarding-a-user.md
+      - Offboarding a User: tutorials/offboarding-a-user.md
   - Reference:
       - Configuration: reference/configuration.md
       - CLI Reference:
