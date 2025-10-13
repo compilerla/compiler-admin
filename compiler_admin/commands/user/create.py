@@ -22,7 +22,7 @@ def create(username: str, notify: str = "", gam_args: list = []):
 
     Extra args are passed along to GAM as options.
 
-    https://github.com/taers232c/GAMADV-XTD3/wiki/Users#create-a-user
+    https://github.com/GAM-team/GAM/wiki/Users#create-a-user
     """
     account = user_account_name(username)
 
