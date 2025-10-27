@@ -12,7 +12,7 @@ authors = [
 requires-python = ">=3.11"
 dependencies = [
     "click==8.2.1",
-    "gam7==7.19.0",
+    "gam7==7.27.4",
     "pandas==2.3.3",
     "tzdata",
 ]
