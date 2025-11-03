@@ -33,35 +33,29 @@ def user_info():
     return files.JsonFileCache("TOGGL_USER_INFO")
 
 
-def _get_first_name(email: str) -> str:
-    """Get cached first name or derive from email."""
+def _get_name(email: str, name_key) -> str:
+    """Get cached name or query from Google."""
     info = user_info()
     user = info.get(email)
-    first_name = user.get("First Name") if user else None
-    if first_name is None:
-        parts = email.split("@")
-        first_name = parts[0].capitalize()
-        data = {"First Name": first_name}
-        if email in info:
-            info[email].update(data)
-        else:
-            info[email] = data
-    return first_name
-
-
-def _get_last_name(email: str):
-    """Get cached last name or query from Google."""
-    info = user_info()
-    user = info.get(email)
-    last_name = user.get("Last Name") if user else None
-    if last_name is None:
+    name = user.get(name_key) if user else None
+    if name is None:
         user = google_user_info(email)
-        last_name = user.get("Last Name") if user else None
+        name = user.get(name_key) if user else None
         if email in info:
             info[email].update(user)
         else:
             info[email] = user
-    return last_name
+    return name
+
+
+def _get_first_name(email: str) -> str:
+    """Get cached last name or query from Google."""
+    return _get_name(email, "First Name")
+
+
+def _get_last_name(email: str):
+    """Get cached last name or query from Google."""
+    return _get_name(email, "Last Name")
 
 
 def _prepare_input(source_path: str | TextIO, column_renames: dict = {}) -> pd.DataFrame:

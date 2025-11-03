@@ -78,26 +78,30 @@ def test_get_first_name_matching(mock_user_info):
     assert result == "User"
 
 
-def test_get_first_name_calcuated_with_record(mock_user_info):
+def test_get_first_name_lookup_with_record(mock_user_info, mock_google_user_info):
     email = "user@email.com"
     mock_user_info.return_value = {email: {"Data": 1234}}
+    mock_google_user_info.return_value = {"First Name": "User"}
 
     result = _get_first_name(email)
 
     assert result == "User"
     assert mock_user_info.return_value[email]["First Name"] == "User"
     assert mock_user_info.return_value[email]["Data"] == 1234
+    mock_google_user_info.assert_called_once_with(email)
 
 
-def test_get_first_name_calcuated_without_record(mock_user_info):
+def test_get_first_name_lookup_without_record(mock_user_info, mock_google_user_info):
     email = "user@email.com"
     mock_user_info.return_value = {email: {}}
+    mock_google_user_info.return_value = {"First Name": "User"}
 
     result = _get_first_name(email)
 
     assert result == "User"
     assert mock_user_info.return_value[email]["First Name"] == "User"
     assert list(mock_user_info.return_value[email].keys()) == ["First Name"]
+    mock_google_user_info.assert_called_once_with(email)
 
 
 def test_get_last_name_matching(mock_user_info, mock_google_user_info):
