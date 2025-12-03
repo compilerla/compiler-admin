@@ -128,6 +128,20 @@ def convert_to_harvest(
     info = project_info()
     source["Project"] = source["Project"].apply(lambda x: info.get(key=x, default=x))
 
+    # find duplicates based on a subset of columns
+    cols = ["Date", "Hours", "First name", "Last name", "Notes"]
+    is_duplicate = source.duplicated(subset=cols, keep=False)
+
+    if is_duplicate.any():
+        # Create a counter for the duplicate rows
+        counter = source[is_duplicate].groupby(cols).cumcount() + 1
+        group_size = source[is_duplicate].groupby(cols)["Notes"].transform("size")
+
+        # Update the 'Notes' column with the counter
+        source.loc[is_duplicate, "Notes"] = (
+            source.loc[is_duplicate, "Notes"] + " (" + counter.astype(str) + "/" + group_size.astype(str) + ")"
+        )
+
     files.write_csv(output_path, source, columns=output_cols)
 
 

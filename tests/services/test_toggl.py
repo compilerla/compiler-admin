@@ -1,7 +1,7 @@
-from datetime import datetime, timedelta, date
-from io import BytesIO, StringIO
 import math
 import sys
+from datetime import date, datetime, timedelta
+from io import BytesIO, StringIO
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
@@ -9,9 +9,9 @@ import pandas as pd
 import pytest
 
 import compiler_admin.services.toggl
+from compiler_admin.services.toggl import CONVERTERS, HARVEST_COLUMNS, JUSTWORKS_COLUMNS, TOGGL_COLUMNS
+from compiler_admin.services.toggl import __name__ as MODULE
 from compiler_admin.services.toggl import (
-    CONVERTERS,
-    __name__ as MODULE,
     _get_first_name,
     _get_last_name,
     _prepare_input,
@@ -19,12 +19,9 @@ from compiler_admin.services.toggl import (
     convert_to_harvest,
     convert_to_justworks,
     download_time_entries,
+    files,
     lock_time_entries,
     summarize,
-    TOGGL_COLUMNS,
-    HARVEST_COLUMNS,
-    JUSTWORKS_COLUMNS,
-    files,
 )
 
 
@@ -207,6 +204,28 @@ def test_convert_to_harvest_sample(toggl_file, harvest_file, mock_google_user_in
 
     assert set(output_df.columns.to_list()) <= set(sample_output_df.columns.to_list())
     assert output_df["Client"].eq("Test Client 123").all()
+
+
+def test_convert_to_harvest_with_duplicates(mock_google_user_info):
+    # Test that seemingly duplicate time entries are disambiguated
+
+    mock_google_user_info.return_value = {"First Name": "Test", "Last Name": "User"}
+    csv_input = """Email,Project,Task,Client,Start date,Start time,Duration,Description
+test@example.com,Compiler,Backend,ACME,2025-11-18,09:00:00,01:00:00,A task
+test@example.com,Compiler,Backend,ACME,2025-11-18,10:00:00,01:00:00,A task
+test@example.com,Compiler,Backend,ACME,2025-11-18,11:00:00,02:00:00,Another task
+"""
+    input_buffer = StringIO(csv_input)
+    output_buffer = StringIO()
+
+    convert_to_harvest(source_path=input_buffer, output_path=output_buffer, client_name="ACME")
+
+    output_buffer.seek(0)
+    df = pd.read_csv(output_buffer)
+
+    assert df.loc[0, "Notes"] == "[Backend] A task (1/2)"
+    assert df.loc[1, "Notes"] == "[Backend] A task (2/2)"
+    assert df.loc[2, "Notes"] == "[Backend] Another task"
 
 
 def test_convert_to_justworks_mocked(toggl_file, spy_files):
