@@ -1,12 +1,9 @@
 import pytest
 
 from compiler_admin import RESULT_SUCCESS
-from compiler_admin.commands.time.convert import (
-    __name__ as MODULE,
-    CONVERTERS,
-    _get_source_converter,
-    convert,
-)
+from compiler_admin.commands.time.convert import CONVERTERS
+from compiler_admin.commands.time.convert import __name__ as MODULE
+from compiler_admin.commands.time.convert import _get_source_converter, convert
 from compiler_admin.services.harvest import CONVERTERS as HARVEST_CONVERTERS
 from compiler_admin.services.toggl import CONVERTERS as TOGGL_CONVERTERS
 

@@ -1,15 +1,11 @@
 from datetime import datetime
+
 import pytest
 
 from compiler_admin import RESULT_SUCCESS
-from compiler_admin.commands.time.download import (
-    __name__ as MODULE,
-    TOGGL_COLUMNS,
-    TZINFO,
-    download,
-    prior_month_end,
-    prior_month_start,
-)
+from compiler_admin.commands.time.download import TOGGL_COLUMNS, TZINFO
+from compiler_admin.commands.time.download import __name__ as MODULE
+from compiler_admin.commands.time.download import download, prior_month_end, prior_month_start
 
 
 @pytest.fixture
@@ -112,7 +108,7 @@ def test_download_default(cli_runner, mock_download_time_entries):
 
 
 def test_download_client_envvar(cli_runner, monkeypatch, mock_download_time_entries):
-    monkeypatch.setenv("TOGGL_CLIENT_ID", 1234)
+    monkeypatch.setenv("TOGGL_CLIENT_ID", "1234")
 
     result = cli_runner.invoke(download, [])
 
