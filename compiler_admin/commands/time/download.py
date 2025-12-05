@@ -45,9 +45,9 @@ def prior_month_start():
 )
 @click.option(
     "--all",
-    "billable",
+    "include_all",
     is_flag=True,
-    default=True,
+    default=False,
     help="Download all time entries. The default is to download only billable time entries.",
 )
 @click.option(
@@ -91,7 +91,7 @@ def download(
     start: datetime,
     end: datetime,
     output: str = "",
-    billable: bool = True,
+    include_all: bool = False,
     client_ids: List[int] = [],
     project_ids: List[int] = [],
     task_ids: List[int] = [],
@@ -103,8 +103,10 @@ def download(
 
     params = dict(start_date=start, end_date=end, output_path=output, output_cols=TOGGL_COLUMNS)
 
-    if billable:
-        params.update(dict(billable=billable))
+    # By default include billable=True in params.
+    # If --all was passed, do not add billable so callers can treat absence as "all".
+    if not include_all:
+        params.update(dict(billable=True))
     if client_ids:
         params.update(dict(client_ids=client_ids))
     if project_ids:
