@@ -18,8 +18,8 @@ dependencies = [
 ]
 
 [project.urls]
-code = "https://github.com/compilerla/admin"
-tracker = "https://github.com/compilerla/admin/issues"
+code = "https://github.com/compilerla/compiler-admin"
+tracker = "https://github.com/compilerla/compiler-admin/issues"
 
 [project.optional-dependencies]
 dev = [
