@@ -12,14 +12,14 @@ authors = [
 requires-python = ">=3.11"
 dependencies = [
     "click==8.2.1",
-    "gam7==7.19.0",
+    "gam7==7.29.4",
     "pandas==2.3.3",
     "tzdata",
 ]
 
 [project.urls]
-code = "https://github.com/compilerla/admin"
-tracker = "https://github.com/compilerla/admin/issues"
+code = "https://github.com/compilerla/compiler-admin"
+tracker = "https://github.com/compilerla/compiler-admin/issues"
 
 [project.optional-dependencies]
 dev = [
