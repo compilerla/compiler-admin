@@ -160,9 +160,9 @@ def test_prepare_input(toggl_file, spy_files):
 
     assert "First name" in df_cols
     assert "Last name" in df_cols
-    assert df["Start date"].dtype.name == "datetime64[ns]"
-    assert df["Start time"].dtype.name == "timedelta64[ns]"
-    assert df["Duration"].dtype.name == "timedelta64[ns]"
+    assert df["Start date"].dtype.name == "datetime64[us]"
+    assert df["Start time"].dtype.name == "timedelta64[us]"
+    assert df["Duration"].dtype.name == "timedelta64[us]"
     assert df["Hours"].dtype.name == "float64"
 
     df = _prepare_input(toggl_file, column_renames={"Start date": "SD", "Start time": "ST", "Duration": "D"})
@@ -170,9 +170,9 @@ def test_prepare_input(toggl_file, spy_files):
     assert "Start date" not in df.columns
     assert "Start time" not in df.columns
     assert "Duration" not in df.columns
-    assert df["SD"].dtype.name == "datetime64[ns]"
-    assert df["ST"].dtype.name == "timedelta64[ns]"
-    assert df["D"].dtype.name == "timedelta64[ns]"
+    assert df["SD"].dtype.name == "datetime64[us]"
+    assert df["ST"].dtype.name == "timedelta64[us]"
+    assert df["D"].dtype.name == "timedelta64[us]"
 
 
 def test_convert_to_harvest_mocked(toggl_file, spy_files, mock_google_user_info):
