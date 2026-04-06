@@ -2,11 +2,11 @@ from datetime import datetime, timedelta
 from typing import List
 
 import click
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from compiler_admin.services.toggl import TOGGL_COLUMNS, download_time_entries
 
-TZINFO = timezone("America/Los_Angeles")
+TZINFO = ZoneInfo("America/Los_Angeles")
 
 
 def local_now():
