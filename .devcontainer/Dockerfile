@@ -1,4 +1,4 @@
-FROM python:3.11
+FROM python:3.12-bookworm
 
 RUN apt-get update && apt-get -y install swig libpcsclite-dev
 
