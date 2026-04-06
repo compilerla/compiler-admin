@@ -12,6 +12,7 @@ USER $USER
 RUN mkdir -p /home/$USER/.config/compiler-admin
 ENV PATH="$PATH:/home/$USER/.local/bin:/home/$USER/.config/compiler-admin/gyb"
 WORKDIR /home/$USER/compiler-admin
+RUN git config --global --add safe.directory /home/$USER/compiler-admin
 
 RUN python -m pip install --upgrade pip
 
