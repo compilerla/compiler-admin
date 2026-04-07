@@ -2,13 +2,13 @@ import sys
 
 import click
 
-from compiler_admin.services import harvest, toggl
+from compiler_admin.services.harvest import HarvestTime
 from compiler_admin.services.time import TimeSummary
-from compiler_admin.services.toggl import normalize_summary
+from compiler_admin.services.toggl import TogglTime
 
 SUMMARIZERS = {
-    "harvest": harvest.summarize,
-    "toggl": toggl.summarize,
+    "harvest": HarvestTime().summarize,
+    "toggl": TogglTime().summarize,
 }
 
 
@@ -85,6 +85,8 @@ def verify(files: list[str]):
             click.echo(f"Error processing file {file_path}: {e}", err=True)
             return
 
+    toggl_time = TogglTime()
+
     if len(summaries) == 1:
         click.echo(f"Summary for: {files[0]}")
         summary: TimeSummary = summaries[0]
@@ -105,9 +107,9 @@ def verify(files: list[str]):
         file2_type = detect_file_type(files[1])
 
         if file1_type == "toggl" and file2_type == "harvest":
-            summary1 = normalize_summary(summary1)
+            summary1 = toggl_time.normalize_summary(summary1)
         elif file1_type == "harvest" and file2_type == "toggl":
-            summary2 = normalize_summary(summary2)
+            summary2 = toggl_time.normalize_summary(summary2)
 
         if summary1 == summary2:
             click.echo("Summaries match.")
