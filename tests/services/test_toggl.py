@@ -46,13 +46,13 @@ class TestTogglTime:
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
         self.time = TogglTime()
-        self.time.toggl = mocker.Mock()
+        self.time.api = mocker.Mock()
 
     @pytest.fixture
     def mock_toggl_detailed_time_entries(self, toggl_file):
         mock_csv_bytes = Path(toggl_file).read_bytes()
-        self.time.toggl.detailed_time_entries.return_value.content = mock_csv_bytes
-        return self.time.toggl.detailed_time_entries
+        self.time.api.detailed_time_entries.return_value.content = mock_csv_bytes
+        return self.time.api.detailed_time_entries
 
     def test_get_first_name_matching(self, mock_user_info):
         mock_user_info.return_value = {"email": {"First Name": "User"}}
@@ -262,7 +262,7 @@ class TestTogglTime:
         lock_date = datetime(2025, 10, 11)
         self.time.lock(lock_date)
 
-        self.time.toggl.update_workspace_preferences.assert_called_once_with(report_locked_at="2025-10-11")
+        self.time.api.update_workspace_preferences.assert_called_once_with(report_locked_at="2025-10-11")
 
     def test_summarize(self, toggl_file):
         """Test that summarize returns a valid TimeSummary object."""

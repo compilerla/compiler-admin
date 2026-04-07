@@ -13,7 +13,15 @@ from compiler_admin.services.google import user_info as google_user_info
 from compiler_admin.services.time import TimeSummary
 
 
-class TogglTime:
+class TogglService:
+    def __init__(self):
+        token = os.environ.get("TOGGL_API_TOKEN")
+        workspace = os.environ.get("TOGGL_WORKSPACE_ID")
+        organization = os.environ.get("TOGGL_ORGANIZATION_ID", 0)
+        self.api = Toggl(token, workspace, organization)
+
+
+class TogglTime(TogglService):
     # input columns needed for conversion
     TOGGL_COLUMNS = ["Email", "Project", "Task", "Client", "Start date", "Start time", "Duration", "Description"]
 
@@ -23,10 +31,7 @@ class TogglTime:
     JUSTWORKS_COLUMNS = ["First Name", "Last Name", "Work Email", "Start Date", "End Date", "Regular Hours"]
 
     def __init__(self):
-        token = os.environ.get("TOGGL_API_TOKEN")
-        workspace = os.environ.get("TOGGL_WORKSPACE_ID")
-        organization = os.environ.get("TOGGL_ORGANIZATION_ID")
-        self.toggl = Toggl(token, workspace, organization)
+        super().__init__()
         self.converters = {"harvest": self.convert_to_harvest, "justworks": self.convert_to_justworks}
 
     @cache
@@ -216,7 +221,7 @@ class TogglTime:
         Returns:
             None. Either prints the resulting CSV data or writes to output_path.
         """
-        response = self.toggl.detailed_time_entries(start_date, end_date, **kwargs)
+        response = self.api.detailed_time_entries(start_date, end_date, **kwargs)
         # the raw response has these initial 3 bytes:
         #
         #   b"\xef\xbb\xbfUser,Email,Client..."
@@ -239,7 +244,7 @@ class TogglTime:
             lock_date (datetime): The date to lock time entries.
         """
         lock_date_str = lock_date.strftime("%Y-%m-%d")
-        self.toggl.update_workspace_preferences(report_locked_at=lock_date_str)
+        self.api.update_workspace_preferences(report_locked_at=lock_date_str)
 
     def normalize_summary(self, toggl_summary: TimeSummary) -> TimeSummary:
         """Normalize a Toggl TimeSummary to match the Harvest format."""
