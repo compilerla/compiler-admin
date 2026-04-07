@@ -162,6 +162,21 @@ class TogglWorkspace(TogglBase):
         """The workspaces portion of an API URL."""
         return self.WORKSPACES_ID.format(self.workspace_id)
 
+    def get_users(self, **kwargs) -> requests.Response:
+        """Request a list of users from the Toggl workspace.
+
+        See https://engineering.toggl.com/docs/track/api/workspaces/#get-get-workspace-users.
+
+        Returns:
+            response (requests.Response): The HTTP response.
+        """
+        url = self.make_api_url("users")
+
+        response = self.session.get(url, timeout=self.timeout)
+        response.raise_for_status()
+
+        return response
+
     def update_preferences(self, **kwargs) -> requests.Response:
         """Update workspace preferences.
 

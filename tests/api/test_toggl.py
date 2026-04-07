@@ -139,6 +139,14 @@ class TestTogglWorkspace:
     def test_api_url_resource(self):
         assert self.toggl.api_url_resource == "workspaces/1234"
 
+    def test_get_users(self, mock_requests):
+        url = self.toggl.make_api_url("users")
+
+        response = self.toggl.get_users()
+
+        response.raise_for_status.assert_called_once()
+        mock_requests.get.assert_called_once_with(url, timeout=self.toggl.timeout)
+
     def test_update_preferences(self, mocker, mock_requests):
         url = "http://fake.url"
         mocker.patch.object(self.toggl, "make_api_url", return_value=url)
