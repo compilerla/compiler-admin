@@ -4,12 +4,12 @@ import pytest
 from click.testing import CliRunner
 
 from compiler_admin import RESULT_SUCCESS
-from compiler_admin.commands.time.lock import lock, __name__ as MODULE
+from compiler_admin.commands.time.lock import lock, TogglTime
 
 
 @pytest.fixture
 def mock_lock_time_entries(mocker):
-    return mocker.patch(f"{MODULE}.lock_time_entries")
+    return mocker.patch.object(TogglTime, "lock")
 
 
 def test_lock_default_date(mock_lock_time_entries):
