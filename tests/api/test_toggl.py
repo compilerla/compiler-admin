@@ -4,10 +4,10 @@ from pathlib import Path
 import pytest
 
 from compiler_admin import __version__
-from compiler_admin.api.toggl import __name__ as MODULE, TogglBase, TogglReports, TogglWorkspace
+from compiler_admin.api.toggl import __name__ as MODULE, TogglBase, TogglOrganization, TogglReports, TogglWorkspace
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def mock_requests(mocker):
     return mocker.patch(f"{MODULE}.requests.Session").return_value
 
@@ -55,9 +55,29 @@ class TestTogglBase:
         assert "/endpoint" in url
 
 
+class TestTogglOrganization:
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        self.toggl = TogglOrganization("token", 1234, 5678)
+
+    def test_init(self):
+        assert self.toggl.organization_id == 5678
+
+    def test_api_url_resource(self):
+        assert self.toggl.api_url_resource == "organizations/5678"
+
+    def test_get_users(self, mock_requests):
+        url = self.toggl.make_api_url("users")
+
+        response = self.toggl.get_users()
+
+        response.raise_for_status.assert_called_once()
+        mock_requests.get.assert_called_once_with(url, timeout=self.toggl.timeout)
+
+
 class TestTogglReports:
     @pytest.fixture(autouse=True)
-    def setup(self, mock_requests):
+    def setup(self):
         self.toggl = TogglReports("token", 1234)
 
     @pytest.fixture
@@ -113,7 +133,7 @@ class TestTogglReports:
 
 class TestTogglWorkspace:
     @pytest.fixture(autouse=True)
-    def setup(self, mock_requests):
+    def setup(self):
         self.toggl = TogglWorkspace("token", 1234)
 
     def test_api_url_resource(self):

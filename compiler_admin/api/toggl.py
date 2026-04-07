@@ -53,6 +53,34 @@ class TogglBase:
         return "/".join((TogglBase.API_BASE_URL, self.api_url_version, self.api_url_resource, endpoint))
 
 
+class TogglOrganization(TogglBase):
+    ORGANIZATIONS_ID = "organizations/{}"
+
+    def __init__(self, api_token, workspace_id, organization_id, **kwargs):
+        super().__init__(api_token, workspace_id, **kwargs)
+        self.organization_id = organization_id
+
+    @property
+    def api_url_resource(self):
+        """The organizations portion of an API URL."""
+        return self.ORGANIZATIONS_ID.format(self.organization_id)
+
+    def get_users(self, **kwargs) -> requests.Response:
+        """Request a list of users from the Toggl organization.
+
+        See https://engineering.toggl.com/docs/track/api/organizations/#get-list-of-users-in-organization.
+
+        Returns:
+            response (requests.Response): The HTTP response.
+        """
+        url = self.make_api_url("users")
+
+        response = self.session.get(url, timeout=self.timeout)
+        response.raise_for_status()
+
+        return response
+
+
 class TogglReports(TogglBase):
     REPORTS_API_VERSION = "reports/api/v3"
     WORKSPACE_ID = "workspace/{}"
