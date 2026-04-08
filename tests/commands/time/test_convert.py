@@ -1,11 +1,9 @@
 import pytest
 
 from compiler_admin import RESULT_SUCCESS
-from compiler_admin.commands.time.convert import CONVERTERS
-from compiler_admin.commands.time.convert import __name__ as MODULE
-from compiler_admin.commands.time.convert import _get_source_converter, convert
-from compiler_admin.services.harvest import CONVERTERS as HARVEST_CONVERTERS
-from compiler_admin.services.toggl import CONVERTERS as TOGGL_CONVERTERS
+from compiler_admin.commands.time.convert import __name__ as MODULE, TIME_SERVICES, _get_source_converter, convert
+from compiler_admin.services.harvest import HarvestTime
+from compiler_admin.services.toggl import TogglTime
 
 
 @pytest.fixture
@@ -14,12 +12,12 @@ def mock_get_source_converter(mocker):
 
 
 @pytest.fixture
-def mock_converters(mocker):
-    return mocker.patch(f"{MODULE}.CONVERTERS", new={})
+def mock_time_services(mocker):
+    return mocker.patch(f"{MODULE}.TIME_SERVICES", new={})
 
 
-def test_get_source_converter_match(mock_converters):
-    mock_converters["toggl"] = {"test_fmt": "converter"}
+def test_get_source_converter_match(mocker, mock_time_services):
+    mock_time_services["toggl"] = mocker.Mock(converters={"test_fmt": "converter"})
     result = _get_source_converter("toggl", "test_fmt")
 
     assert result == "converter"
@@ -48,6 +46,6 @@ def test_convert(cli_runner, mock_get_source_converter):
     )
 
 
-def test_converters():
-    assert CONVERTERS.get("harvest") == HARVEST_CONVERTERS
-    assert CONVERTERS.get("toggl") == TOGGL_CONVERTERS
+@pytest.mark.parametrize("service,service_type", (("harvest", HarvestTime), ("toggl", TogglTime)))
+def test_services(service, service_type):
+    assert isinstance(TIME_SERVICES.get(service), service_type)

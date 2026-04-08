@@ -3,9 +3,8 @@ from datetime import datetime
 import pytest
 
 from compiler_admin import RESULT_SUCCESS
-from compiler_admin.commands.time.download import TOGGL_COLUMNS, TZINFO
-from compiler_admin.commands.time.download import __name__ as MODULE
-from compiler_admin.commands.time.download import download, prior_month_end, prior_month_start
+from compiler_admin.commands.time.download import __name__ as MODULE, TZINFO, download, prior_month_end, prior_month_start
+from compiler_admin.services.toggl import TogglTime
 
 
 @pytest.fixture
@@ -16,8 +15,8 @@ def mock_local_now(mocker):
 
 
 @pytest.fixture
-def mock_download_time_entries(mocker):
-    return mocker.patch(f"{MODULE}.download_time_entries")
+def mock_time_download(mocker):
+    return mocker.patch.object(TogglTime, "download")
 
 
 def test_prior_month_start(mock_local_now):
@@ -38,7 +37,7 @@ def test_prior_month_end(mock_local_now):
     assert end.tzinfo == TZINFO
 
 
-def test_download(cli_runner, mock_local_now, mock_download_time_entries):
+def test_download(cli_runner, mock_local_now, mock_time_download):
     args = [
         "--start",
         mock_local_now.strftime("%Y-%m-%d"),
@@ -67,12 +66,12 @@ def test_download(cli_runner, mock_local_now, mock_download_time_entries):
     result = cli_runner.invoke(download, args)
 
     assert result.exit_code == RESULT_SUCCESS
-    mock_download_time_entries.assert_called_once_with(
+    mock_time_download.assert_called_once_with(
         start_date=mock_local_now,
         end_date=mock_local_now,
         output_path="output",
         billable=True,
-        output_cols=TOGGL_COLUMNS,
+        output_cols=TogglTime.TOGGL_COLUMNS,
         client_ids=(1, 2),
         project_ids=(3, 4),
         task_ids=(5, 6),
@@ -80,14 +79,14 @@ def test_download(cli_runner, mock_local_now, mock_download_time_entries):
     )
 
 
-def test_download_default(cli_runner, mock_download_time_entries):
+def test_download_default(cli_runner, mock_time_download):
     expected_start, expected_end = prior_month_start(), prior_month_end()
 
     result = cli_runner.invoke(download, [])
 
     assert result.exit_code == RESULT_SUCCESS
-    mock_download_time_entries.assert_called_once()
-    call = mock_download_time_entries.mock_calls[0]
+    mock_time_download.assert_called_once()
+    call = mock_time_download.mock_calls[0]
 
     actual_start = call.kwargs["start_date"]
     assert actual_start.year == expected_start.year
@@ -103,25 +102,25 @@ def test_download_default(cli_runner, mock_download_time_entries):
         call.kwargs["output_path"]
         == f"Toggl_time_entries_{expected_start.strftime('%Y-%m-%d')}_{expected_end.strftime('%Y-%m-%d')}.csv"
     )
-    assert call.kwargs["output_cols"] == TOGGL_COLUMNS
+    assert call.kwargs["output_cols"] == TogglTime.TOGGL_COLUMNS
     assert call.kwargs["billable"] is True
 
 
-def test_download_client_envvar(cli_runner, monkeypatch, mock_download_time_entries):
+def test_download_client_envvar(cli_runner, monkeypatch, mock_time_download):
     monkeypatch.setenv("TOGGL_CLIENT_ID", "1234")
 
     result = cli_runner.invoke(download, [])
 
     assert result.exit_code == RESULT_SUCCESS
-    mock_download_time_entries.assert_called_once()
-    call = mock_download_time_entries.mock_calls[0]
+    mock_time_download.assert_called_once()
+    call = mock_time_download.mock_calls[0]
     assert call.kwargs["client_ids"] == (1234,)
 
 
-def test_download_all(cli_runner, mock_download_time_entries):
+def test_download_all(cli_runner, mock_time_download):
     result = cli_runner.invoke(download, ["--all"])
 
     assert result.exit_code == RESULT_SUCCESS
-    mock_download_time_entries.assert_called_once()
-    call = mock_download_time_entries.mock_calls[0]
+    mock_time_download.assert_called_once()
+    call = mock_time_download.mock_calls[0]
     assert "billable" not in call.kwargs

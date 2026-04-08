@@ -2,7 +2,7 @@ from datetime import date, datetime, timedelta
 
 import click
 
-from compiler_admin.services.toggl import lock_time_entries
+from compiler_admin.services.toggl import TogglTime
 
 
 @click.command()
@@ -21,5 +21,5 @@ def lock(lock_date_str):
         lock_date = first_day_of_current_month - timedelta(days=1)
 
     click.echo(f"Locking time entries on or before: {lock_date.strftime('%Y-%m-%d')}")
-    lock_time_entries(lock_date)
+    TogglTime().lock(lock_date)
     click.echo("Done.")

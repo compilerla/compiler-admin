@@ -4,16 +4,17 @@ from typing import TextIO
 
 import click
 
-from compiler_admin.services.harvest import CONVERTERS as HARVEST_CONVERTERS
-from compiler_admin.services.toggl import CONVERTERS as TOGGL_CONVERTERS
+from compiler_admin.services.harvest import HarvestTime
+from compiler_admin.services.toggl import TogglTime
 
-CONVERTERS = {"harvest": HARVEST_CONVERTERS, "toggl": TOGGL_CONVERTERS}
+TIME_SERVICES = {"harvest": HarvestTime(), "toggl": TogglTime()}
 
 
 def _get_source_converter(from_fmt: str, to_fmt: str):
     from_fmt = from_fmt.lower().strip() if from_fmt else ""
     to_fmt = to_fmt.lower().strip() if to_fmt else ""
-    converter = CONVERTERS.get(from_fmt, {}).get(to_fmt)
+    time_service = TIME_SERVICES.get(from_fmt, None)
+    converter = time_service.converters.get(to_fmt) if time_service else None
 
     if converter:
         return converter
@@ -40,7 +41,7 @@ def _get_source_converter(from_fmt: str, to_fmt: str):
     default="toggl",
     help="The format of the source data.",
     show_default=True,
-    type=click.Choice(sorted(CONVERTERS.keys()), case_sensitive=False),
+    type=click.Choice(sorted(TIME_SERVICES.keys()), case_sensitive=False),
 )
 @click.option(
     "--to",
@@ -48,7 +49,9 @@ def _get_source_converter(from_fmt: str, to_fmt: str):
     default="harvest",
     help="The format of the converted data.",
     show_default=True,
-    type=click.Choice(sorted([to_fmt for sub in CONVERTERS.values() for to_fmt in sub.keys()]), case_sensitive=False),
+    type=click.Choice(
+        sorted([to_fmt for sub in TIME_SERVICES.values() for to_fmt in sub.converters.keys()]), case_sensitive=False
+    ),
 )
 @click.option("--client", help="The name of the client to use in converted data.")
 def convert(

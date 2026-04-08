@@ -4,7 +4,7 @@ from typing import List
 import click
 from zoneinfo import ZoneInfo
 
-from compiler_admin.services.toggl import TOGGL_COLUMNS, download_time_entries
+from compiler_admin.services.toggl import TogglTime
 
 TZINFO = ZoneInfo("America/Los_Angeles")
 
@@ -98,10 +98,12 @@ def download(
     user_ids: List[int] = [],
 ):
     """Download a Toggl time report in CSV format."""
+    time = TogglTime()
+
     if not output:
         output = f"Toggl_time_entries_{start.strftime('%Y-%m-%d')}_{end.strftime('%Y-%m-%d')}.csv"
 
-    params = dict(start_date=start, end_date=end, output_path=output, output_cols=TOGGL_COLUMNS)
+    params = dict(start_date=start, end_date=end, output_path=output, output_cols=time.TOGGL_COLUMNS)
 
     # By default include billable=True in params.
     # If --all was passed, do not add billable so callers can treat absence as "all".
@@ -120,7 +122,7 @@ def download(
     for k, v in params.items():
         click.echo(f"  {k}: {v}")
 
-    download_time_entries(**params)
+    time.download(**params)
 
     click.echo()
     click.echo(f"Download complete: ./{output}")
