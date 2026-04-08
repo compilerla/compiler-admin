@@ -1,5 +1,8 @@
 import json
+from io import StringIO
+from pathlib import Path
 from tempfile import NamedTemporaryFile
+
 import pytest
 
 import compiler_admin.services.files
@@ -56,11 +59,25 @@ def test_read_csv(sample_data, sample_csv_lines, spy_pandas, temp_file):
     assert df["three"].to_list() == three
 
 
-def test_read_json(sample_data, temp_file):
+def test_read_json__buffer(sample_data):
+    f = StringIO(json.dumps(sample_data))
+
+    assert read_json(f) == sample_data
+
+
+def test_read_json__file(sample_data, temp_file):
     with open(temp_file.name, "wt") as f:
         json.dump(sample_data, f)
 
     assert read_json(temp_file.name) == sample_data
+
+
+def test_read_json__Path(sample_data, temp_file):
+    with open(temp_file.name, "wt") as f:
+        json.dump(sample_data, f)
+
+    path = Path(temp_file.name)
+    assert read_json(path) == sample_data
 
 
 def test_write_csv(sample_data, sample_csv_lines, mocker, temp_file):
@@ -76,8 +93,24 @@ def test_write_csv(sample_data, sample_csv_lines, mocker, temp_file):
         assert f.readlines() == sample_csv_lines
 
 
-def test_write_json(sample_data, temp_file):
+def test_write_json__buffer(sample_data):
+    with StringIO() as f:
+        write_json(f, sample_data)
+        f.seek(0)
+
+        assert json.load(f) == sample_data
+
+
+def test_write_json__file(sample_data, temp_file):
     write_json(temp_file.name, sample_data)
+
+    with open(temp_file.name, "rt") as f:
+        assert json.load(f) == sample_data
+
+
+def test_write_json__Path(sample_data, temp_file):
+    path = Path(temp_file.name)
+    write_json(path, sample_data)
 
     with open(temp_file.name, "rt") as f:
         assert json.load(f) == sample_data
