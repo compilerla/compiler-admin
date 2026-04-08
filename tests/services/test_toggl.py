@@ -1,3 +1,4 @@
+import json
 import math
 import sys
 from datetime import date, datetime, timedelta
@@ -9,7 +10,7 @@ import pandas as pd
 import pytest
 
 import compiler_admin.services.toggl
-from compiler_admin.services.toggl import __name__ as MODULE, TogglTime, files
+from compiler_admin.services.toggl import TogglTime, TogglUsers, __name__ as MODULE, files
 
 
 @pytest.fixture(autouse=True)
@@ -276,3 +277,36 @@ class TestTogglTime:
         assert math.isclose(summary.total_hours, 518.32, rel_tol=1e-5)
         assert len(summary.hours_per_project) > 0
         assert len(summary.hours_per_user_project) > 0
+
+
+class TestTogglUsers:
+    @pytest.fixture(autouse=True)
+    def setup(self, mocker):
+        self.users = TogglUsers()
+        self.users.api_organization = mocker.Mock()
+        self.users.api_reports = mocker.Mock()
+        self.users.api_workspace = mocker.Mock()
+
+    def test_get_organization_users(self, mocker, spy_files):
+        data = {"user": "name"}
+        self.users.api_organization.get_users.return_value = mocker.Mock(json=mocker.Mock(return_value=data))
+        output = None
+
+        with StringIO() as output_data:
+            self.users.get_organization_users(output_data)
+            output = output_data.getvalue()
+
+        spy_files.write_json.assert_called_once()
+        assert output == json.dumps(data, indent=2)
+
+    def test_get_workspace_users(self, mocker, spy_files):
+        data = {"user": "name"}
+        self.users.api_workspace.get_users.return_value = mocker.Mock(json=mocker.Mock(return_value=data))
+        output = None
+
+        with StringIO() as output_data:
+            self.users.get_workspace_users(output_data)
+            output = output_data.getvalue()
+
+        spy_files.write_json.assert_called_once()
+        assert output == json.dumps(data, indent=2)
