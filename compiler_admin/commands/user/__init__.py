@@ -5,6 +5,7 @@ from compiler_admin.commands.user.convert import convert
 from compiler_admin.commands.user.create import create
 from compiler_admin.commands.user.deactivate import deactivate
 from compiler_admin.commands.user.delete import delete
+from compiler_admin.commands.user.ls import ls
 from compiler_admin.commands.user.offboard import offboard
 from compiler_admin.commands.user.reactivate import reactivate
 from compiler_admin.commands.user.reset import reset
@@ -23,6 +24,7 @@ user.add_command(convert)
 user.add_command(create)
 user.add_command(deactivate)
 user.add_command(delete)
+user.add_command(ls)
 user.add_command(offboard)
 user.add_command(reactivate)
 user.add_command(reset)
