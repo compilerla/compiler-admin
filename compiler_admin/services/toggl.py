@@ -310,28 +310,22 @@ class TogglTime(TogglService):
 
 
 class TogglUsers(TogglService):
-    def get_organization_users(self, output_path: str | TextIO = sys.stdout):
+    def get_organization_users(self) -> dict:
         """Get a list of users from the Toggl organization.
 
-        Args:
-            path (str | TextIO): The path to a JSON file where Toggl users will be written; or a writeable buffer for the same.
-
         Returns:
-            None. Either prints the resulting JSON data or writes to output_path.
+            dict: The resulting JSON data of users.
         """
         response = self.api_organization.get_users()
         json = response.json()
-        files.write_json(output_path, json)
+        return json
 
-    def get_workspace_users(self, output_path: str | TextIO = sys.stdout):
+    def get_workspace_users(self) -> dict:
         """Get a list of users from the Toggl workspace.
 
-        Args:
-            path (str | TextIO): The path to a JSON file where Toggl users will be written; or a writeable buffer for the same.
-
         Returns:
-            None. Either prints the resulting JSON data or writes to output_path.
+            dict: The resulting JSON data of users.
         """
         response = self.api_workspace.get_users()
         json = response.json()
-        files.write_json(output_path, json)
+        return json

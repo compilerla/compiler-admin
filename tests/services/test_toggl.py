@@ -1,4 +1,3 @@
-import json
 import math
 import sys
 from datetime import date, datetime, timedelta
@@ -287,26 +286,17 @@ class TestTogglUsers:
         self.users.api_reports = mocker.Mock()
         self.users.api_workspace = mocker.Mock()
 
-    def test_get_organization_users(self, mocker, spy_files):
+    def test_get_organization_users(self, mocker):
         data = {"user": "name"}
         self.users.api_organization.get_users.return_value = mocker.Mock(json=mocker.Mock(return_value=data))
-        output = None
+        output = self.users.get_organization_users()
 
-        with StringIO() as output_data:
-            self.users.get_organization_users(output_data)
-            output = output_data.getvalue()
+        assert output == data
 
-        spy_files.write_json.assert_called_once()
-        assert output == json.dumps(data, indent=2)
-
-    def test_get_workspace_users(self, mocker, spy_files):
+    def test_get_workspace_users(self, mocker):
         data = {"user": "name"}
         self.users.api_workspace.get_users.return_value = mocker.Mock(json=mocker.Mock(return_value=data))
-        output = None
 
-        with StringIO() as output_data:
-            self.users.get_workspace_users(output_data)
-            output = output_data.getvalue()
+        output = self.users.get_workspace_users()
 
-        spy_files.write_json.assert_called_once()
-        assert output == json.dumps(data, indent=2)
+        assert output == data
