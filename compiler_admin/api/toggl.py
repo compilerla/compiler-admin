@@ -74,8 +74,10 @@ class TogglOrganization(TogglBase):
             response (requests.Response): The HTTP response.
         """
         url = self.make_api_url("users")
+        params = dict(kwargs)
+        params["workspaces"] = str(self.workspace_id)
 
-        response = self.session.get(url, timeout=self.timeout)
+        response = self.session.get(url, params=params, timeout=self.timeout)
         response.raise_for_status()
 
         return response
@@ -171,8 +173,9 @@ class TogglWorkspace(TogglBase):
             response (requests.Response): The HTTP response.
         """
         url = self.make_api_url("users")
+        params = dict(**kwargs)
 
-        response = self.session.get(url, timeout=self.timeout)
+        response = self.session.get(url, params=params, timeout=self.timeout)
         response.raise_for_status()
 
         return response

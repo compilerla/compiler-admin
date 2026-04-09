@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from compiler_admin import __version__
-from compiler_admin.api.toggl import __name__ as MODULE, TogglBase, TogglOrganization, TogglReports, TogglWorkspace
+from compiler_admin.api.toggl import TogglBase, TogglOrganization, TogglReports, TogglWorkspace, __name__ as MODULE
 
 
 @pytest.fixture(autouse=True)
@@ -68,11 +68,13 @@ class TestTogglOrganization:
 
     def test_get_users(self, mock_requests):
         url = self.toggl.make_api_url("users")
+        kwargs = dict(kwarg1=1, kwarg2="two")
+        call_kwargs = dict(workspaces="1234", **kwargs)
 
-        response = self.toggl.get_users()
+        response = self.toggl.get_users(**kwargs)
 
         response.raise_for_status.assert_called_once()
-        mock_requests.get.assert_called_once_with(url, timeout=self.toggl.timeout)
+        mock_requests.get.assert_called_once_with(url, params=call_kwargs, timeout=self.toggl.timeout)
 
 
 class TestTogglReports:
@@ -141,11 +143,12 @@ class TestTogglWorkspace:
 
     def test_get_users(self, mock_requests):
         url = self.toggl.make_api_url("users")
+        kwargs = dict(kwarg1=1, kwarg2="two")
 
-        response = self.toggl.get_users()
+        response = self.toggl.get_users(**kwargs)
 
         response.raise_for_status.assert_called_once()
-        mock_requests.get.assert_called_once_with(url, timeout=self.toggl.timeout)
+        mock_requests.get.assert_called_once_with(url, params=kwargs, timeout=self.toggl.timeout)
 
     def test_update_preferences(self, mocker, mock_requests):
         url = "http://fake.url"

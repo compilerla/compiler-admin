@@ -310,22 +310,22 @@ class TogglTime(TogglService):
 
 
 class TogglUsers(TogglService):
-    def get_organization_users(self) -> dict:
+    def get_organization_users(self, **kwargs) -> dict:
         """Get a list of users from the Toggl organization.
 
         Returns:
             dict: The resulting JSON data of users.
         """
-        response = self.api_organization.get_users()
+        response = self.api_organization.get_users(**kwargs)
         json = response.json()
         return json
 
-    def get_workspace_users(self) -> dict:
+    def get_workspace_users(self, **kwargs) -> dict:
         """Get a list of users from the Toggl workspace.
 
         Returns:
             dict: The resulting JSON data of users.
         """
-        response = self.api_workspace.get_users()
+        response = self.api_workspace.get_users(**kwargs)
         json = response.json()
         return json

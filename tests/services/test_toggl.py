@@ -289,14 +289,19 @@ class TestTogglUsers:
     def test_get_organization_users(self, mocker):
         data = {"user": "name"}
         self.users.api_organization.get_users.return_value = mocker.Mock(json=mocker.Mock(return_value=data))
-        output = self.users.get_organization_users()
+        kwargs = dict(kwarg1=1, kwarg2="two")
+
+        output = self.users.get_organization_users(**kwargs)
 
         assert output == data
+        self.users.api_organization.get_users.assert_called_once_with(**kwargs)
 
     def test_get_workspace_users(self, mocker):
         data = {"user": "name"}
         self.users.api_workspace.get_users.return_value = mocker.Mock(json=mocker.Mock(return_value=data))
+        kwargs = dict(kwarg1=1, kwarg2="two")
 
-        output = self.users.get_workspace_users()
+        output = self.users.get_workspace_users(**kwargs)
 
         assert output == data
+        self.users.api_workspace.get_users.assert_called_once_with(**kwargs)
