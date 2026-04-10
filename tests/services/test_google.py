@@ -112,31 +112,29 @@ def test_user_not_in_domain(capfd):
     assert "User not in domain" in captured.out
 
 
-def test_CallGAMCommand_prepends_gam(mock_gam_CallGAMCommand):
+def test_CallGAMCommand_prepends_gam(mock_gam_CallGAMCommand, get_command_str):
     CallGAMCommand(("args",))
 
-    mock_gam_CallGAMCommand.assert_called_once()
-    call_args = mock_gam_CallGAMCommand.call_args[0][0]
-    assert call_args == (GAM, "args")
+    command = get_command_str(mock_gam_CallGAMCommand)
+
+    assert command == f"{GAM} args"
 
 
-def test_CallGAMCommand_does_not_duplicate_gam(mock_gam_CallGAMCommand):
+def test_CallGAMCommand_does_not_duplicate_gam(mock_gam_CallGAMCommand, get_command_str):
     CallGAMCommand((GAM, "args"))
 
-    mock_gam_CallGAMCommand.assert_called_once()
-    call_args = mock_gam_CallGAMCommand.call_args[0][0]
-    assert call_args == (GAM, "args")
+    command = get_command_str(mock_gam_CallGAMCommand)
+
+    assert command == f"{GAM} args"
 
 
-def test_CallGAMCommand_stdouterr_override(mock_gam_CallGAMCommand):
+def test_CallGAMCommand_stdouterr_override(mock_gam_CallGAMCommand, get_command_str):
     CallGAMCommand(("args",), stdout="override-stdout", stderr="override-stderr")
 
-    mock_gam_CallGAMCommand.assert_called_once()
-    call_args = mock_gam_CallGAMCommand.call_args[0][0]
-    call_str = " ".join(call_args)
+    command = get_command_str(mock_gam_CallGAMCommand)
 
-    assert "redirect stdout override-stdout" in call_str
-    assert "redirect stderr override-stderr" in call_str
+    assert "redirect stdout override-stdout" in command
+    assert "redirect stderr override-stderr" in command
 
 
 def test_CallGYBCommand_prepends_gyb(mock_subprocess_call):
@@ -200,15 +198,18 @@ def test_get_backup_codes_user_does_not_exist(mock_google_user_exists_no, capfd)
 
 
 @pytest.mark.usefixtures("mock_google_user_exists_yes")
-def test_get_backup_codes_user_exists_has_codes(mock_gam_CallGAMCommand, mock_NamedTemporaryFile_with_readlines):
+def test_get_backup_codes_user_exists_has_codes(
+    mock_gam_CallGAMCommand, mock_NamedTemporaryFile_with_readlines, get_command_str
+):
     username = "existent"
     codes = "12345678"
     mock_NamedTemporaryFile_with_readlines(MODULE, [codes])
 
     res = get_backup_codes(username)
 
-    assert mock_gam_CallGAMCommand.call_count == 1
-    assert "show" in mock_gam_CallGAMCommand.call_args[0][0]
+    command = get_command_str(mock_gam_CallGAMCommand)
+
+    assert "show" in command
     assert res == codes
 
 
