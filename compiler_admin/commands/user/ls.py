@@ -1,15 +1,13 @@
 import click
 
-from compiler_admin.services.google import CallGAMCommand
+from compiler_admin.services.google import get_users
 from compiler_admin.services.toggl import TogglUsers
 
 
 def ls_google(inactive: bool = False, **kwargs):
     """Use GAM to print the users in the Google Workspace."""
-    flag = str(inactive).lower()
-    command = ("print", "users") + ("issuspended", flag, "isarchived", flag)
-
-    CallGAMCommand(command)
+    output = get_users(inactive, **kwargs)
+    click.echo(output)
 
 
 def ls_toggl(inactive: bool = False, **kwargs):

@@ -5,8 +5,8 @@ from compiler_admin.commands.user.ls import USER_SYSTEMS, __name__ as MODULE, ls
 
 
 @pytest.fixture
-def mock_google_CallGAMCommand(mock_google_CallGAMCommand):
-    return mock_google_CallGAMCommand(MODULE)
+def mock_google_get_users(mocker):
+    return mocker.patch(f"{MODULE}.get_users")
 
 
 @pytest.fixture
@@ -82,10 +82,10 @@ def test_ls__inactive__system_toggl(cli_runner, mock_ls_toggl):
     mock_ls_toggl.assert_called_once_with(inactive=True)
 
 
-def test_ls_google(mock_google_CallGAMCommand):
+def test_ls_google(mock_google_get_users):
     ls_google()
 
-    mock_google_CallGAMCommand.assert_called_once()
+    mock_google_get_users.assert_called_once()
 
 
 def test_ls_toggl(mock_toggl_api):

@@ -3,7 +3,7 @@ from tempfile import TemporaryFile
 
 import pytest
 
-from compiler_admin import RESULT_SUCCESS, RESULT_FAILURE
+from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
 from compiler_admin.services.google import (
     DOMAIN,
     GAM,
@@ -13,13 +13,15 @@ from compiler_admin.services.google import (
     GYB,
     OU_ALUMNI,
     USER_ARCHIVE,
-    user_account_name,
     CallGAMCommand,
     CallGYBCommand,
+    __name__ as MODULE,
     add_user_to_group,
     get_backup_codes,
+    get_users,
     move_user_ou,
     remove_user_from_group,
+    user_account_name,
     user_exists,
     user_in_group,
     user_in_ou,
@@ -27,7 +29,6 @@ from compiler_admin.services.google import (
     user_is_deactivated,
     user_is_partner,
     user_is_staff,
-    __name__ as MODULE,
 )
 
 
@@ -223,6 +224,28 @@ def test_get_backup_codes_user_exists_no_codes(mocker, mock_gam_CallGAMCommand):
     assert "show" in mock_gam_CallGAMCommand.call_args_list[0].args[0]
     assert "update" in mock_gam_CallGAMCommand.call_args_list[1].args[0]
     assert res == new_codes
+
+
+def test_get_users(mock_google_CallGAMCommand):
+    get_users(kwarg1="one")
+
+    mock_google_CallGAMCommand.assert_called_once()
+    call_args = mock_google_CallGAMCommand.call_args[0]
+    command = " ".join(call_args[0])
+
+    assert "print users" in command
+    assert "issuspended false isarchived false" in command
+    assert "kwarg1 one" in command
+
+
+def test_get_users__inactive(mock_google_CallGAMCommand):
+    get_users(inactive=True)
+
+    mock_google_CallGAMCommand.assert_called_once()
+    call_args = mock_google_CallGAMCommand.call_args[0]
+    command = " ".join(call_args[0])
+
+    assert "issuspended true isarchived true" in command
 
 
 def test_move_user_ou(mock_google_CallGAMCommand):

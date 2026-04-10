@@ -1,12 +1,12 @@
 import subprocess
 import sys
 from tempfile import NamedTemporaryFile
-from typing import Any, Sequence, IO
-
-from compiler_admin import RESULT_SUCCESS
+from typing import IO, Any, Sequence
 
 # import and alias CallGAMCommand so we can simplify usage in this app
 from gam import CallGAMCommand as __CallGAMCommand, initializeLogging
+
+from compiler_admin import RESULT_SUCCESS
 
 initializeLogging()
 
@@ -93,6 +93,21 @@ def get_backup_codes(username: str) -> str:
         with NamedTemporaryFile("w+") as stdout:
             CallGAMCommand(command, stdout=stdout.name, stderr="stdout")
             output = "".join(stdout.readlines())
+
+    return output
+
+
+def get_users(inactive: bool = False, **kwargs) -> str:
+    flag = str(inactive).lower()
+    output = ""
+    command = ("print", "users", "issuspended", flag, "isarchived", flag)
+    if len(kwargs) > 0:
+        for k, v in kwargs.items():
+            command += (k, v)
+
+    with NamedTemporaryFile("w+") as stdout:
+        CallGAMCommand(command, stdout=stdout.name, stderr="stdout")
+        output = "".join(stdout.readlines())
 
     return output
 
