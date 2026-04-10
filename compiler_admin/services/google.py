@@ -6,7 +6,7 @@ from typing import IO, Any, Sequence
 # import and alias CallGAMCommand so we can simplify usage in this app
 from gam import CallGAMCommand as __CallGAMCommand, initializeLogging
 
-from compiler_admin import Result
+from compiler_admin import Format, Result
 
 initializeLogging()
 
@@ -97,13 +97,19 @@ def get_backup_codes(username: str) -> str:
     return output
 
 
-def get_users(inactive: bool = False, **kwargs) -> str:
+def get_users(inactive: bool = False, format=Format.BASIC, **kwargs) -> str:
     flag = str(inactive).lower()
     output = ""
     command = ("print", "users", "issuspended", flag, "isarchived", flag)
     if len(kwargs) > 0:
         for k, v in kwargs.items():
             command += (k, v)
+
+    match format:
+        case Format.CSV:
+            command += ("full",)
+        case Format.JSON:
+            command = ("info", "users", "all", "users_arch_or_susp" if inactive else "users_na_ns", "formatjson")
 
     with NamedTemporaryFile("w+") as stdout:
         CallGAMCommand(command, stdout=stdout.name, stderr="stdout")

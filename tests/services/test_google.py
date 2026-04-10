@@ -3,7 +3,7 @@ from tempfile import TemporaryFile
 
 import pytest
 
-from compiler_admin import Result
+from compiler_admin import Format, Result
 from compiler_admin.services.google import (
     DOMAIN,
     GAM,
@@ -30,6 +30,16 @@ from compiler_admin.services.google import (
     user_is_partner,
     user_is_staff,
 )
+
+
+@pytest.fixture
+def get_command_str():
+    def _get_command_str(mocked_CallGAMCommand):
+        mocked_CallGAMCommand.assert_called_once()
+        call_args = mocked_CallGAMCommand.call_args[0]
+        return " ".join([str(arg) for arg in call_args[0]])
+
+    return _get_command_str
 
 
 @pytest.fixture
@@ -226,26 +236,41 @@ def test_get_backup_codes_user_exists_no_codes(mocker, mock_gam_CallGAMCommand):
     assert res == new_codes
 
 
-def test_get_users(mock_google_CallGAMCommand):
+def test_get_users(mock_google_CallGAMCommand, get_command_str):
     get_users(kwarg1="one")
 
-    mock_google_CallGAMCommand.assert_called_once()
-    call_args = mock_google_CallGAMCommand.call_args[0]
-    command = " ".join(call_args[0])
+    command = get_command_str(mock_google_CallGAMCommand)
 
     assert "print users" in command
     assert "issuspended false isarchived false" in command
     assert "kwarg1 one" in command
 
 
-def test_get_users__inactive(mock_google_CallGAMCommand):
+def test_get_users__inactive(mock_google_CallGAMCommand, get_command_str):
     get_users(inactive=True)
 
-    mock_google_CallGAMCommand.assert_called_once()
-    call_args = mock_google_CallGAMCommand.call_args[0]
-    command = " ".join(call_args[0])
+    command = get_command_str(mock_google_CallGAMCommand)
 
     assert "issuspended true isarchived true" in command
+
+
+def test_get_users__format_csv(mock_google_CallGAMCommand, get_command_str):
+    get_users(format=Format.CSV)
+
+    command = get_command_str(mock_google_CallGAMCommand)
+
+    assert "full" in command
+
+
+@pytest.mark.parametrize("inactive,expected_in_command", ((True, "users_arch_or_susp"), (False, "users_na_ns")))
+def test_get_users__format_json(mock_google_CallGAMCommand, get_command_str, inactive, expected_in_command):
+    get_users(inactive=inactive, format=Format.JSON)
+
+    command = get_command_str(mock_google_CallGAMCommand)
+
+    assert "info users all" in command
+    assert "formatjson" in command
+    assert expected_in_command in command
 
 
 def test_move_user_ou(mock_google_CallGAMCommand):

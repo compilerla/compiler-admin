@@ -6,6 +6,12 @@ class Result:
     FAILURE = 1
 
 
+class Format:
+    BASIC = 0
+    CSV = 1
+    JSON = 2
+
+
 try:
     __version__ = version("compiler_admin")
 except PackageNotFoundError:
