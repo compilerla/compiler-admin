@@ -1,7 +1,7 @@
 import pytest
 
-from compiler_admin import RESULT_SUCCESS
-from compiler_admin.commands.user.delete import delete, __name__ as MODULE
+from compiler_admin import Result
+from compiler_admin.commands.user.delete import __name__ as MODULE, delete
 
 
 @pytest.fixture
@@ -30,7 +30,7 @@ def test_delete_confirm_yes(cli_runner, mock_google_user_exists, mock_google_Cal
 
     result = cli_runner.invoke(delete, ["username"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_google_CallGAMCommand.assert_called_once()
     call_args = mock_google_CallGAMCommand.call_args.args[0]
     assert "delete" in call_args
@@ -44,7 +44,7 @@ def test_delete_confirm_no(cli_runner, mock_google_user_exists, mock_google_Call
 
     result = cli_runner.invoke(delete, ["username"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_google_CallGAMCommand.assert_not_called()
 
 
@@ -53,5 +53,5 @@ def test_delete_user_does_not_exist(cli_runner, mock_google_user_exists, mock_go
 
     result = cli_runner.invoke(delete, ["username"])
 
-    assert result.exit_code != RESULT_SUCCESS
+    assert result.exit_code != Result.SUCCESS
     assert mock_google_CallGAMCommand.call_count == 0

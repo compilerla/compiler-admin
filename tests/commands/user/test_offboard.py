@@ -1,7 +1,7 @@
 import pytest
 
-from compiler_admin import RESULT_SUCCESS
-from compiler_admin.commands.user.offboard import offboard, __name__ as MODULE
+from compiler_admin import Result
+from compiler_admin.commands.user.offboard import __name__ as MODULE, offboard
 
 
 @pytest.fixture
@@ -64,7 +64,7 @@ def test_offboard_confirm_yes(
 
     result = cli_runner.invoke(offboard, args)
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     assert mock_google_CallGAMCommand.call_count > 0
     mock_google_CallGYBCommand.assert_called_once()
     mock_NamedTemporaryFile.assert_called_once()
@@ -90,7 +90,7 @@ def test_offboard_confirm_no(
 
     result = cli_runner.invoke(offboard, ["username"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_google_CallGAMCommand.assert_not_called()
     mock_google_CallGYBCommand.assert_not_called()
 
@@ -103,7 +103,7 @@ def test_offboard_user_does_not_exist(cli_runner, mock_google_user_exists, mock_
 
     result = cli_runner.invoke(offboard, ["username"])
 
-    assert result.exit_code != RESULT_SUCCESS
+    assert result.exit_code != Result.SUCCESS
     assert mock_google_CallGAMCommand.call_count == 0
 
 
@@ -114,6 +114,6 @@ def test_offboard_alias_user_does_not_exist(cli_runner, mock_google_user_exists,
 
     result = cli_runner.invoke(offboard, ["--alias", "alias_username", "username"])
 
-    assert result.exit_code != RESULT_SUCCESS
+    assert result.exit_code != Result.SUCCESS
     assert mock_google_user_exists.call_count == 2
     assert mock_google_CallGAMCommand.call_count == 0

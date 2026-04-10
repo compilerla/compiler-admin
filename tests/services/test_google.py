@@ -3,7 +3,7 @@ from tempfile import TemporaryFile
 
 import pytest
 
-from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
+from compiler_admin import Result
 from compiler_admin.services.google import (
     DOMAIN,
     GAM,
@@ -286,7 +286,7 @@ def test_user_exists_user_does_not_exist(mock_google_user_info):
 
 def test_user_info_user_exists(mock_gam_CallGAMCommand, mock_NamedTemporaryFile_with_readlines):
     mock_NamedTemporaryFile_with_readlines(MODULE, ["First Name:Test", "Last Name:User"])
-    mock_gam_CallGAMCommand.return_value = RESULT_SUCCESS
+    mock_gam_CallGAMCommand.return_value = Result.SUCCESS
 
     res = user_info(user_account_name("username"))
 
@@ -294,7 +294,7 @@ def test_user_info_user_exists(mock_gam_CallGAMCommand, mock_NamedTemporaryFile_
 
 
 def test_user_info_user_does_not_exists(mock_gam_CallGAMCommand):
-    mock_gam_CallGAMCommand.return_value = RESULT_FAILURE
+    mock_gam_CallGAMCommand.return_value = Result.FAILURE
 
     res = user_info(user_account_name("username"))
 

@@ -2,7 +2,7 @@ from tempfile import NamedTemporaryFile
 
 import click
 
-from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
+from compiler_admin import Result
 from compiler_admin.commands.user.deactivate import deactivate
 from compiler_admin.commands.user.delete import delete
 from compiler_admin.services.google import USER_ARCHIVE, CallGAMCommand, CallGYBCommand, user_account_name, user_exists
@@ -24,18 +24,18 @@ def offboard(ctx: click.Context, username: str, alias: str = "", _delete: bool =
 
     if not user_exists(account):
         click.echo(f"User does not exist: {account}")
-        raise SystemExit(RESULT_FAILURE)
+        raise SystemExit(Result.FAILURE)
 
     alias_account = user_account_name(alias)
     if alias_account and not user_exists(alias_account):
         click.echo(f"Alias target user does not exist: {alias_account}")
-        raise SystemExit(RESULT_FAILURE)
+        raise SystemExit(Result.FAILURE)
 
     if not force:
         cont = input(f"Offboard account {account} {' (assigning alias to ' + alias_account + ')' if alias else ''}? (Y/n): ")
         if not cont.lower().startswith("y"):
             click.echo("Aborting offboard.")
-            raise SystemExit(RESULT_SUCCESS)
+            raise SystemExit(Result.SUCCESS)
 
     click.echo(f"User exists, offboarding: {account}")
 

@@ -1,6 +1,6 @@
 import click
 
-from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
+from compiler_admin import Result
 from compiler_admin.commands.user.reset import reset
 from compiler_admin.services.google import (
     OU_ALUMNI,
@@ -37,17 +37,17 @@ def deactivate(
 
     if not user_exists(account):
         click.echo(f"User does not exist: {account}")
-        raise SystemExit(RESULT_FAILURE)
+        raise SystemExit(Result.FAILURE)
 
     if user_is_deactivated(account):
         click.echo("User is already deactivated")
-        raise SystemExit(RESULT_FAILURE)
+        raise SystemExit(Result.FAILURE)
 
     if not force:
         cont = input(f"Deactivate account {account}? (Y/n): ")
         if not cont.lower().startswith("y"):
             click.echo("Aborting deactivation")
-            raise SystemExit(RESULT_SUCCESS)
+            raise SystemExit(Result.SUCCESS)
 
     click.echo(f"User exists, deactivating: {account}")
 

@@ -1,6 +1,6 @@
 import click
 
-from compiler_admin import RESULT_FAILURE
+from compiler_admin import Result
 from compiler_admin.services.google import (
     GROUP_TEAM,
     USER_HELLO,
@@ -28,7 +28,7 @@ def create(username: str, notify: str = "", gam_args: list = []):
 
     if user_exists(account):
         click.echo(f"User already exists: {account}")
-        raise SystemExit(RESULT_FAILURE)
+        raise SystemExit(Result.FAILURE)
 
     click.echo(f"User does not exist, continuing: {account}")
 

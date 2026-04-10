@@ -1,6 +1,6 @@
 import pytest
 
-from compiler_admin import RESULT_SUCCESS
+from compiler_admin import Result
 from compiler_admin.commands.user.ls import USER_SYSTEMS, __name__ as MODULE, ls, ls_google, ls_toggl
 
 
@@ -34,7 +34,7 @@ def test_ls_default(cli_runner, mock_ls_google, mock_ls_toggl):
     args = []
     result = cli_runner.invoke(ls, args)
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_ls_google.assert_called_once_with(inactive=False)
     mock_ls_toggl.assert_not_called()
 
@@ -43,7 +43,7 @@ def test_ls__system_google(cli_runner, mock_ls_google, mock_ls_toggl):
     args = ["google"]
     result = cli_runner.invoke(ls, args)
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_ls_google.assert_called_once()
     mock_ls_toggl.assert_not_called()
 
@@ -52,7 +52,7 @@ def test_ls__system_toggl(cli_runner, mock_ls_google, mock_ls_toggl):
     args = ["toggl"]
     result = cli_runner.invoke(ls, args)
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_ls_google.assert_not_called()
     mock_ls_toggl.assert_called_once()
 
@@ -61,7 +61,7 @@ def test_ls__system_unknown(cli_runner, mock_ls_google, mock_ls_toggl):
     args = ["unknown"]
     result = cli_runner.invoke(ls, args)
 
-    assert result.exit_code != RESULT_SUCCESS
+    assert result.exit_code != Result.SUCCESS
     mock_ls_google.assert_not_called()
     mock_ls_toggl.assert_not_called()
 
@@ -70,7 +70,7 @@ def test_ls__inactive(cli_runner, mock_ls_google):
     args = ["--inactive"]
     result = cli_runner.invoke(ls, args)
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_ls_google.assert_called_once_with(inactive=True)
 
 
@@ -78,7 +78,7 @@ def test_ls__inactive__system_toggl(cli_runner, mock_ls_toggl):
     args = ["--inactive", "toggl"]
     result = cli_runner.invoke(ls, args)
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_ls_toggl.assert_called_once_with(inactive=True)
 
 

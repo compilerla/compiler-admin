@@ -1,10 +1,9 @@
 import click
-from click.testing import CliRunner
-
 import pytest
+from click.testing import CliRunner
 from pytest_socket import disable_socket
 
-from compiler_admin import RESULT_SUCCESS
+from compiler_admin import Result
 
 
 def pytest_runtest_setup():
@@ -16,13 +15,13 @@ def mock_module_name(mocker):
     """Fixture returns a function taking a name, that returns a function taking a module,
     patching the given name in the given module.
 
-    By default, the patched object is given a return_value = RESULT_SUCCESS.
+    By default, the patched object is given a return_value = ResultCodes.SUCCESS.
     """
 
     def _mock_module_name(name):
         def __mock_module_name(module):
             patched = mocker.patch(f"{module}.{name}")
-            patched.return_value = RESULT_SUCCESS
+            patched.return_value = Result.SUCCESS
             return patched
 
         return __mock_module_name
@@ -62,7 +61,7 @@ def mock_input_no(mock_input):
 
 @click.command
 def dummy_command(**kwargs):
-    return RESULT_SUCCESS
+    return Result.SUCCESS
 
 
 @pytest.fixture

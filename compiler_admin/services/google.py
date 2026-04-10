@@ -6,7 +6,7 @@ from typing import IO, Any, Sequence
 # import and alias CallGAMCommand so we can simplify usage in this app
 from gam import CallGAMCommand as __CallGAMCommand, initializeLogging
 
-from compiler_admin import RESULT_SUCCESS
+from compiler_admin import Result
 
 initializeLogging()
 
@@ -153,7 +153,7 @@ def user_info(username: str) -> dict:
 
     with NamedTemporaryFile("w+") as stdout:
         res = CallGAMCommand(("info", "user", username, "quick"), stdout=stdout.name)
-        if res != RESULT_SUCCESS:
+        if res != Result.SUCCESS:
             # user doesn't exist
             return {}
         # user exists, read data

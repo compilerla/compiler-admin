@@ -1,7 +1,7 @@
 import pytest
 
-from compiler_admin import RESULT_SUCCESS
-from compiler_admin.commands.time.convert import __name__ as MODULE, TIME_SERVICES, _get_source_converter, convert
+from compiler_admin import Result
+from compiler_admin.commands.time.convert import TIME_SERVICES, __name__ as MODULE, _get_source_converter, convert
 from compiler_admin.services.harvest import HarvestTime
 from compiler_admin.services.toggl import TogglTime
 
@@ -39,7 +39,7 @@ def test_convert(cli_runner, mock_get_source_converter):
         convert, ["--input", "input", "--output", "output", "--client", "client", "--from", "harvest", "--to", "toggl"]
     )
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_get_source_converter.assert_called_once_with("harvest", "toggl")
     mock_get_source_converter.return_value.assert_called_once_with(
         source_path="input", output_path="output", client_name="client"

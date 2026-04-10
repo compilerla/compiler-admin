@@ -1,7 +1,7 @@
 import pytest
 
-from compiler_admin import RESULT_SUCCESS
-from compiler_admin.commands.user.reset import reset, __name__ as MODULE
+from compiler_admin import Result
+from compiler_admin.commands.user.reset import __name__ as MODULE, reset
 from compiler_admin.services.google import USER_HELLO
 
 
@@ -35,7 +35,7 @@ def test_reset_user_does_not_exist(cli_runner, mock_google_user_exists):
 
     result = cli_runner.invoke(reset, ["username"])
 
-    assert result.exit_code != RESULT_SUCCESS
+    assert result.exit_code != Result.SUCCESS
 
 
 @pytest.mark.usefixtures("mock_input_yes")
@@ -44,7 +44,7 @@ def test_reset_confirm_yes(cli_runner, mock_google_user_exists, mock_google_Call
 
     result = cli_runner.invoke(reset, ["username"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_google_CallGAMCommand.assert_called_once()
     mock_commands_signout.callback.assert_called_once()
 
@@ -55,7 +55,7 @@ def test_reset_confirm_no(cli_runner, mock_google_user_exists, mock_google_CallG
 
     result = cli_runner.invoke(reset, ["username"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_google_CallGAMCommand.assert_not_called()
     mock_commands_signout.callback.assert_not_called()
 
@@ -65,7 +65,7 @@ def test_reset_user_exists(cli_runner, mock_google_user_exists, mock_google_Call
 
     result = cli_runner.invoke(reset, ["--force", "username"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_google_CallGAMCommand.assert_called_once()
     call_args = " ".join(mock_google_CallGAMCommand.call_args[0][0])
     assert "update user" in call_args
@@ -78,7 +78,7 @@ def test_reset_notify(cli_runner, mock_google_user_exists, mock_google_CallGAMCo
 
     result = cli_runner.invoke(reset, ["--force", "--notify", "notification@example.com", "username"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_google_CallGAMCommand.assert_called_once()
     call_args = " ".join(mock_google_CallGAMCommand.call_args[0][0])
     assert "update user" in call_args

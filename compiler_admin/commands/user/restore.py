@@ -2,7 +2,7 @@ import pathlib
 
 import click
 
-from compiler_admin import RESULT_FAILURE
+from compiler_admin import Result
 from compiler_admin.services.google import USER_ARCHIVE, CallGYBCommand, user_account_name
 
 
@@ -15,7 +15,7 @@ def restore(username: str):
 
     if not pathlib.Path(backup_dir).exists():
         click.echo(f"Couldn't find a local backup: {backup_dir}")
-        raise SystemExit(RESULT_FAILURE)
+        raise SystemExit(Result.FAILURE)
 
     click.echo(f"Found backup, starting restore process with dest: {USER_ARCHIVE} for account: {account}")
 

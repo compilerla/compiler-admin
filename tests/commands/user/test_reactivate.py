@@ -2,10 +2,9 @@ from unittest.mock import call
 
 import pytest
 
-from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
+from compiler_admin import Result
 from compiler_admin.commands.user.backupcodes import backupcodes
-from compiler_admin.commands.user.reactivate import __name__ as MODULE
-from compiler_admin.commands.user.reactivate import reactivate
+from compiler_admin.commands.user.reactivate import __name__ as MODULE, reactivate
 from compiler_admin.commands.user.reset import reset
 from compiler_admin.services.google import GROUP_STAFF, GROUP_TEAM, OU_CONTRACTORS, OU_STAFF
 
@@ -56,7 +55,7 @@ def test_reactivate_user_does_not_exist(cli_runner, mock_google_user_exists, moc
 
     result = cli_runner.invoke(reactivate, ["username"])
 
-    assert result.exit_code == RESULT_FAILURE
+    assert result.exit_code == Result.FAILURE
     assert result.exception
     assert "User does not exist: username@compiler.la" in result.output
     mock_google_CallGAMCommand.assert_not_called()
@@ -68,7 +67,7 @@ def test_reactivate_user_is_not_deactivated(cli_runner, mock_google_user_exists,
 
     result = cli_runner.invoke(reactivate, ["username"])
 
-    assert result.exit_code == RESULT_FAILURE
+    assert result.exit_code == Result.FAILURE
     assert result.exception
     assert "User is not deactivated, cannot reactivate" in result.output
 
@@ -80,7 +79,7 @@ def test_reactivate_confirm_no(cli_runner, mock_google_user_exists, mock_google_
 
     result = cli_runner.invoke(reactivate, ["username"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     assert not result.exception
     assert "Aborting reactivation" in result.output
 
@@ -99,7 +98,7 @@ def test_reactivate_confirm_yes(
 
     result = cli_runner.invoke(reactivate, ["username"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     assert not result.exception
     mock_google_add_user_to_group.assert_called_once_with("username@compiler.la", GROUP_TEAM)
     mock_google_move_user_ou.assert_called_once_with("username@compiler.la", OU_CONTRACTORS)
@@ -119,7 +118,7 @@ def test_reactivate_force(
 
     result = cli_runner.invoke(reactivate, ["--force", "username"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     assert not result.exception
     mock_google_add_user_to_group.assert_called_once_with("username@compiler.la", GROUP_TEAM)
     mock_google_move_user_ou.assert_called_once_with("username@compiler.la", OU_CONTRACTORS)
@@ -139,7 +138,7 @@ def test_reactivate_staff(
 
     result = cli_runner.invoke(reactivate, ["--force", "--staff", "username"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     assert not result.exception
     mock_google_add_user_to_group.assert_has_calls(
         [call("username@compiler.la", GROUP_TEAM), call("username@compiler.la", GROUP_STAFF)]
@@ -162,7 +161,7 @@ def test_reactivate_recovery_info(
         reactivate, ["--force", "--recovery-email=foo@bar.com", "--recovery-phone=555-555-5555", "username"]
     )
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     assert not result.exception
     mock_google_CallGAMCommand.assert_has_calls(
         [
