@@ -290,11 +290,22 @@ class TestTogglUsers:
         data = {"user": "name"}
         self.users.api_organization.get_users.return_value = mocker.Mock(json=mocker.Mock(return_value=data))
         kwargs = dict(kwarg1=1, kwarg2="two")
+        call_kwargs = {**kwargs, "active_status": "active"}
 
         output = self.users.get_organization_users(**kwargs)
 
         assert output == data
-        self.users.api_organization.get_users.assert_called_once_with(**kwargs)
+        self.users.api_organization.get_users.assert_called_once_with(**call_kwargs)
+
+    def test_get_organization_users__inactive(self, mocker):
+        data = {"user": "name"}
+        self.users.api_organization.get_users.return_value = mocker.Mock(json=mocker.Mock(return_value=data))
+        call_kwargs = {"active_status": "inactive,invited"}
+
+        output = self.users.get_organization_users(inactive=True)
+
+        assert output == data
+        self.users.api_organization.get_users.assert_called_once_with(**call_kwargs)
 
     def test_get_workspace_users(self, mocker):
         data = {"user": "name"}

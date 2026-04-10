@@ -310,14 +310,24 @@ class TogglTime(TogglService):
 
 
 class TogglUsers(TogglService):
-    def get_organization_users(self, **kwargs) -> dict:
+    def get_organization_users(self, inactive=False, **kwargs) -> dict:
         """Get a list of users from the Toggl organization.
+
+        Args:
+            inactive (bool): True to get inactive users. False (the default) to get only active users.
 
         Returns:
             dict: The resulting JSON data of users.
         """
+        if inactive:
+            active_status = "inactive,invited"
+        else:
+            active_status = "active"
+
+        kwargs["active_status"] = active_status
         response = self.api_organization.get_users(**kwargs)
         json = response.json()
+
         return json
 
     def get_workspace_users(self, **kwargs) -> dict:

@@ -88,7 +88,13 @@ def test_ls_google(mock_google_get_users):
     mock_google_get_users.assert_called_once()
 
 
-def test_ls_toggl(mock_toggl_api):
+def test_ls_toggl__default(mock_toggl_api):
     ls_toggl()
 
-    mock_toggl_api.get_organization_users.assert_called_once()
+    mock_toggl_api.get_organization_users.assert_called_once_with(inactive=False)
+
+
+def test_ls_toggl__inactive(mock_toggl_api):
+    ls_toggl(inactive=True)
+
+    mock_toggl_api.get_organization_users.assert_called_once_with(inactive=True)

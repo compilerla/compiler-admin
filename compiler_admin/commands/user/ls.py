@@ -13,12 +13,7 @@ def ls_google(inactive: bool = False, **kwargs):
 def ls_toggl(inactive: bool = False, **kwargs):
     """Use the Toggl API to get a list of users."""
     toggl = TogglUsers()
-    if inactive:
-        active_status = "inactive,invited"
-    else:
-        active_status = "active"
-
-    users = toggl.get_organization_users(active_status=active_status)
+    users = toggl.get_organization_users(inactive=inactive, **kwargs)
 
     # Mirroing the default GAM output for print users
     click.echo(f"Got {len(users)} Users")
