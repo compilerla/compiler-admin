@@ -41,7 +41,7 @@ test = [
 compiler-admin = "compiler_admin.main:main"
 
 [build-system]
-requires = ["setuptools>=65", "setuptools-scm>=8"]
+requires = ["setuptools>=82.0.1", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [tool.black]
