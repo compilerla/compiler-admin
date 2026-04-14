@@ -99,6 +99,15 @@ jobs:
             "**/pyproject.toml"
             "docs/requirements.txt"
 
+      - name: Download coverage report
+        uses: dawidd6/action-download-artifact@v16
+        with:
+          workflow: pytest.yml
+          branch: main
+          event: push
+          name: coverage-report
+          path: docs/reference/coverage
+
       - name: Install MkDocs requirements
         run: |
           pip install .[dev] -r docs/requirements.txt
