@@ -1,0 +1,7 @@
+nav:
+  - Configuration: configuration.md
+  - CLI Reference:
+      - init: reference/cli/init
+      - info: reference/cli/info
+      - time: reference/cli/time
+      - user: reference/cli/user
