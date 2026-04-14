@@ -1,14 +1,14 @@
 name: Publish docs
 on:
   workflow_dispatch:
-  pull_request:
+  workflow_run:
+    workflows:
+      - Pytest
+    types:
+      - completed
     branches:
       - main
-    paths:
-      - "docs/**"
-      - "mkdocs.yml"
-      - ".github/workflows/mkdocs.yml"
-  push:
+  pull_request:
     branches:
       - main
     paths:
@@ -83,8 +83,8 @@ jobs:
   docs:
     name: Publish docs
     runs-on: ubuntu-latest
-    # don't publish for pull requests
-    if: github.event.pull_request == null
+    # only publish when successfully triggered
+    if: github.event.pull_request == null && github.event.workflow_run != null && github.event.workflow_run.conclusion == 'success'
     permissions:
       contents: write
     steps:
