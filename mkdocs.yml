@@ -1,4 +1,4 @@
-site_name: "compiler/compiler-admin: Documentation"
+site_name: "compiler-admin: Documentation"
 repo_url: https://github.com/compilerla/compiler-admin
 edit_uri: edit/main/docs
 site_url: https://docs.compiler.la/compiler-admin
@@ -11,7 +11,7 @@ theme:
     - navigation.tabs
     - toc.integrate
   favicon: https://compiler.la/favicon.ico
-  logo: assets/compiler.svg
+  logo: https://avatars.githubusercontent.com/u/13874321?s=100&v=4
   palette:
     primary: green
     accent: deep purple
@@ -37,6 +37,7 @@ plugins:
 
 extra_css:
   - https://use.fontawesome.com/releases/v6.1.2/css/all.css
+  - assets/styles.css
 
 markdown_extensions:
   - admonition
@@ -52,6 +53,7 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.inlinehilite
   - pymdownx.smartsymbols
+  - pymdownx.snippets
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid

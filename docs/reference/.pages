@@ -1,7 +1,8 @@
 nav:
   - Configuration: configuration.md
-  - CLI Reference:
+  - CLI reference:
       - init: reference/cli/init
       - info: reference/cli/info
       - time: reference/cli/time
       - user: reference/cli/user
+  - Coverage report: ./reference/coverage
