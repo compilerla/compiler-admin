@@ -11,7 +11,8 @@ theme:
     - navigation.tabs
     - toc.integrate
   palette:
-    scheme: default
+    primary: green
+    accent: deep purple
 
 extra:
   analytics:
