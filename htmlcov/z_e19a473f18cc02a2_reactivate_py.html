@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="z_e19a473f18cc02a2_reset_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.5">coverage.py v7.13.5</a>,
-            created at 2026-04-14 17:48 +0000
+            created at 2026-04-14 19:59 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -84,7 +84,7 @@
 <main id="source">
     <p class="run"><span class="n"><a id="t1" href="#t1">1</a></span><span class="t"><span class="key">import</span> <span class="nam">click</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t2" href="#t2">2</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t3" href="#t3">3</a></span><span class="t"><span class="key">from</span> <span class="nam">compiler_admin</span> <span class="key">import</span> <span class="nam">RESULT_FAILURE</span><span class="op">,</span> <span class="nam">RESULT_SUCCESS</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t3" href="#t3">3</a></span><span class="t"><span class="key">from</span> <span class="nam">compiler_admin</span> <span class="key">import</span> <span class="nam">Result</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t4" href="#t4">4</a></span><span class="t"><span class="key">from</span> <span class="nam">compiler_admin</span><span class="op">.</span><span class="nam">commands</span><span class="op">.</span><span class="nam">user</span><span class="op">.</span><span class="nam">backupcodes</span> <span class="key">import</span> <span class="nam">backupcodes</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t5" href="#t5">5</a></span><span class="t"><span class="key">from</span> <span class="nam">compiler_admin</span><span class="op">.</span><span class="nam">commands</span><span class="op">.</span><span class="nam">user</span><span class="op">.</span><span class="nam">reset</span> <span class="key">import</span> <span class="nam">reset</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t6" href="#t6">6</a></span><span class="t"><span class="key">from</span> <span class="nam">compiler_admin</span><span class="op">.</span><span class="nam">services</span><span class="op">.</span><span class="nam">google</span> <span class="key">import</span> <span class="op">(</span>&nbsp;</span><span class="r"></span></p>
@@ -133,17 +133,17 @@
     <p class="pln"><span class="n"><a id="t49" href="#t49">49</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t50" href="#t50">50</a></span><span class="t">    <span class="key">if</span> <span class="key">not</span> <span class="nam">user_exists</span><span class="op">(</span><span class="nam">account</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t51" href="#t51">51</a></span><span class="t">        <span class="nam">click</span><span class="op">.</span><span class="nam">echo</span><span class="op">(</span><span class="fst">f"</span><span class="fst">User does not exist: </span><span class="op">{</span><span class="nam">account</span><span class="op">}</span><span class="fst">"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t52" href="#t52">52</a></span><span class="t">        <span class="key">raise</span> <span class="nam">SystemExit</span><span class="op">(</span><span class="nam">RESULT_FAILURE</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t52" href="#t52">52</a></span><span class="t">        <span class="key">raise</span> <span class="nam">SystemExit</span><span class="op">(</span><span class="nam">Result</span><span class="op">.</span><span class="nam">FAILURE</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t53" href="#t53">53</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t54" href="#t54">54</a></span><span class="t">    <span class="key">if</span> <span class="key">not</span> <span class="nam">user_is_deactivated</span><span class="op">(</span><span class="nam">account</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t55" href="#t55">55</a></span><span class="t">        <span class="nam">click</span><span class="op">.</span><span class="nam">echo</span><span class="op">(</span><span class="str">"User is not deactivated, cannot reactivate"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t56" href="#t56">56</a></span><span class="t">        <span class="key">raise</span> <span class="nam">SystemExit</span><span class="op">(</span><span class="nam">RESULT_FAILURE</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t56" href="#t56">56</a></span><span class="t">        <span class="key">raise</span> <span class="nam">SystemExit</span><span class="op">(</span><span class="nam">Result</span><span class="op">.</span><span class="nam">FAILURE</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t57" href="#t57">57</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t58" href="#t58">58</a></span><span class="t">    <span class="key">if</span> <span class="key">not</span> <span class="nam">force</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t59" href="#t59">59</a></span><span class="t">        <span class="nam">cont</span> <span class="op">=</span> <span class="nam">input</span><span class="op">(</span><span class="fst">f"</span><span class="fst">Reactivate account </span><span class="op">{</span><span class="nam">account</span><span class="op">}</span><span class="fst">? (Y/n): </span><span class="fst">"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t60" href="#t60">60</a></span><span class="t">        <span class="key">if</span> <span class="key">not</span> <span class="nam">cont</span><span class="op">.</span><span class="nam">lower</span><span class="op">(</span><span class="op">)</span><span class="op">.</span><span class="nam">startswith</span><span class="op">(</span><span class="str">"y"</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t61" href="#t61">61</a></span><span class="t">            <span class="nam">click</span><span class="op">.</span><span class="nam">echo</span><span class="op">(</span><span class="str">"Aborting reactivation"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t62" href="#t62">62</a></span><span class="t">            <span class="key">raise</span> <span class="nam">SystemExit</span><span class="op">(</span><span class="nam">RESULT_SUCCESS</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t62" href="#t62">62</a></span><span class="t">            <span class="key">raise</span> <span class="nam">SystemExit</span><span class="op">(</span><span class="nam">Result</span><span class="op">.</span><span class="nam">SUCCESS</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t63" href="#t63">63</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t64" href="#t64">64</a></span><span class="t">    <span class="nam">click</span><span class="op">.</span><span class="nam">echo</span><span class="op">(</span><span class="fst">f"</span><span class="fst">User exists, reactivating: </span><span class="op">{</span><span class="nam">account</span><span class="op">}</span><span class="fst">"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t65" href="#t65">65</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -182,7 +182,7 @@
             <a class="nav" href="z_e19a473f18cc02a2_reset_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.5">coverage.py v7.13.5</a>,
-            created at 2026-04-14 17:48 +0000
+            created at 2026-04-14 19:59 +0000
         </p>
     </div>
 </footer>
