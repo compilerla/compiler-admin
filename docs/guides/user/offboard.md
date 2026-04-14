@@ -23,7 +23,7 @@ The `offboard` command performs the following sequence of actions:
 
 To offboard a user, provide their `username`.
 
-```bash
+```console
 compiler-admin user offboard departing.user
 ```
 
@@ -33,7 +33,7 @@ The command will ask for confirmation before proceeding. To bypass this, use the
 
 To forward the user's future emails to a manager or a shared inbox, use the `--alias` option.
 
-```bash
+```console
 compiler-admin user offboard departing.user --alias manager.user
 ```
 
@@ -41,6 +41,6 @@ compiler-admin user offboard departing.user --alias manager.user
 
 If the account should be permanently deleted after the data is backed up and transferred, add the `--delete` flag. **Use this option with caution.**
 
-```bash
+```console
 compiler-admin user offboard departing.user --delete
 ```

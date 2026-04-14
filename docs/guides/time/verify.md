@@ -15,7 +15,7 @@ You can use this command in two ways:
 
 To see a summary of a single CSV file, provide its path to the command:
 
-```bash
+```console
 compiler-admin time verify toggl-report.csv
 ```
 
@@ -52,7 +52,7 @@ To verify that a conversion was successful, you can provide two file paths. The 
 
 The tool automatically detects the file format (Toggl or Harvest) and normalizes the data so that a meaningful comparison can be made.
 
-```bash
+```console
 compiler-admin time verify toggl-report.csv harvest-report.csv
 ```
 

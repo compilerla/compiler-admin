@@ -12,7 +12,7 @@ This can be useful if a user has lost their primary 2FA device and any recovery 
 
 To get backup codes for a user, provide their `username`.
 
-```bash
+```console
 compiler-admin user backupcodes some.user
 ```
 

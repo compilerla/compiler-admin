@@ -17,7 +17,7 @@ The `reset` command performs two main actions:
 
 To reset a user's password, provide their `username`.
 
-```bash
+```console
 compiler-admin user reset some.user
 ```
 
@@ -27,7 +27,7 @@ The command will ask for confirmation before proceeding.
 
 To bypass the confirmation prompt, use the `--force` flag.
 
-```bash
+```console
 compiler-admin user reset some.user --force
 ```
 
@@ -35,6 +35,6 @@ compiler-admin user reset some.user --force
 
 You can send the new temporary password to the user or their manager using the `--notify` option.
 
-```bash
+```console
 compiler-admin user reset some.user --notify manager@compiler.la
 ```

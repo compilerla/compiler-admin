@@ -12,7 +12,7 @@ For full installation, usage, and command reference, please see the [docs site](
 
 ## Basic Usage
 
-```bash
+```console
 $ compiler-admin -h
 usage: compiler-admin [-h] [-v] {info,init,time,user} ...
 

@@ -12,7 +12,7 @@ This is useful in case a device is lost or stolen, or if an account is suspected
 
 To sign a user out, provide their `username`.
 
-```bash
+```console
 compiler-admin user signout some.user
 ```
 
@@ -22,7 +22,7 @@ The command will ask for confirmation before proceeding.
 
 To bypass the confirmation prompt, use the `--force` flag.
 
-```bash
+```console
 compiler-admin user signout some.user --force
 ```
 

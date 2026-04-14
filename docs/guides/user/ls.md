@@ -14,7 +14,7 @@ The `ls` command prints information about users, such as email address, name, an
 
 To list users in the Compiler workspace, call the command without any arguments:
 
-```bash
+```console
 compiler-admin user ls
 ```
 
@@ -24,7 +24,7 @@ The output will be a list of email addresses of active users in the Compiler Goo
 
 To list users in a specific system, use the `system` argument.
 
-```bash
+```console
 compiler-admin user ls toggl
 ```
 
@@ -32,7 +32,7 @@ compiler-admin user ls toggl
 
 You can view inactive users in the system with the `--inactive` flag.
 
-```bash
+```console
 compiler-admin user ls --inactive
 ```
 
@@ -40,12 +40,12 @@ compiler-admin user ls --inactive
 
 To get more user details, use the `--format` flag:
 
-```bash
+```console
 compiler-admin user ls --format csv
 ```
 
 Or for even more detailed JSON output:
 
-```bash
+```console
 compiler-admin user ls --format json
 ```

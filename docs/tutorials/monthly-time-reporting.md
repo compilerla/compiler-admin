@@ -8,7 +8,7 @@ Once you have verified the data and are confident the reports are accurate, the 
 
 The `time lock` command locks entries up to a specific date. By default, it locks entries up to the last day of the previous month, which is exactly what we want in this scenario.
 
-```bash
+```console
 compiler-admin time lock
 ```
 
@@ -16,7 +16,7 @@ compiler-admin time lock
 
 The first step is to download the detailed time entries from Toggl. The `time download` command handles this. By default, it downloads all billable time entries for the previous calendar month.
 
-```bash
+```console
 compiler-admin time download
 ```
 
@@ -24,7 +24,7 @@ This will create a CSV file in your current directory with a name like `Toggl_ti
 
 You can customize the date range and other filters. For a full list of options, run:
 
-```bash
+```console
 compiler-admin time download --help
 ```
 
@@ -34,7 +34,7 @@ Next, you may need to convert the downloaded Toggl report into another format, s
 
 It can read from a file or standard input and write to a file or standard output. Let's use the file we just downloaded as input and create a new file for the Harvest-formatted data.
 
-```bash
+```console
 # Let's assume the downloaded file is named
 # toggl_report_2025-09.csv
 compiler-admin time convert \
@@ -48,7 +48,7 @@ This creates a new file, `harvest_report_2025-09.csv`, with the data correctly f
 
 Before proceeding, it's a good practice to verify that the data was converted correctly and that the totals match. The `time verify` command compares two time entry files.
 
-```bash
+```console
 compiler-admin time verify \
   Toggl_time_entries_2025-09-01_2025-09-30.csv \
   harvest_report_2025-09.csv

@@ -6,7 +6,7 @@ This tutorial will guide you through the initial setup of the `compiler-admin` t
 
 First, clone the `compiler-admin` repository to your local machine and create the configuration directory it uses.
 
-```bash
+```console
 mkdir -p ~/.config/compiler-admin
 git clone https://github.com/compilerla/compiler-admin.git
 cd compiler-admin
@@ -26,7 +26,7 @@ This command will set up a Google Cloud Platform (GCP) project with the required
 
 To run the initialization, you need to provide your Compiler Google account username (the part before `@compiler.la`).
 
-```bash
+```console
 compiler-admin init --gam --gyb your_username
 ```
 

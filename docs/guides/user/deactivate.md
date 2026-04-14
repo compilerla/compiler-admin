@@ -24,7 +24,7 @@ The `deactivate` command performs the following actions:
 
 To deactivate a user, provide their `username`.
 
-```bash
+```console
 compiler-admin user deactivate some.user
 ```
 
@@ -34,12 +34,12 @@ The command will ask for confirmation before proceeding. To bypass this, use the
 
 You can set a new recovery email or phone number for the deactivated account using the `--recovery-email` and `--recovery-phone` options.
 
-```bash
+```console
 compiler-admin user deactivate some.user --recovery-email personal@email.com
 ```
 
 To clear the recovery information, pass an empty string (which is the default):
 
-```bash
+```console
 compiler-admin user deactivate some.user --recovery-email "" --recovery-phone ""
 ```

@@ -10,7 +10,7 @@ The command will generate a random password and require the user to change it up
 
 You can also specify an email address with the `--notify` option to send the new account credentials to a manager or the user's personal email.
 
-```bash
+```console
 compiler-admin user create new_username --notify manager@compiler.la
 ```
 
@@ -22,7 +22,7 @@ By default, new users may be placed in a default organizational unit (OU). The n
 
 Let's say we want to make this new user a full-time staff member.
 
-```bash
+```console
 compiler-admin user convert new_username staff
 ```
 
