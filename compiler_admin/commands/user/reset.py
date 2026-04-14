@@ -1,6 +1,6 @@
 import click
 
-from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
+from compiler_admin import Result
 from compiler_admin.commands.user.signout import signout
 from compiler_admin.services.google import USER_HELLO, CallGAMCommand, user_account_name, user_exists
 
@@ -16,13 +16,13 @@ def reset(ctx: click.Context, username: str, force: bool = False, notify: str = 
 
     if not user_exists(account):
         click.echo(f"User does not exist: {account}")
-        raise SystemExit(RESULT_FAILURE)
+        raise SystemExit(Result.FAILURE)
 
     if not force:
         cont = input(f"Reset password for {account}? (Y/n): ")
         if not cont.lower().startswith("y"):
             click.echo("Aborting password reset.")
-            raise SystemExit(RESULT_SUCCESS)
+            raise SystemExit(Result.SUCCESS)
 
     click.echo(f"User exists, resetting password: {account}")
 

@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from typing import List
+from zoneinfo import ZoneInfo
 
 import click
-from zoneinfo import ZoneInfo
 
 from compiler_admin.services.toggl import TogglTime
 

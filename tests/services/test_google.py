@@ -3,7 +3,7 @@ from tempfile import TemporaryFile
 
 import pytest
 
-from compiler_admin import RESULT_SUCCESS, RESULT_FAILURE
+from compiler_admin import Format, Result
 from compiler_admin.services.google import (
     DOMAIN,
     GAM,
@@ -13,13 +13,15 @@ from compiler_admin.services.google import (
     GYB,
     OU_ALUMNI,
     USER_ARCHIVE,
-    user_account_name,
     CallGAMCommand,
     CallGYBCommand,
+    __name__ as MODULE,
     add_user_to_group,
     get_backup_codes,
+    get_users,
     move_user_ou,
     remove_user_from_group,
+    user_account_name,
     user_exists,
     user_in_group,
     user_in_ou,
@@ -27,8 +29,17 @@ from compiler_admin.services.google import (
     user_is_deactivated,
     user_is_partner,
     user_is_staff,
-    __name__ as MODULE,
 )
+
+
+@pytest.fixture
+def get_command_str():
+    def _get_command_str(mocked_CallGAMCommand):
+        mocked_CallGAMCommand.assert_called_once()
+        call_args = mocked_CallGAMCommand.call_args[0]
+        return " ".join([str(arg) for arg in call_args[0]])
+
+    return _get_command_str
 
 
 @pytest.fixture
@@ -101,31 +112,29 @@ def test_user_not_in_domain(capfd):
     assert "User not in domain" in captured.out
 
 
-def test_CallGAMCommand_prepends_gam(mock_gam_CallGAMCommand):
+def test_CallGAMCommand_prepends_gam(mock_gam_CallGAMCommand, get_command_str):
     CallGAMCommand(("args",))
 
-    mock_gam_CallGAMCommand.assert_called_once()
-    call_args = mock_gam_CallGAMCommand.call_args[0][0]
-    assert call_args == (GAM, "args")
+    command = get_command_str(mock_gam_CallGAMCommand)
+
+    assert command == f"{GAM} args"
 
 
-def test_CallGAMCommand_does_not_duplicate_gam(mock_gam_CallGAMCommand):
+def test_CallGAMCommand_does_not_duplicate_gam(mock_gam_CallGAMCommand, get_command_str):
     CallGAMCommand((GAM, "args"))
 
-    mock_gam_CallGAMCommand.assert_called_once()
-    call_args = mock_gam_CallGAMCommand.call_args[0][0]
-    assert call_args == (GAM, "args")
+    command = get_command_str(mock_gam_CallGAMCommand)
+
+    assert command == f"{GAM} args"
 
 
-def test_CallGAMCommand_stdouterr_override(mock_gam_CallGAMCommand):
+def test_CallGAMCommand_stdouterr_override(mock_gam_CallGAMCommand, get_command_str):
     CallGAMCommand(("args",), stdout="override-stdout", stderr="override-stderr")
 
-    mock_gam_CallGAMCommand.assert_called_once()
-    call_args = mock_gam_CallGAMCommand.call_args[0][0]
-    call_str = " ".join(call_args)
+    command = get_command_str(mock_gam_CallGAMCommand)
 
-    assert "redirect stdout override-stdout" in call_str
-    assert "redirect stderr override-stderr" in call_str
+    assert "redirect stdout override-stdout" in command
+    assert "redirect stderr override-stderr" in command
 
 
 def test_CallGYBCommand_prepends_gyb(mock_subprocess_call):
@@ -189,15 +198,18 @@ def test_get_backup_codes_user_does_not_exist(mock_google_user_exists_no, capfd)
 
 
 @pytest.mark.usefixtures("mock_google_user_exists_yes")
-def test_get_backup_codes_user_exists_has_codes(mock_gam_CallGAMCommand, mock_NamedTemporaryFile_with_readlines):
+def test_get_backup_codes_user_exists_has_codes(
+    mock_gam_CallGAMCommand, mock_NamedTemporaryFile_with_readlines, get_command_str
+):
     username = "existent"
     codes = "12345678"
     mock_NamedTemporaryFile_with_readlines(MODULE, [codes])
 
     res = get_backup_codes(username)
 
-    assert mock_gam_CallGAMCommand.call_count == 1
-    assert "show" in mock_gam_CallGAMCommand.call_args[0][0]
+    command = get_command_str(mock_gam_CallGAMCommand)
+
+    assert "show" in command
     assert res == codes
 
 
@@ -223,6 +235,43 @@ def test_get_backup_codes_user_exists_no_codes(mocker, mock_gam_CallGAMCommand):
     assert "show" in mock_gam_CallGAMCommand.call_args_list[0].args[0]
     assert "update" in mock_gam_CallGAMCommand.call_args_list[1].args[0]
     assert res == new_codes
+
+
+def test_get_users(mock_google_CallGAMCommand, get_command_str):
+    get_users(kwarg1="one")
+
+    command = get_command_str(mock_google_CallGAMCommand)
+
+    assert "print users" in command
+    assert "issuspended false isarchived false" in command
+    assert "kwarg1 one" in command
+
+
+def test_get_users__inactive(mock_google_CallGAMCommand, get_command_str):
+    get_users(inactive=True)
+
+    command = get_command_str(mock_google_CallGAMCommand)
+
+    assert "issuspended true isarchived true" in command
+
+
+def test_get_users__format_csv(mock_google_CallGAMCommand, get_command_str):
+    get_users(format=Format.CSV)
+
+    command = get_command_str(mock_google_CallGAMCommand)
+
+    assert "full" in command
+
+
+@pytest.mark.parametrize("inactive,expected_in_command", ((True, "users_arch_or_susp"), (False, "users_na_ns")))
+def test_get_users__format_json(mock_google_CallGAMCommand, get_command_str, inactive, expected_in_command):
+    get_users(inactive=inactive, format=Format.JSON)
+
+    command = get_command_str(mock_google_CallGAMCommand)
+
+    assert "info users all" in command
+    assert "formatjson" in command
+    assert expected_in_command in command
 
 
 def test_move_user_ou(mock_google_CallGAMCommand):
@@ -263,7 +312,7 @@ def test_user_exists_user_does_not_exist(mock_google_user_info):
 
 def test_user_info_user_exists(mock_gam_CallGAMCommand, mock_NamedTemporaryFile_with_readlines):
     mock_NamedTemporaryFile_with_readlines(MODULE, ["First Name:Test", "Last Name:User"])
-    mock_gam_CallGAMCommand.return_value = RESULT_SUCCESS
+    mock_gam_CallGAMCommand.return_value = Result.SUCCESS
 
     res = user_info(user_account_name("username"))
 
@@ -271,7 +320,7 @@ def test_user_info_user_exists(mock_gam_CallGAMCommand, mock_NamedTemporaryFile_
 
 
 def test_user_info_user_does_not_exists(mock_gam_CallGAMCommand):
-    mock_gam_CallGAMCommand.return_value = RESULT_FAILURE
+    mock_gam_CallGAMCommand.return_value = Result.FAILURE
 
     res = user_info(user_account_name("username"))
 

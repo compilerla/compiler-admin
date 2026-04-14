@@ -1,7 +1,16 @@
-from importlib.metadata import version, PackageNotFoundError
+from importlib.metadata import PackageNotFoundError, version
 
-RESULT_SUCCESS = 0
-RESULT_FAILURE = 1
+
+class Result:
+    SUCCESS = 0
+    FAILURE = 1
+
+
+class Format:
+    BASIC = 0
+    CSV = 1
+    JSON = 2
+
 
 try:
     __version__ = version("compiler_admin")

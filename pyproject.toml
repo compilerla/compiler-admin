@@ -27,6 +27,7 @@ dev = [
     "build",
     "flake8",
     "ipykernel",
+    "isort",
     "pre-commit",
     "setuptools_scm>=8"
 ]
@@ -46,13 +47,19 @@ build-backend = "setuptools.build_meta"
 
 [tool.black]
 line-length = 127
-target-version = ['py311']
+target-version = ['py312']
 include = '\.pyi?$'
 
 [tool.coverage.run]
 branch = true
 relative_files = true
 source = ["compiler_admin"]
+
+[tool.isort]
+profile = "black"
+combine_as_imports = true
+line_length = 127
+skip_gitignore = true
 
 [tool.pyright]
 include = ["compiler_admin", "tests"]

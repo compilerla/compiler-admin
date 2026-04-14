@@ -2,8 +2,8 @@ from datetime import datetime
 
 import pytest
 
-from compiler_admin import RESULT_SUCCESS
-from compiler_admin.commands.time.download import __name__ as MODULE, TZINFO, download, prior_month_end, prior_month_start
+from compiler_admin import Result
+from compiler_admin.commands.time.download import TZINFO, __name__ as MODULE, download, prior_month_end, prior_month_start
 from compiler_admin.services.toggl import TogglTime
 
 
@@ -65,7 +65,7 @@ def test_download(cli_runner, mock_local_now, mock_time_download):
 
     result = cli_runner.invoke(download, args)
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_time_download.assert_called_once_with(
         start_date=mock_local_now,
         end_date=mock_local_now,
@@ -84,7 +84,7 @@ def test_download_default(cli_runner, mock_time_download):
 
     result = cli_runner.invoke(download, [])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_time_download.assert_called_once()
     call = mock_time_download.mock_calls[0]
 
@@ -111,7 +111,7 @@ def test_download_client_envvar(cli_runner, monkeypatch, mock_time_download):
 
     result = cli_runner.invoke(download, [])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_time_download.assert_called_once()
     call = mock_time_download.mock_calls[0]
     assert call.kwargs["client_ids"] == (1234,)
@@ -120,7 +120,7 @@ def test_download_client_envvar(cli_runner, monkeypatch, mock_time_download):
 def test_download_all(cli_runner, mock_time_download):
     result = cli_runner.invoke(download, ["--all"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_time_download.assert_called_once()
     call = mock_time_download.mock_calls[0]
     assert "billable" not in call.kwargs

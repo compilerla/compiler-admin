@@ -1,7 +1,7 @@
 import pytest
 
-from compiler_admin import RESULT_SUCCESS
-from compiler_admin.commands.user.convert import convert, __name__ as MODULE
+from compiler_admin import Result
+from compiler_admin.commands.user.convert import __name__ as MODULE, convert
 
 
 @pytest.fixture
@@ -69,7 +69,7 @@ def test_convert_user_does_not_exists(cli_runner, mock_google_user_exists, mock_
 
     result = cli_runner.invoke(convert, ["username", "staff"])
 
-    assert result.exit_code != RESULT_SUCCESS
+    assert result.exit_code != Result.SUCCESS
     assert mock_google_move_user_ou.call_count == 0
 
 
@@ -77,7 +77,7 @@ def test_convert_user_does_not_exists(cli_runner, mock_google_user_exists, mock_
 def test_convert_user_exists_bad_account_type(cli_runner, mock_google_move_user_ou):
     result = cli_runner.invoke(convert, ["username", "bad_account_type"])
 
-    assert result.exit_code != RESULT_SUCCESS
+    assert result.exit_code != Result.SUCCESS
     assert mock_google_move_user_ou.call_count == 0
 
 
@@ -87,7 +87,7 @@ def test_convert_user_exists_bad_account_type(cli_runner, mock_google_move_user_
 def test_convert_contractor(cli_runner, mock_google_move_user_ou):
     result = cli_runner.invoke(convert, ["username", "contractor"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_google_move_user_ou.assert_called_once()
 
 
@@ -95,7 +95,7 @@ def test_convert_contractor(cli_runner, mock_google_move_user_ou):
 def test_convert_contractor_user_is_partner(cli_runner, mock_google_remove_user_from_group, mock_google_move_user_ou):
     result = cli_runner.invoke(convert, ["username", "contractor"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     assert mock_google_remove_user_from_group.call_count == 2
     mock_google_move_user_ou.assert_called_once()
 
@@ -104,7 +104,7 @@ def test_convert_contractor_user_is_partner(cli_runner, mock_google_remove_user_
 def test_convert_contractor_user_is_staff(cli_runner, mock_google_remove_user_from_group, mock_google_move_user_ou):
     result = cli_runner.invoke(convert, ["username", "contractor"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_google_remove_user_from_group.assert_called_once()
     mock_google_move_user_ou.assert_called_once()
 
@@ -115,7 +115,7 @@ def test_convert_contractor_user_is_staff(cli_runner, mock_google_remove_user_fr
 def test_convert_staff(cli_runner, mock_google_add_user_to_group, mock_google_move_user_ou):
     result = cli_runner.invoke(convert, ["username", "staff"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_google_add_user_to_group.assert_called_once()
     mock_google_move_user_ou.assert_called_once()
 
@@ -126,7 +126,7 @@ def test_convert_staff_user_is_partner(
 ):
     result = cli_runner.invoke(convert, ["username", "staff"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_google_remove_user_from_group.assert_called_once()
     mock_google_add_user_to_group.assert_called_once()
     mock_google_move_user_ou.assert_called_once()
@@ -136,7 +136,7 @@ def test_convert_staff_user_is_partner(
 def test_convert_staff_user_is_staff(cli_runner, mock_google_add_user_to_group, mock_google_move_user_ou):
     result = cli_runner.invoke(convert, ["username", "staff"])
 
-    assert result.exit_code != RESULT_SUCCESS
+    assert result.exit_code != Result.SUCCESS
     assert mock_google_add_user_to_group.call_count == 0
     assert mock_google_move_user_ou.call_count == 0
 
@@ -147,7 +147,7 @@ def test_convert_staff_user_is_staff(cli_runner, mock_google_add_user_to_group, 
 def test_convert_partner(cli_runner, mock_google_add_user_to_group, mock_google_move_user_ou):
     result = cli_runner.invoke(convert, ["username", "partner"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     assert mock_google_add_user_to_group.call_count == 2
     mock_google_move_user_ou.assert_called_once()
 
@@ -156,7 +156,7 @@ def test_convert_partner(cli_runner, mock_google_add_user_to_group, mock_google_
 def test_convert_partner_user_is_partner(cli_runner, mock_google_add_user_to_group, mock_google_move_user_ou):
     result = cli_runner.invoke(convert, ["username", "partner"])
 
-    assert result != RESULT_SUCCESS
+    assert result != Result.SUCCESS
     assert mock_google_add_user_to_group.call_count == 0
     assert mock_google_move_user_ou.call_count == 0
 
@@ -165,6 +165,6 @@ def test_convert_partner_user_is_partner(cli_runner, mock_google_add_user_to_gro
 def test_convert_partner_user_is_staff(cli_runner, mock_google_add_user_to_group, mock_google_move_user_ou):
     result = cli_runner.invoke(convert, ["username", "partner"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_google_add_user_to_group.assert_called_once()
     mock_google_move_user_ou.assert_called_once()

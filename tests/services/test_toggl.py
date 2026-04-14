@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 
 import compiler_admin.services.toggl
-from compiler_admin.services.toggl import __name__ as MODULE, TogglTime, files
+from compiler_admin.services.toggl import TogglTime, TogglUsers, __name__ as MODULE, files
 
 
 @pytest.fixture(autouse=True)
@@ -46,14 +46,15 @@ class TestTogglTime:
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
         self.time = TogglTime()
-        self.time.reports_api = mocker.Mock()
-        self.time.workspace_api = mocker.Mock()
+        self.time.api_organization = mocker.Mock()
+        self.time.api_reports = mocker.Mock()
+        self.time.api_workspace = mocker.Mock()
 
     @pytest.fixture
     def mock_toggl_detailed_time_entries(self, toggl_file):
         mock_csv_bytes = Path(toggl_file).read_bytes()
-        self.time.reports_api.detailed_time_entries.return_value.content = mock_csv_bytes
-        return self.time.reports_api.detailed_time_entries
+        self.time.api_reports.detailed_time_entries.return_value.content = mock_csv_bytes
+        return self.time.api_reports.detailed_time_entries
 
     def test_get_first_name_matching(self, mock_user_info):
         mock_user_info.return_value = {"email": {"First Name": "User"}}
@@ -263,7 +264,7 @@ class TestTogglTime:
         lock_date = datetime(2025, 10, 11)
         self.time.lock(lock_date)
 
-        self.time.workspace_api.update_preferences.assert_called_once_with(report_locked_at="2025-10-11")
+        self.time.api_workspace.update_preferences.assert_called_once_with(report_locked_at="2025-10-11")
 
     def test_summarize(self, toggl_file):
         """Test that summarize returns a valid TimeSummary object."""
@@ -275,3 +276,43 @@ class TestTogglTime:
         assert math.isclose(summary.total_hours, 518.32, rel_tol=1e-5)
         assert len(summary.hours_per_project) > 0
         assert len(summary.hours_per_user_project) > 0
+
+
+class TestTogglUsers:
+    @pytest.fixture(autouse=True)
+    def setup(self, mocker):
+        self.users = TogglUsers()
+        self.users.api_organization = mocker.Mock()
+        self.users.api_reports = mocker.Mock()
+        self.users.api_workspace = mocker.Mock()
+
+    def test_get_organization_users(self, mocker):
+        data = {"user": "name"}
+        self.users.api_organization.get_users.return_value = mocker.Mock(json=mocker.Mock(return_value=data))
+        kwargs = dict(kwarg1=1, kwarg2="two")
+        call_kwargs = {**kwargs, "active_status": "active"}
+
+        output = self.users.get_organization_users(**kwargs)
+
+        assert output == data
+        self.users.api_organization.get_users.assert_called_once_with(**call_kwargs)
+
+    def test_get_organization_users__inactive(self, mocker):
+        data = {"user": "name"}
+        self.users.api_organization.get_users.return_value = mocker.Mock(json=mocker.Mock(return_value=data))
+        call_kwargs = {"active_status": "inactive,invited"}
+
+        output = self.users.get_organization_users(inactive=True)
+
+        assert output == data
+        self.users.api_organization.get_users.assert_called_once_with(**call_kwargs)
+
+    def test_get_workspace_users(self, mocker):
+        data = {"user": "name"}
+        self.users.api_workspace.get_users.return_value = mocker.Mock(json=mocker.Mock(return_value=data))
+        kwargs = dict(kwarg1=1, kwarg2="two")
+
+        output = self.users.get_workspace_users(**kwargs)
+
+        assert output == data
+        self.users.api_workspace.get_users.assert_called_once_with(**kwargs)

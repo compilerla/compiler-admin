@@ -1,7 +1,7 @@
+import math
 from dataclasses import dataclass, field
 from datetime import date
 from typing import MutableMapping
-import math
 
 
 @dataclass

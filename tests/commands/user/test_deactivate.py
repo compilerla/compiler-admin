@@ -1,7 +1,7 @@
 import pytest
 
-from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
-from compiler_admin.commands.user.deactivate import deactivate, __name__ as MODULE
+from compiler_admin import Result
+from compiler_admin.commands.user.deactivate import __name__ as MODULE, deactivate
 from compiler_admin.services.google import OU_ALUMNI
 
 
@@ -45,7 +45,7 @@ def test_deactivate_user_does_not_exists(cli_runner, mock_google_user_exists, mo
 
     result = cli_runner.invoke(deactivate, ["username"])
 
-    assert result.exit_code == RESULT_FAILURE
+    assert result.exit_code == Result.FAILURE
     assert result.exception
     assert "User does not exist: username@compiler.la" in result.output
     mock_google_CallGAMCommand.assert_not_called()
@@ -59,7 +59,7 @@ def test_deactivate_confirm_yes(
 
     result = cli_runner.invoke(deactivate, ["username"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_google_CallGAMCommand.assert_called()
     mock_google_move_user_ou.assert_called_once_with("username@compiler.la", OU_ALUMNI)
 
@@ -72,7 +72,7 @@ def test_deactivate_confirm_no(
 
     result = cli_runner.invoke(deactivate, ["username"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_google_CallGAMCommand.assert_not_called()
     mock_google_move_user_ou.assert_not_called()
 
@@ -84,6 +84,6 @@ def test_deactivate_force(
 
     result = cli_runner.invoke(deactivate, ["--force", "username"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_google_CallGAMCommand.assert_called()
     mock_google_move_user_ou.assert_called_once_with("username@compiler.la", OU_ALUMNI)

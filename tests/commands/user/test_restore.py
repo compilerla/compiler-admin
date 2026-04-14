@@ -1,7 +1,7 @@
 import pytest
 
-from compiler_admin import RESULT_SUCCESS
-from compiler_admin.commands.user.restore import restore, __name__ as MODULE
+from compiler_admin import Result
+from compiler_admin.commands.user.restore import __name__ as MODULE, restore
 
 
 @pytest.fixture
@@ -19,7 +19,7 @@ def test_restore_backup_exists(cli_runner, mock_Path_exists, mock_google_CallGYB
 
     result = cli_runner.invoke(restore, ["username"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_google_CallGYBCommand.assert_called_once()
 
 
@@ -28,5 +28,5 @@ def test_restore_backup_does_not_exist(cli_runner, mock_Path_exists, mock_google
 
     result = cli_runner.invoke(restore, ["username"])
 
-    assert result.exit_code != RESULT_SUCCESS
+    assert result.exit_code != Result.SUCCESS
     assert mock_google_CallGYBCommand.call_count == 0

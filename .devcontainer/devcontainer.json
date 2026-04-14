@@ -23,9 +23,10 @@
         "esbenp.prettier-vscode",
         "mechatroner.rainbow-csv",
         "mhutchie.git-graph",
-        "ms-python.python",
         "ms-python.black-formatter",
+        "ms-python.isort",
         "ms-python.flake8",
+        "ms-python.python",
         "ms-toolsai.jupyter",
         "tamasfe.even-better-toml"
       ]

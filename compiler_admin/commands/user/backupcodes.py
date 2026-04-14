@@ -1,6 +1,6 @@
 import click
 
-from compiler_admin import RESULT_FAILURE
+from compiler_admin import Result
 from compiler_admin.services.google import get_backup_codes, user_account_name, user_exists
 
 
@@ -12,7 +12,7 @@ def backupcodes(username: str, **kwargs):
 
     if not user_exists(account):
         click.echo(f"User does not exist: {account}")
-        raise SystemExit(RESULT_FAILURE)
+        raise SystemExit(Result.FAILURE)
 
     backup_codes = get_backup_codes(account)
     click.echo(backup_codes)

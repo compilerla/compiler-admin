@@ -1,6 +1,8 @@
 import json
 import os
+from io import TextIOBase
 from pathlib import Path
+from typing import TextIO
 
 import pandas as pd
 
@@ -10,10 +12,16 @@ def read_csv(file_path, **kwargs) -> pd.DataFrame:
     return pd.read_csv(file_path, **kwargs)
 
 
-def read_json(file_path: str):
+def read_json(file_path):
     """Read a file path of JSON data into a python object."""
-    with open(file_path, "r") as f:
-        return json.load(f)
+
+    if isinstance(file_path, (str, Path)):
+        with open(file_path, "r") as f:
+            return json.load(f)
+    elif isinstance(file_path, (TextIOBase, TextIO)):
+        return json.load(file_path)
+    else:
+        raise NotImplementedError(f"Input type for file_path not allowed: {type(file_path)}")
 
 
 def write_csv(file_path, data: pd.DataFrame, columns: list[str] = None):
@@ -21,10 +29,15 @@ def write_csv(file_path, data: pd.DataFrame, columns: list[str] = None):
     data.to_csv(file_path, columns=columns, index=False)
 
 
-def write_json(file_path: str, data):
+def write_json(file_path, data):
     """Write a python object as JSON to the given path."""
-    with open(file_path, "w") as f:
-        json.dump(data, f, indent=2)
+    if isinstance(file_path, (str, Path)):
+        with open(file_path, "w") as f:
+            json.dump(data, f, indent=2)
+    elif isinstance(file_path, (TextIOBase, TextIO)):
+        json.dump(data, file_path, indent=2)
+    else:
+        raise NotImplementedError(f"Input type for file_path not allowed: {type(file_path)}")
 
 
 class JsonFileCache:

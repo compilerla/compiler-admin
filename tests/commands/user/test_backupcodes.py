@@ -1,7 +1,7 @@
 import pytest
 
-from compiler_admin import RESULT_FAILURE, RESULT_SUCCESS
-from compiler_admin.commands.user.backupcodes import backupcodes, __name__ as MODULE
+from compiler_admin import Result
+from compiler_admin.commands.user.backupcodes import __name__ as MODULE, backupcodes
 
 
 @pytest.fixture
@@ -19,7 +19,7 @@ def test_backupcodes_user_does_not_exist(cli_runner, mock_google_user_exists, mo
 
     result = cli_runner.invoke(backupcodes, ["username"])
 
-    assert result.exit_code == RESULT_FAILURE
+    assert result.exit_code == Result.FAILURE
     mock_get_backup_codes.assert_not_called()
 
 
@@ -29,5 +29,5 @@ def test_backupcodes_user_exists(cli_runner, mock_google_user_exists, mock_get_b
 
     result = cli_runner.invoke(backupcodes, ["username"])
 
-    assert result.exit_code == RESULT_SUCCESS
+    assert result.exit_code == Result.SUCCESS
     mock_get_backup_codes.assert_called_once()

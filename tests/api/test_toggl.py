@@ -4,10 +4,10 @@ from pathlib import Path
 import pytest
 
 from compiler_admin import __version__
-from compiler_admin.api.toggl import __name__ as MODULE, TogglBase, TogglReports, TogglWorkspace
+from compiler_admin.api.toggl import TogglBase, TogglOrganization, TogglReports, TogglWorkspace, __name__ as MODULE
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def mock_requests(mocker):
     return mocker.patch(f"{MODULE}.requests.Session").return_value
 
@@ -55,9 +55,31 @@ class TestTogglBase:
         assert "/endpoint" in url
 
 
+class TestTogglOrganization:
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        self.toggl = TogglOrganization("token", 1234, 5678)
+
+    def test_init(self):
+        assert self.toggl.organization_id == 5678
+
+    def test_api_url_resource(self):
+        assert self.toggl.api_url_resource == "organizations/5678"
+
+    def test_get_users(self, mock_requests):
+        url = self.toggl.make_api_url("users")
+        kwargs = dict(kwarg1=1, kwarg2="two")
+        call_kwargs = dict(workspaces="1234", **kwargs)
+
+        response = self.toggl.get_users(**kwargs)
+
+        response.raise_for_status.assert_called_once()
+        mock_requests.get.assert_called_once_with(url, params=call_kwargs, timeout=self.toggl.timeout)
+
+
 class TestTogglReports:
     @pytest.fixture(autouse=True)
-    def setup(self, mock_requests):
+    def setup(self):
         self.toggl = TogglReports("token", 1234)
 
     @pytest.fixture
@@ -113,11 +135,20 @@ class TestTogglReports:
 
 class TestTogglWorkspace:
     @pytest.fixture(autouse=True)
-    def setup(self, mock_requests):
+    def setup(self):
         self.toggl = TogglWorkspace("token", 1234)
 
     def test_api_url_resource(self):
         assert self.toggl.api_url_resource == "workspaces/1234"
+
+    def test_get_users(self, mock_requests):
+        url = self.toggl.make_api_url("users")
+        kwargs = dict(kwarg1=1, kwarg2="two")
+
+        response = self.toggl.get_users(**kwargs)
+
+        response.raise_for_status.assert_called_once()
+        mock_requests.get.assert_called_once_with(url, params=kwargs, timeout=self.toggl.timeout)
 
     def test_update_preferences(self, mocker, mock_requests):
         url = "http://fake.url"

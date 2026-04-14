@@ -1,6 +1,6 @@
 import click
 
-from compiler_admin import RESULT_FAILURE
+from compiler_admin import Result
 from compiler_admin.services.google import CallGAMCommand, user_account_name, user_exists
 
 
@@ -13,7 +13,7 @@ def delete(username: str, force: bool = False, **kwargs):
 
     if not user_exists(account):
         click.echo(f"User does not exist: {account}")
-        raise SystemExit(RESULT_FAILURE)
+        raise SystemExit(Result.FAILURE)
 
     if not force:
         cont = input(f"Delete account {account}? (Y/n): ")

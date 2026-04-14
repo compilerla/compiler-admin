@@ -8,7 +8,7 @@ from typing import TextIO
 import pandas as pd
 
 import compiler_admin.services.files as files
-from compiler_admin.api.toggl import TogglReports, TogglWorkspace
+from compiler_admin.api.toggl import TogglOrganization, TogglReports, TogglWorkspace
 from compiler_admin.services.google import user_info as google_user_info
 from compiler_admin.services.time import TimeSummary
 
@@ -17,8 +17,10 @@ class TogglService:
     def __init__(self):
         token = os.environ.get("TOGGL_API_TOKEN")
         workspace = os.environ.get("TOGGL_WORKSPACE_ID")
-        self.reports_api = TogglReports(token, workspace)
-        self.workspace_api = TogglWorkspace(token, workspace)
+        organization = os.environ.get("TOGGL_ORGANIZATION_ID")
+        self.api_organization = TogglOrganization(token, workspace, organization)
+        self.api_reports = TogglReports(token, workspace)
+        self.api_workspace = TogglWorkspace(token, workspace)
 
 
 class TogglTime(TogglService):
@@ -221,7 +223,7 @@ class TogglTime(TogglService):
         Returns:
             None. Either prints the resulting CSV data or writes to output_path.
         """
-        response = self.reports_api.detailed_time_entries(start_date, end_date, **kwargs)
+        response = self.api_reports.detailed_time_entries(start_date, end_date, **kwargs)
         # the raw response has these initial 3 bytes:
         #
         #   b"\xef\xbb\xbfUser,Email,Client..."
@@ -244,7 +246,7 @@ class TogglTime(TogglService):
             lock_date (datetime): The date to lock time entries.
         """
         lock_date_str = lock_date.strftime("%Y-%m-%d")
-        self.workspace_api.update_preferences(report_locked_at=lock_date_str)
+        self.api_workspace.update_preferences(report_locked_at=lock_date_str)
 
     def normalize_summary(self, toggl_summary: TimeSummary) -> TimeSummary:
         """Normalize a Toggl TimeSummary to match the Harvest format."""
@@ -305,3 +307,35 @@ class TogglTime(TogglService):
             summary.hours_per_user_project[email][project] = hours
 
         return summary
+
+
+class TogglUsers(TogglService):
+    def get_organization_users(self, inactive=False, **kwargs) -> dict:
+        """Get a list of users from the Toggl organization.
+
+        Args:
+            inactive (bool): True to get inactive users. False (the default) to get only active users.
+
+        Returns:
+            dict: The resulting JSON data of users.
+        """
+        if inactive:
+            active_status = "inactive,invited"
+        else:
+            active_status = "active"
+
+        kwargs["active_status"] = active_status
+        response = self.api_organization.get_users(**kwargs)
+        json = response.json()
+
+        return json
+
+    def get_workspace_users(self, **kwargs) -> dict:
+        """Get a list of users from the Toggl workspace.
+
+        Returns:
+            dict: The resulting JSON data of users.
+        """
+        response = self.api_workspace.get_users(**kwargs)
+        json = response.json()
+        return json

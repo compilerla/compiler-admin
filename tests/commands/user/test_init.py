@@ -11,6 +11,7 @@ from compiler_admin.commands.user import user
         "create",
         "deactivate",
         "delete",
+        "ls",
         "offboard",
         "reactivate",
         "reset",

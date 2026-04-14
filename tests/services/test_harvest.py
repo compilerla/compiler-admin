@@ -1,6 +1,6 @@
 import math
 import sys
-from datetime import timedelta, date
+from datetime import date, timedelta
 from io import StringIO
 
 import numpy as np
@@ -8,7 +8,7 @@ import pandas as pd
 import pytest
 
 import compiler_admin.services.harvest
-from compiler_admin.services.harvest import files, HarvestTime
+from compiler_admin.services.harvest import HarvestTime, files
 
 
 @pytest.fixture(autouse=True)
