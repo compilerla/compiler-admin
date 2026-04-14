@@ -11,7 +11,7 @@ theme:
     - navigation.tabs
     - toc.integrate
   favicon: https://compiler.la/favicon.ico
-  logo: assets/compiler.svg
+  logo: https://avatars.githubusercontent.com/u/13874321?s=100&v=4
   palette:
     primary: green
     accent: deep purple
@@ -37,6 +37,7 @@ plugins:
 
 extra_css:
   - https://use.fontawesome.com/releases/v6.1.2/css/all.css
+  - assets/styles.css
 
 markdown_extensions:
   - admonition
