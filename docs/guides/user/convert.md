@@ -12,7 +12,7 @@ This process moves the user between organizational units (OUs) and updates their
 
 To convert a user, you must provide their `username` and the target `account_type`.
 
-```bash
+```console
 compiler-admin user convert some.user staff
 ```
 
@@ -31,7 +31,7 @@ The following target account types are available:
 
 The command will ask for confirmation before proceeding. To bypass this, you can use the `--force` flag.
 
-```bash
+```console
 compiler-admin user convert some.user contractor --force
 ```
 
@@ -39,6 +39,6 @@ compiler-admin user convert some.user contractor --force
 
 When converting a user to an `alumni` account, a new password is set. You can use the `--notify` option to send this new password to an email address.
 
-```bash
+```console
 compiler-admin user convert some.user alumni --notify their.personal@email.com
 ```

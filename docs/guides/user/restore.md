@@ -18,7 +18,7 @@ This command must be run from the same parent directory where the backup folder 
 
 To restore a backup for a given `username`, run the following command:
 
-```bash
+```console
 compiler-admin user restore departing.user
 ```
 

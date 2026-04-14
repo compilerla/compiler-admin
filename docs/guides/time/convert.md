@@ -12,7 +12,7 @@ The `convert` command reads from an input source, which defaults to `toggl` form
 
 The simplest usage reads from standard input and writes to standard output:
 
-```bash
+```console
 cat toggl-report.csv | compiler-admin time convert > harvest-report.csv
 ```
 
@@ -20,7 +20,7 @@ cat toggl-report.csv | compiler-admin time convert > harvest-report.csv
 
 For clarity, it's often better to use the `--input` and `--output` flags.
 
-```bash
+```console
 compiler-admin time convert --input toggl-report.csv --output harvest-report.csv
 ```
 
@@ -30,7 +30,7 @@ You can explicitly define the source and destination formats using the `--from` 
 
 ### Convert from Toggl to Harvest
 
-```bash
+```console
 compiler-admin time convert \
   --from toggl \
   --to harvest \
@@ -40,7 +40,7 @@ compiler-admin time convert \
 
 ### Convert from Harvest to Toggl
 
-```bash
+```console
 compiler-admin time convert \
   --from harvest \
   --to toggl \
@@ -50,7 +50,7 @@ compiler-admin time convert \
 
 ### Convert from Toggl to Justworks
 
-```bash
+```console
 compiler-admin time convert \
   --from toggl \
   --to justworks \
@@ -62,7 +62,7 @@ compiler-admin time convert \
 
 When converting, you may need to specify a client name for the destination format. Use the `--client` option for this.
 
-```bash
+```console
 compiler-admin time convert \
   --input toggl.csv \
   --output harvest.csv \

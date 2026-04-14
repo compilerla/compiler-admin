@@ -15,7 +15,7 @@ The `user offboard` command is a comprehensive script that handles the main step
 
 To run the command, you simply need to provide the user's `username`.
 
-```bash
+```console
 compiler-admin user offboard departing_username
 ```
 
@@ -23,7 +23,7 @@ compiler-admin user offboard departing_username
 
 It's common practice to forward the departing user's email to a manager or a general-purpose inbox. You can do this by assigning their email address as an alias to another account using the `--alias` option.
 
-```bash
+```console
 compiler-admin user offboard departing_username --alias manager_username
 ```
 
@@ -31,7 +31,7 @@ compiler-admin user offboard departing_username --alias manager_username
 
 By default, the user's account is deactivated but not deleted. If you need to permanently delete the account after the offboarding process is complete, you can add the `--delete` flag.
 
-```bash
+```console
 # Use with caution!
 compiler-admin user offboard departing_username --delete
 ```
@@ -46,7 +46,7 @@ If you ever need to access this backup, you can restore it to the central `archi
 
 To restore a backup for `departing_username`:
 
-```bash
+```console
 compiler-admin user restore departing_username
 ```
 

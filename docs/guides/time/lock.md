@@ -14,7 +14,7 @@ You can see the current lock date at <https://track.toggl.com/${TOGGL_WORKSPACE_
 
 To lock time entries up to the last day of the previous calendar month (the default behavior), run the command without any options:
 
-```bash
+```console
 compiler-admin time lock
 ```
 
@@ -26,6 +26,6 @@ You can lock entries up to any specific date using the `--date` option. The date
 
 For example, to lock all entries on or before January 31, 2025:
 
-```bash
+```console
 compiler-admin time lock --date 2025-01-31
 ```

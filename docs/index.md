@@ -8,7 +8,7 @@ Built on top of [GAM7](https://github.com/GAM-team/GAM) and [GYB](https://github
 
 ## Basic Usage
 
-```bash
+```console
 $ compiler-admin -h
 usage: compiler-admin [-h] [-v] {info,init,time,user} ...
 

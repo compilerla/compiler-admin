@@ -10,7 +10,7 @@ This guide explains how to use the `compiler-admin time download` command to dow
 
 To download a report for the previous calendar month (the default behavior):
 
-```bash
+```console
 compiler-admin time download
 ```
 
@@ -20,7 +20,7 @@ This will create a CSV file in the current directory named `Toggl_time_entries_[
 
 You can specify a custom date range using the `--start` and `--end` options. The date format is `YYYY-MM-DD`.
 
-```bash
+```console
 compiler-admin time download --start 2025-01-01 --end 2025-01-31
 ```
 
@@ -28,7 +28,7 @@ compiler-admin time download --start 2025-01-01 --end 2025-01-31
 
 To save the report to a specific file path, use the `--output` option.
 
-```bash
+```console
 compiler-admin time download --output /path/to/my-report.csv
 ```
 
@@ -48,6 +48,6 @@ You can use these options multiple times to include multiple IDs.
 
 To download all billable time entries for Project ID `12345` and `67890` for the prior month:
 
-```bash
+```console
 compiler-admin time download -p 12345 -p 67890
 ```

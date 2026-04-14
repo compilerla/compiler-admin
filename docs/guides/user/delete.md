@@ -12,7 +12,7 @@ This guide explains how to use the `compiler-admin user delete` command to perma
 
 To delete a user, provide their `username`.
 
-```bash
+```console
 compiler-admin user delete some.user
 ```
 
@@ -22,7 +22,7 @@ The command will ask for confirmation before proceeding.
 
 To bypass the confirmation prompt, use the `--force` flag.
 
-```bash
+```console
 compiler-admin user delete some.user --force
 ```
 

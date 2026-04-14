@@ -10,7 +10,7 @@ This guide explains how to use the `compiler-admin user create` command to creat
 
 To create a new user, you must provide a `username` (the part of the email address before `@compiler.la`).
 
-```bash
+```console
 compiler-admin user create new.user
 ```
 
@@ -20,7 +20,7 @@ This creates the user `new.user@compiler.la`. The command generates a random tem
 
 You can send the new user's credentials to a manager or their personal email address using the `--notify` option.
 
-```bash
+```console
 compiler-admin user create new.user --notify manager@compiler.la
 ```
 
@@ -30,7 +30,7 @@ The `compiler-admin user create` command is a wrapper around the powerful `gam c
 
 For example, to create a user and set their name:
 
-```bash
+```console
 compiler-admin user create new.user firstname "New" lastname "User"
 ```
 

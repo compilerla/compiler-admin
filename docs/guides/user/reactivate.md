@@ -22,7 +22,7 @@ The `reactivate` command performs the following actions:
 
 To reactivate a user, provide their `username`. By default, they are reactivated as a contractor.
 
-```bash
+```console
 compiler-admin user reactivate some.user
 ```
 
@@ -32,7 +32,7 @@ The command will ask for confirmation before proceeding. To bypass this, use the
 
 To reactivate a user as a full staff member, use the `--staff` flag.
 
-```bash
+```console
 compiler-admin user reactivate some.user --staff
 ```
 
@@ -44,7 +44,7 @@ You can set the user's recovery information and notify them or a manager of the 
 - `--recovery-phone`: Sets the user's recovery phone number.
 - `--notify`: Sends the new password credentials to the specified email address.
 
-```bash
+```console
 compiler-admin user reactivate some.user \
   --staff \
   --recovery-email some.user.personal@email.com \
