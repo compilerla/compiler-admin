@@ -75,6 +75,25 @@ class TogglOrganization(TogglBase):
         """The organizations portion of an API URL."""
         return self.ORGANIZATIONS_ID.format(self.organization_id)
 
+    def get_groups(self, name: str = None) -> requests.Response:
+        """Request a list of groups from the Toggl organization.
+
+        See
+        https://engineering.toggl.com/docs/track/api/groups/#get-list-of-groups-in-organization-with-user-and-workspace-assignments.
+
+        Args:
+            name (str): Return groups with a name containing the provided value.
+
+        Returns:
+            response (requests.Response): The HTTP response.
+        """
+        kwargs = {"workspace": str(self.workspace_id)}
+        if name:
+            kwargs["name"] = name
+        url = self.make_api_url("groups")
+
+        return self._get(url, **kwargs)
+
     def get_users(self, **kwargs) -> requests.Response:
         """Request a list of users from the Toggl organization.
 

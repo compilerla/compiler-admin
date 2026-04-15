@@ -82,6 +82,22 @@ class TestTogglOrganization:
     def test_api_url_resource(self):
         assert self.toggl.api_url_resource == "organizations/5678"
 
+    def test_get_groups(self):
+        url = self.toggl.make_api_url("groups")
+        kwargs = {"workspace": "1234"}
+
+        self.toggl.get_groups()
+
+        self.get_spy.assert_called_once_with(url, **kwargs)
+
+    def test_get_groups__name(self):
+        url = self.toggl.make_api_url("groups")
+        kwargs = {"workspace": "1234", "name": "group1"}
+
+        self.toggl.get_groups("group1")
+
+        self.get_spy.assert_called_once_with(url, **kwargs)
+
     def test_get_users(self):
         url = self.toggl.make_api_url("users")
         kwargs = dict(kwarg1=1, kwarg2="two")
