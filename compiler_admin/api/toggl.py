@@ -11,7 +11,7 @@ class TogglBase:
 
     See https://engineering.toggl.com/docs/.
 
-    Sub-classes should implement api_url_resource(self).
+    Sub-classes should implement `api_url_resource(self)`.
     """
 
     API_BASE_URL = "https://api.track.toggl.com"
@@ -52,6 +52,16 @@ class TogglBase:
         """Get a fully formed and versioned URL for an endpoint within the Toggl API."""
         return "/".join((TogglBase.API_BASE_URL, self.api_url_version, self.api_url_resource, endpoint))
 
+    def _get(self, url: str, **kwargs) -> requests.Response:
+        response = self.session.get(url, params=kwargs, timeout=self.timeout)
+        response.raise_for_status()
+        return response
+
+    def _post(self, url: str, **kwargs) -> requests.Response:
+        response = self.session.post(url, json=kwargs, timeout=self.timeout)
+        response.raise_for_status()
+        return response
+
 
 class TogglOrganization(TogglBase):
     ORGANIZATIONS_ID = "organizations/{}"
@@ -73,14 +83,10 @@ class TogglOrganization(TogglBase):
         Returns:
             response (requests.Response): The HTTP response.
         """
+        kwargs["workspaces"] = str(self.workspace_id)
         url = self.make_api_url("users")
-        params = dict(kwargs)
-        params["workspaces"] = str(self.workspace_id)
 
-        response = self.session.get(url, params=params, timeout=self.timeout)
-        response.raise_for_status()
-
-        return response
+        return self._get(url, **kwargs)
 
 
 class TogglReports(TogglBase):
@@ -134,24 +140,9 @@ class TogglReports(TogglBase):
         )
         params.update(kwargs)
 
-        response = self.post_reports("search/time_entries.csv", **params)
+        url = self.make_api_url("search/time_entries.csv")
+        response = self._post(url, **params)
         self.timeout = current_timeout
-
-        return response
-
-    def post_reports(self, endpoint: str, **kwargs) -> requests.Response:
-        """Send a POST request to the Reports v3 `endpoint`.
-
-        Extra `kwargs` are passed through as a POST json body.
-
-        Will raise for non-200 status codes.
-
-        See https://engineering.toggl.com/docs/reports_start.
-        """
-        url = self.make_api_url(endpoint)
-
-        response = self.session.post(url, json=kwargs, timeout=self.timeout)
-        response.raise_for_status()
 
         return response
 
@@ -173,12 +164,8 @@ class TogglWorkspace(TogglBase):
             response (requests.Response): The HTTP response.
         """
         url = self.make_api_url("users")
-        params = dict(**kwargs)
 
-        response = self.session.get(url, params=params, timeout=self.timeout)
-        response.raise_for_status()
-
-        return response
+        return self._get(url, **kwargs)
 
     def update_preferences(self, **kwargs) -> requests.Response:
         """Update workspace preferences.
@@ -187,7 +174,4 @@ class TogglWorkspace(TogglBase):
         """
         url = self.make_api_url("preferences")
 
-        response = self.session.post(url, json=kwargs, timeout=self.timeout)
-        response.raise_for_status()
-
-        return response
+        return self._post(url, **kwargs)
