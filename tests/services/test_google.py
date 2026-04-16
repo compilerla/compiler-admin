@@ -1,3 +1,4 @@
+import re
 import sys
 from tempfile import TemporaryFile
 
@@ -11,6 +12,7 @@ from compiler_admin.services.google import (
     GROUP_STAFF,
     GROUP_TEAM,
     GYB,
+    ORG_UNITS,
     OU_ALUMNI,
     USER_ARCHIVE,
     CallGAMCommand,
@@ -281,6 +283,30 @@ def test_get_users__format_json(mock_google_CallGAMCommand, get_command_str, ina
     assert "info users all" in command
     assert "formatjson" in command
     assert expected_in_command in command
+
+
+def test_get_users__org_units(mock_google_CallGAMCommand, get_command_str):
+    get_users(org_units=ORG_UNITS.values())
+
+    command = get_command_str(mock_google_CallGAMCommand)
+
+    assert "queries" in command
+    for ou in ORG_UNITS.values():
+        assert f"'orgUnitPath={ou}'" in command
+
+
+def test_get_users__org_units_unexepected():
+    with pytest.raises(ValueError, match=re.escape("Unexpected org_unit(s): /unexpected")):
+        get_users(org_units=["/unexpected"])
+
+
+@pytest.mark.parametrize("inactive,ou_entity", [(True, "ous_arch"), (False, "ou_na_ns")])
+def test_get_users__org_units__format_json(mock_google_CallGAMCommand, get_command_str, inactive, ou_entity):
+    get_users(inactive=inactive, org_units=ORG_UNITS.values(), format=Format.JSON)
+
+    command = get_command_str(mock_google_CallGAMCommand)
+
+    assert ou_entity in command
 
 
 def test_move_user_ou(mock_google_CallGAMCommand):

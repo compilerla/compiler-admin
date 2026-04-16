@@ -102,23 +102,49 @@ def get_backup_codes(username: str) -> str:
     return output
 
 
-def get_users(inactive: bool = False, format=Format.BASIC, **kwargs) -> str:
+def get_users(format: int = Format.BASIC, inactive: bool = False, org_units: list[str] = [], **kwargs) -> str:
     flag = str(inactive).lower()
     output = ""
+    queries = ""
     command = ("print", "users", "issuspended", flag, "isarchived", flag)
+
     if len(kwargs) > 0:
         for k, v in kwargs.items():
             command += (k, v)
 
-    match format:
-        case Format.CSV:
-            command += ("full",)
-        case Format.JSON:
-            command = ("info", "users", "all", "users_arch_or_susp" if inactive else "users_na_ns", "formatjson")
+    if len(org_units) > 0:
+        workspace_org_units = ORG_UNITS.values()
+        if not all((ou in workspace_org_units for ou in org_units)):
+            raise ValueError(f"Unexpected org_unit(s): {', '.join(org_units)}")
+        queries = ",".join([f"'orgUnitPath={ou}'" for ou in org_units])
+        command += ("queries", queries)
+
+    if format == Format.CSV:
+        command += ("full",)
+    elif format == Format.JSON:
+        queries = ",".join(org_units)
+        if queries:
+            user_entity = ("ous_arch" if inactive else "ou_na_ns", queries)
+        else:
+            user_entity = ("all", "users_arch_or_susp" if inactive else "users_na_ns")
+
+        command = (
+            "info",
+            "users",
+            *user_entity,
+            "nobuildingnames",
+            "noschemas",
+            "formatjson",
+        )
 
     with NamedTemporaryFile("w+") as stdout:
         CallGAMCommand(command, stdout=stdout.name, stderr="stdout")
-        output = "".join(stdout.readlines())
+        lines = stdout.readlines()
+        if format == Format.JSON:
+            # GAM returns JSON record lines, write a JSON array for convenience
+            output = f"[{",".join(lines)}]"
+        else:
+            output = "".join(lines)
 
     return output
 
