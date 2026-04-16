@@ -85,7 +85,7 @@ def test_convert_user_exists_bad_account_type(cli_runner, mock_google_move_user_
     "mock_google_user_exists_true", "mock_google_user_is_partner_false", "mock_google_user_is_staff_false"
 )
 def test_convert_contractor(cli_runner, mock_google_move_user_ou):
-    result = cli_runner.invoke(convert, ["username", "contractor"])
+    result = cli_runner.invoke(convert, ["username", "contractors"])
 
     assert result.exit_code == Result.SUCCESS
     mock_google_move_user_ou.assert_called_once()
@@ -93,7 +93,7 @@ def test_convert_contractor(cli_runner, mock_google_move_user_ou):
 
 @pytest.mark.usefixtures("mock_google_user_exists_true", "mock_google_user_is_partner_true", "mock_google_user_is_staff_false")
 def test_convert_contractor_user_is_partner(cli_runner, mock_google_remove_user_from_group, mock_google_move_user_ou):
-    result = cli_runner.invoke(convert, ["username", "contractor"])
+    result = cli_runner.invoke(convert, ["username", "contractors"])
 
     assert result.exit_code == Result.SUCCESS
     assert mock_google_remove_user_from_group.call_count == 2
@@ -102,7 +102,7 @@ def test_convert_contractor_user_is_partner(cli_runner, mock_google_remove_user_
 
 @pytest.mark.usefixtures("mock_google_user_exists_true", "mock_google_user_is_partner_false", "mock_google_user_is_staff_true")
 def test_convert_contractor_user_is_staff(cli_runner, mock_google_remove_user_from_group, mock_google_move_user_ou):
-    result = cli_runner.invoke(convert, ["username", "contractor"])
+    result = cli_runner.invoke(convert, ["username", "contractors"])
 
     assert result.exit_code == Result.SUCCESS
     mock_google_remove_user_from_group.assert_called_once()
@@ -145,7 +145,7 @@ def test_convert_staff_user_is_staff(cli_runner, mock_google_add_user_to_group, 
     "mock_google_user_exists_true", "mock_google_user_is_partner_false", "mock_google_user_is_staff_false"
 )
 def test_convert_partner(cli_runner, mock_google_add_user_to_group, mock_google_move_user_ou):
-    result = cli_runner.invoke(convert, ["username", "partner"])
+    result = cli_runner.invoke(convert, ["username", "partners"])
 
     assert result.exit_code == Result.SUCCESS
     assert mock_google_add_user_to_group.call_count == 2
@@ -154,7 +154,7 @@ def test_convert_partner(cli_runner, mock_google_add_user_to_group, mock_google_
 
 @pytest.mark.usefixtures("mock_google_user_exists_true", "mock_google_user_is_partner_true", "mock_google_user_is_staff_false")
 def test_convert_partner_user_is_partner(cli_runner, mock_google_add_user_to_group, mock_google_move_user_ou):
-    result = cli_runner.invoke(convert, ["username", "partner"])
+    result = cli_runner.invoke(convert, ["username", "partners"])
 
     assert result != Result.SUCCESS
     assert mock_google_add_user_to_group.call_count == 0
@@ -163,7 +163,7 @@ def test_convert_partner_user_is_partner(cli_runner, mock_google_add_user_to_gro
 
 @pytest.mark.usefixtures("mock_google_user_exists_true", "mock_google_user_is_partner_false", "mock_google_user_is_staff_true")
 def test_convert_partner_user_is_staff(cli_runner, mock_google_add_user_to_group, mock_google_move_user_ou):
-    result = cli_runner.invoke(convert, ["username", "partner"])
+    result = cli_runner.invoke(convert, ["username", "partners"])
 
     assert result.exit_code == Result.SUCCESS
     mock_google_add_user_to_group.assert_called_once()

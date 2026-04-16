@@ -17,10 +17,15 @@ GYB = "gyb"
 DOMAIN = "compiler.la"
 
 # Org structure
-OU_ALUMNI = "alumni"
-OU_CONTRACTORS = "contractors"
-OU_STAFF = "staff"
+OU_ALUMNI = "/alumni"
+OU_CONTRACTORS = "/contractors"
+OU_SERVICE_ACCOUNTS = "/service-accounts"
+OU_STAFF = "/staff"
 OU_PARTNERS = f"{OU_STAFF}/partners"
+
+ORG_UNITS = dict(
+    alumni=OU_ALUMNI, contractors=OU_CONTRACTORS, service_accounts=OU_SERVICE_ACCOUNTS, staff=OU_STAFF, partners=OU_PARTNERS
+)
 
 
 def user_account_name(username: str) -> str:
