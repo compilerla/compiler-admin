@@ -18,6 +18,7 @@ from compiler_admin.services.google import (
     __name__ as MODULE,
     add_user_to_group,
     get_backup_codes,
+    get_org_units,
     get_users,
     move_user_ou,
     remove_user_from_group,
@@ -235,6 +236,14 @@ def test_get_backup_codes_user_exists_no_codes(mocker, mock_gam_CallGAMCommand):
     assert "show" in mock_gam_CallGAMCommand.call_args_list[0].args[0]
     assert "update" in mock_gam_CallGAMCommand.call_args_list[1].args[0]
     assert res == new_codes
+
+
+def test_get_org_units(mock_google_CallGAMCommand, get_command_str):
+    get_org_units()
+
+    command = get_command_str(mock_google_CallGAMCommand)
+
+    assert "print orgs" in command
 
 
 def test_get_users(mock_google_CallGAMCommand, get_command_str):

@@ -123,6 +123,11 @@ def get_users(inactive: bool = False, format=Format.BASIC, **kwargs) -> str:
     return output
 
 
+def get_org_units(format: int = Format.CSV) -> int:
+    """Print information about the org units."""
+    return CallGAMCommand(("print", "orgs"))
+
+
 def move_user_ou(username: str, ou: str) -> int:
     """Move a user into a new OU."""
     return CallGAMCommand(("update", "ou", ou, "move", username))
