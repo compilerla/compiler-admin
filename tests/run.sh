@@ -5,7 +5,7 @@ set -eu
 coverage run -m pytest -m "not e2e"
 
 # clean out old coverage results
-rm -rf ./tests/coverage
+rm -rf docs/reference/coverage
 
 # regenerate coverate report
-coverage html --directory ./tests/coverage
+coverage html --directory docs/reference/coverage
