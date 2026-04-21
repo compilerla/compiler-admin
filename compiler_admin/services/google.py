@@ -1,3 +1,6 @@
+import csv
+import io
+import json
 import subprocess
 import sys
 from tempfile import NamedTemporaryFile
@@ -98,6 +101,64 @@ def get_backup_codes(username: str) -> str:
         with NamedTemporaryFile("w+") as stdout:
             CallGAMCommand(command, stdout=stdout.name, stderr="stdout")
             output = "".join(stdout.readlines())
+
+    return output
+
+
+def get_groups(format: int = Format.BASIC, **kwargs) -> int:
+    """Get information about the groups."""
+    output = ""
+    command = ("print", "groups")
+
+    if len(kwargs) > 0:
+        for k, v in kwargs.items():
+            command += (k, v)
+
+    if format in [Format.CSV, Format.JSON]:
+        command += ("allfields",)
+    if format == Format.JSON:
+        command += (
+            "members",
+            "managers",
+            "owners",
+            "formatjson",
+        )
+
+    with NamedTemporaryFile("w+") as stdout:
+        CallGAMCommand(command, stdout=stdout.name)
+        lines = stdout.readlines()
+
+        if format == Format.JSON:
+            # GAM returns a CSV structure like "email,JSON,JSON-settings"
+            # extract JSON cols to array of dicts for convenience
+
+            # ensure we start from the CSV header
+            start_index = 0
+            groups_data = []
+            for i, line in enumerate(lines):
+                if line.startswith("email,JSON,JSON-members,JSON-settings"):
+                    start_index = i
+                    break
+
+            # rebuild the clean CSV string and parse it
+            clean_csv = "\n".join(lines[start_index:])
+            reader = csv.DictReader(io.StringIO(clean_csv))
+
+            for row in reader:
+                # check if the JSON columns exist and have data
+                if all((col in row and row[col].strip() for col in ["JSON", "JSON-members", "JSON-settings"])):
+                    try:
+                        # unpack the JSON strings back into native Python dicts
+                        group_obj: dict = json.loads(row["JSON"])
+                        group_obj["members"] = json.loads(row["JSON-members"])
+                        group_obj.update(json.loads(row["JSON-settings"]))
+                        groups_data.append(group_obj)
+                    except json.JSONDecodeError as e:
+                        print(f"Skipping row for {row.get('email')} due to JSON error: {e}")
+
+            output = json.dumps(groups_data)
+        else:
+            output = "".join(lines)
 
     return output
 

@@ -20,6 +20,7 @@ from compiler_admin.services.google import (
     __name__ as MODULE,
     add_user_to_group,
     get_backup_codes,
+    get_groups,
     get_org_units,
     get_users,
     move_user_ou,
@@ -238,6 +239,32 @@ def test_get_backup_codes_user_exists_no_codes(mocker, mock_gam_CallGAMCommand):
     assert "show" in mock_gam_CallGAMCommand.call_args_list[0].args[0]
     assert "update" in mock_gam_CallGAMCommand.call_args_list[1].args[0]
     assert res == new_codes
+
+
+def test_get_groups(mock_google_CallGAMCommand, get_command_str):
+    get_groups()
+
+    command = get_command_str(mock_google_CallGAMCommand)
+
+    assert "print groups" in command
+
+
+def test_get_groups__format_csv(mock_google_CallGAMCommand, get_command_str):
+    get_groups(format=Format.CSV)
+
+    command = get_command_str(mock_google_CallGAMCommand)
+
+    assert "allfields" in command
+
+
+def test_get_groups__format_json(mock_google_CallGAMCommand, get_command_str):
+    get_groups(format=Format.JSON)
+
+    command = get_command_str(mock_google_CallGAMCommand)
+
+    assert "allfields" in command
+    assert "members managers owners" in command
+    assert "formatjson" in command
 
 
 def test_get_org_units(mock_google_CallGAMCommand, get_command_str):
