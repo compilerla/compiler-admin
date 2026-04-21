@@ -9,18 +9,19 @@ Built on top of [GAM7](https://github.com/GAM-team/GAM) and [GYB](https://github
 ## Basic Usage
 
 ```console
-$ compiler-admin -h
-usage: compiler-admin [-h] [-v] {info,init,time,user} ...
+$ compiler-admin --help
+Usage: compiler-admin [OPTIONS] COMMAND [ARGS]...
 
-positional arguments:
-  {info,init,time,user}
-                        The command to run
-    info                Print configuration and debugging information.
-    init                Initialize a new admin project. This command should be run once before any others.
-    time                Work with Compiler time entries.
-    user                Work with users in the Compiler org.
+  Compiler's command line interface.
 
-options:
-  -h, --help            show this help message and exit
-  -v, --version         show program's version number and exit
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+
+Commands:
+  info  Print information about the configured environment.
+  init  Initialize a new GAM and/or GYB project.
+  ls    Print information about the Compiler org.
+  time  Work with Compiler time entries.
+  user  Work with users in the Compiler org.
 ```

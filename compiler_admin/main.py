@@ -3,6 +3,7 @@ import click
 from compiler_admin import __version__
 from compiler_admin.commands.info import info
 from compiler_admin.commands.init import init
+from compiler_admin.commands.ls import ls
 from compiler_admin.commands.time import time
 from compiler_admin.commands.user import user
 
@@ -16,6 +17,7 @@ def main():
 
 main.add_command(init)
 main.add_command(info)
+main.add_command(ls)
 main.add_command(time)
 main.add_command(user)
 

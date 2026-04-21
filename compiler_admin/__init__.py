@@ -12,6 +12,15 @@ class Format:
     JSON = 2
 
 
+FORMATS = {
+    "b": Format.BASIC,
+    "basic": Format.BASIC,
+    "c": Format.CSV,
+    "csv": Format.CSV,
+    "j": Format.JSON,
+    "json": Format.JSON,
+}
+
 try:
     __version__ = version("compiler_admin")
 except PackageNotFoundError:
