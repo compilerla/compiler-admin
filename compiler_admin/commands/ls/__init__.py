@@ -1,6 +1,7 @@
 import click
 
 from compiler_admin.commands.ls.groups import groups
+from compiler_admin.commands.ls.orgs import orgs
 from compiler_admin.commands.ls.users import users
 
 
@@ -11,4 +12,5 @@ def ls():
 
 
 ls.add_command(groups)
+ls.add_command(orgs)
 ls.add_command(users)

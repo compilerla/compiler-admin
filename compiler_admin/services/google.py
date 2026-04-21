@@ -163,6 +163,23 @@ def get_groups(format: int = Format.BASIC, **kwargs) -> int:
     return output
 
 
+def get_org_units(**kwargs) -> str:
+    """Print information about the org units."""
+    output = ""
+    command = ("print", "orgs")
+
+    if len(kwargs) > 0:
+        for k, v in kwargs.items():
+            command += (k, v)
+
+    with NamedTemporaryFile("w+") as stdout:
+        CallGAMCommand(command, stdout=stdout.name, stderr="stdout")
+        lines = stdout.readlines()
+        output = "".join(lines)
+
+    return output
+
+
 def get_users(format: int = Format.BASIC, inactive: bool = False, org_units: list[str] = [], **kwargs) -> str:
     flag = str(inactive).lower()
     output = ""
@@ -208,11 +225,6 @@ def get_users(format: int = Format.BASIC, inactive: bool = False, org_units: lis
             output = "".join(lines)
 
     return output
-
-
-def get_org_units(format: int = Format.CSV) -> int:
-    """Print information about the org units."""
-    return CallGAMCommand(("print", "orgs"))
 
 
 def move_user_ou(username: str, ou: str) -> int:

@@ -268,11 +268,12 @@ def test_get_groups__format_json(mock_google_CallGAMCommand, get_command_str):
 
 
 def test_get_org_units(mock_google_CallGAMCommand, get_command_str):
-    get_org_units()
+    get_org_units(kwarg1="one")
 
     command = get_command_str(mock_google_CallGAMCommand)
 
     assert "print orgs" in command
+    assert "kwarg1 one" in command
 
 
 def test_get_users(mock_google_CallGAMCommand, get_command_str):
