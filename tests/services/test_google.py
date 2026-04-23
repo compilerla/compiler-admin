@@ -1,3 +1,4 @@
+import json
 import re
 import sys
 from tempfile import TemporaryFile
@@ -6,41 +7,21 @@ import pytest
 
 from compiler_admin import Format, Result
 from compiler_admin.services.google import (
-    DOMAIN,
-    GAM,
-    GROUP_PARTNERS,
-    GROUP_STAFF,
-    GROUP_TEAM,
-    GYB,
-    ORG_UNITS,
-    OU_ALUMNI,
-    USER_ARCHIVE,
-    CallGAMCommand,
-    CallGYBCommand,
+    GoogleAccount,
+    GoogleArchive,
+    GoogleGroups,
+    GoogleOrgs,
+    GoogleService,
+    GoogleUsers,
     __name__ as MODULE,
-    add_user_to_group,
-    get_backup_codes,
-    get_groups,
-    get_org_units,
-    get_users,
-    move_user_ou,
-    remove_user_from_group,
-    user_account_name,
-    user_exists,
-    user_in_group,
-    user_in_ou,
-    user_info,
-    user_is_deactivated,
-    user_is_partner,
-    user_is_staff,
 )
 
 
 @pytest.fixture
 def get_command_str():
-    def _get_command_str(mocked_CallGAMCommand):
-        mocked_CallGAMCommand.assert_called_once()
-        call_args = mocked_CallGAMCommand.call_args[0]
+    def _get_command_str(mocked_gam_command):
+        mocked_gam_command.assert_called_once()
+        call_args = mocked_gam_command.call_args[0]
         return " ".join([str(arg) for arg in call_args[0]])
 
     return _get_command_str
@@ -48,37 +29,17 @@ def get_command_str():
 
 @pytest.fixture
 def mock_gam_CallGAMCommand(mocker):
-    return mocker.patch(f"{MODULE}.__CallGAMCommand")
+    return mocker.patch(f"{MODULE}.CallGAMCommand")
 
 
 @pytest.fixture
-def mock_google_CallGAMCommand(mock_google_CallGAMCommand):
-    return mock_google_CallGAMCommand(MODULE)
+def mock_GoogleGroups(mocker):
+    return mocker.patch(f"{MODULE}.GoogleGroups")
 
 
 @pytest.fixture
-def mock_google_user_exists_no(mock_google_user_exists_no):
-    return mock_google_user_exists_no(MODULE)
-
-
-@pytest.fixture
-def mock_google_user_exists_yes(mock_google_user_exists_yes):
-    return mock_google_user_exists_yes(MODULE)
-
-
-@pytest.fixture
-def mock_google_user_info(mock_google_user_info):
-    return mock_google_user_info(MODULE)
-
-
-@pytest.fixture
-def mock_google_user_in_group(mock_google_user_in_group):
-    return mock_google_user_in_group(MODULE)
-
-
-@pytest.fixture
-def mock_google_user_in_ou(mocker):
-    return mocker.patch(f"{MODULE}.user_in_ou")
+def mock_GoogleOrgs(mocker):
+    return mocker.patch(f"{MODULE}.GoogleOrgs")
 
 
 @pytest.fixture
@@ -86,422 +47,585 @@ def mock_subprocess_call(mocker):
     return mocker.patch(f"{MODULE}.subprocess.call")
 
 
-def test_user_account_name_None():
-    username = None
-    account = user_account_name(username)
+class TestGoogleService:
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        self.google = GoogleService()
 
-    assert account is None
+    def test_gam_command__prepends_gam(self, mock_gam_CallGAMCommand, get_command_str):
+        self.google.gam_command(("args",))
 
+        command = get_command_str(mock_gam_CallGAMCommand)
 
-def test_user_account_name_not_in_domain():
-    username = "account"
-    account = user_account_name(username)
+        assert command == f"{self.google.GAM} args"
 
-    assert account == f"{username}@{DOMAIN}"
+    def test_gam_command__does_not_duplicate_gam(self, mock_gam_CallGAMCommand, get_command_str):
+        self.google.gam_command((self.google.GAM, "args"))
 
+        command = get_command_str(mock_gam_CallGAMCommand)
 
-def test_user_account_name_in_domain():
-    username = f"account@{DOMAIN}"
-    account = user_account_name(username)
+        assert command == f"{self.google.GAM} args"
 
-    assert username == account
+    def test_gam_command_output(self, mock_gam_CallGAMCommand, mock_NamedTemporaryFile_with_readlines, get_command_str):
+        expected_output = ["output"]
+        mock_NamedTemporaryFile_with_readlines(MODULE, expected_output)
 
+        output = self.google.gam_command_output(("command",))
 
-def test_user_not_in_domain(capfd):
-    username = "nope@anotherdomain.com"
-    res = user_exists(username)
-    captured = capfd.readouterr()
+        assert output == expected_output
 
-    assert res is False
-    assert "User not in domain" in captured.out
+    def test_gam_command__stdouterr_override(self, mock_gam_CallGAMCommand, get_command_str):
+        self.google.gam_command(("args",), stdout="override-stdout", stderr="override-stderr")
 
+        command = get_command_str(mock_gam_CallGAMCommand)
 
-def test_CallGAMCommand_prepends_gam(mock_gam_CallGAMCommand, get_command_str):
-    CallGAMCommand(("args",))
+        assert "redirect stdout override-stdout" in command
+        assert "redirect stderr override-stderr" in command
 
-    command = get_command_str(mock_gam_CallGAMCommand)
+    def test_gyb_command__prepends_gyb(self, mock_subprocess_call):
+        self.google.gyb_command(("args",))
 
-    assert command == f"{GAM} args"
+        mock_subprocess_call.assert_called_once()
+        call_args = mock_subprocess_call.call_args[0][0]
+        assert call_args == (self.google.GYB, "args")
 
+    def test_gyb_command__does_not_duplicate_gyb(self, mock_subprocess_call):
+        self.google.gyb_command((self.google.GYB, "args"))
 
-def test_CallGAMCommand_does_not_duplicate_gam(mock_gam_CallGAMCommand, get_command_str):
-    CallGAMCommand((GAM, "args"))
+        mock_subprocess_call.assert_called_once()
+        call_args = mock_subprocess_call.call_args[0][0]
+        assert call_args == (self.google.GYB, "args")
 
-    command = get_command_str(mock_gam_CallGAMCommand)
+    def test_gyb_command__stdouterr_default(self, mock_subprocess_call):
+        self.google.gyb_command(("args",))
 
-    assert command == f"{GAM} args"
+        mock_subprocess_call.assert_called_once()
+        call_kwargs = mock_subprocess_call.call_args.kwargs
 
+        assert "stdout" in call_kwargs
+        assert call_kwargs["stdout"] == sys.stdout
+        assert "stderr" in call_kwargs
+        assert call_kwargs["stderr"] == sys.stderr
 
-def test_CallGAMCommand_stdouterr_override(mock_gam_CallGAMCommand, get_command_str):
-    CallGAMCommand(("args",), stdout="override-stdout", stderr="override-stderr")
+    def test_gyb_command__stdouterr_override(self, mock_subprocess_call):
+        stdout, stderr = TemporaryFile(), TemporaryFile()
+        self.google.gyb_command(("args",), stdout=stdout, stderr=stderr)
 
-    command = get_command_str(mock_gam_CallGAMCommand)
+        mock_subprocess_call.assert_called_once()
+        call_kwargs = mock_subprocess_call.call_args.kwargs
 
-    assert "redirect stdout override-stdout" in command
-    assert "redirect stderr override-stderr" in command
+        assert "stdout" in call_kwargs
+        assert call_kwargs["stdout"] == stdout
+        assert "stderr" in call_kwargs
+        assert call_kwargs["stderr"] == stderr
 
+        stdout.close()
+        stderr.close()
 
-def test_CallGYBCommand_prepends_gyb(mock_subprocess_call):
-    CallGYBCommand(("args",))
 
-    mock_subprocess_call.assert_called_once()
-    call_args = mock_subprocess_call.call_args[0][0]
-    assert call_args == (GYB, "args")
+class TestGoogleAccount:
 
+    @pytest.fixture(autouse=True)
+    def setup(self, mock_gam_gyb):
+        self.google = GoogleAccount("username")
+        mock_gam_gyb(self.google)
 
-def test_CallGYBCommand_does_not_duplicate_gyb(mock_subprocess_call):
-    CallGYBCommand((GYB, "args"))
+    def test_init__username_None(self):
+        username = None
+        account = GoogleAccount(username)
 
-    mock_subprocess_call.assert_called_once()
-    call_args = mock_subprocess_call.call_args[0][0]
-    assert call_args == (GYB, "args")
+        assert account.username == account.account == ""
+        assert str(account) == ""
 
+    def test_init__username_not_in_domain(self):
+        username = "account"
+        account = GoogleAccount(username)
 
-def test_CallGYBCommand_stdouterr_default(mock_subprocess_call):
-    CallGYBCommand(("args",))
+        assert account == f"{username}@{GoogleAccount.DOMAIN}"
 
-    mock_subprocess_call.assert_called_once()
-    call_kwargs = mock_subprocess_call.call_args.kwargs
+    def test_init__username_in_domain(self):
+        username = f"account@{GoogleAccount.DOMAIN}"
+        account = GoogleAccount(username)
 
-    assert "stdout" in call_kwargs
-    assert call_kwargs["stdout"] == sys.stdout
-    assert "stderr" in call_kwargs
-    assert call_kwargs["stderr"] == sys.stderr
+        assert username == account
 
+    def test_add_email_alias(self, get_command_str):
+        alias = "alias@example.com"
 
-def test_CallGYBCommand_stdouterr_override(mock_subprocess_call):
-    stdout, stderr = TemporaryFile(), TemporaryFile()
-    CallGYBCommand(("args",), stdout=stdout, stderr=stderr)
+        self.google.add_email_alias(alias)
 
-    mock_subprocess_call.assert_called_once()
-    call_kwargs = mock_subprocess_call.call_args.kwargs
+        command = get_command_str(self.google.gam_command)
+        assert f"create alias {alias}" in command
+        assert f"user {self.google}" in command
 
-    assert "stdout" in call_kwargs
-    assert call_kwargs["stdout"] == stdout
-    assert "stderr" in call_kwargs
-    assert call_kwargs["stderr"] == stderr
+    def test_exists__exists(self, mocker):
+        mocker.patch.object(self.google, "get_info", return_value={"First Name": "Test", "Last Name": "User"})
 
-    stdout.close()
-    stderr.close()
+        assert self.google.exists() is True
 
+    def test_exists__not_exists(self, mocker):
+        mocker.patch.object(self.google, "get_info", return_value={})
 
-def test_add_user_to_group(mock_google_CallGAMCommand):
-    add_user_to_group("username", "thegroup")
+        assert self.google.exists() is False
 
-    mock_google_CallGAMCommand.assert_called_once()
+    def test_get_backup_codes__user_does_not_exist(self, mock_account_exists, capfd):
+        mock_account_exists(self.google, False)
 
+        res = self.google.get_backup_codes()
+        captured = capfd.readouterr()
 
-def test_get_backup_codes_user_does_not_exist(mock_google_user_exists_no, capfd):
-    username = "nonexistent"
-    res = get_backup_codes(username)
-    captured = capfd.readouterr()
+        assert res == ""
+        assert f"User does not exist: {self.google}" in captured.out
 
-    mock_google_user_exists_no.assert_called_once_with(username)
-    assert res == ""
-    assert f"User does not exist: {username}" in captured.out
+    def test_get_backup_codes__user_exists_has_codes(self, mock_account_exists):
+        codes = "12345678"
+        self.google.gam_command_output.return_value = codes
+        mock_account_exists(self.google, True)
 
+        res = self.google.get_backup_codes()
 
-@pytest.mark.usefixtures("mock_google_user_exists_yes")
-def test_get_backup_codes_user_exists_has_codes(
-    mock_gam_CallGAMCommand, mock_NamedTemporaryFile_with_readlines, get_command_str
-):
-    username = "existent"
-    codes = "12345678"
-    mock_NamedTemporaryFile_with_readlines(MODULE, [codes])
+        assert res == codes
 
-    res = get_backup_codes(username)
+    def test_get_backup_codes__user_exists_no_codes(self, mock_account_exists):
+        no_codes_output = "Show 0 Backup Verification Codes"
+        new_codes = "87654321"
+        self.google.gam_command_output.side_effect = [[no_codes_output], [new_codes]]
+        mock_account_exists(self.google, True)
 
-    command = get_command_str(mock_gam_CallGAMCommand)
+        assert self.google.get_backup_codes() == new_codes
 
-    assert "show" in command
-    assert res == codes
+    def test_get_info__exists(self, mock_NamedTemporaryFile_with_readlines):
+        mock_NamedTemporaryFile_with_readlines(MODULE, ["First Name:Test", "Last Name:User"])
+        self.google.gam_command.return_value = Result.SUCCESS
 
+        res = self.google.get_info()
 
-@pytest.mark.usefixtures("mock_google_user_exists_yes")
-def test_get_backup_codes_user_exists_no_codes(mocker, mock_gam_CallGAMCommand):
-    username = "existent"
-    no_codes_output = "Show 0 Backup Verification Codes"
-    new_codes = "87654321"
+        assert res == {"First Name": "Test", "Last Name": "User"}
 
-    mock_file_handler = mocker.MagicMock()
-    mock_file_handler.readlines.side_effect = [[no_codes_output], [new_codes]]
-    mock_file_handler.name = "tempfile"
+    def test_get_info__not_exists(self):
+        self.google.gam_command.return_value = Result.FAILURE
 
-    mock_temp_file_context = mocker.MagicMock()
-    mock_temp_file_context.__enter__.return_value = mock_file_handler
-    mock_temp_file_context.__exit__.return_value = None
+        res = self.google.get_info()
 
-    mocker.patch(f"{MODULE}.NamedTemporaryFile", return_value=mock_temp_file_context)
+        assert res == {}
 
-    res = get_backup_codes(username)
+    def test_is_deactivated__checks_alumni_ou(self, mock_GoogleOrgs):
+        self.google.is_deactivated()
 
-    assert mock_gam_CallGAMCommand.call_count == 2
-    assert "show" in mock_gam_CallGAMCommand.call_args_list[0].args[0]
-    assert "update" in mock_gam_CallGAMCommand.call_args_list[1].args[0]
-    assert res == new_codes
+        mock_GoogleOrgs.assert_called_once_with(mock_GoogleOrgs.OU_ALUMNI)
+        mock_GoogleOrgs.return_value.contains_user.assert_called_once_with(self.google)
 
+    def test_is_partner__checks_partner_group(self, mock_GoogleGroups):
+        self.google.is_partner()
 
-def test_get_groups(mock_google_CallGAMCommand, get_command_str):
-    get_groups()
+        mock_GoogleGroups.assert_called_once_with(mock_GoogleGroups.GROUP_PARTNERS)
+        mock_GoogleGroups.return_value.contains_user.assert_called_once_with(self.google)
 
-    command = get_command_str(mock_google_CallGAMCommand)
+    def test_is_staff__checks_staff_group(self, mock_GoogleGroups):
+        self.google.is_staff()
 
-    assert "print groups" in command
+        mock_GoogleGroups.assert_called_once_with(mock_GoogleGroups.GROUP_STAFF)
+        mock_GoogleGroups.return_value.contains_user.assert_called_once_with(self.google)
 
 
-def test_get_groups__format_csv(mock_google_CallGAMCommand, get_command_str):
-    get_groups(format=Format.CSV)
+class TestGoogleArchive:
+    @pytest.fixture(autouse=True)
+    def setup(self, mock_gam_gyb):
+        self.account = GoogleAccount("username")
+        self.google = GoogleArchive()
+        mock_gam_gyb(self.google)
 
-    command = get_command_str(mock_google_CallGAMCommand)
+    def test_archive_content(self, get_command_str):
+        self.google.archive_content(self.account)
 
-    assert "allfields" in command
+        command = get_command_str(self.google.gam_command)
+        assert f"create transfer {self.account}" in command
+        assert "calendar,drive" in command
+        assert str(GoogleUsers.USER_ARCHIVE) in command
+        assert "releaseresources" in command
 
+    def test_await_archive_completion(self, mocker):
+        self.google.gam_command_output.side_effect = [["Overall Transfer Status: completed"]]
 
-def test_get_groups__format_json(mock_google_CallGAMCommand, get_command_str):
-    get_groups(format=Format.JSON)
+        self.google.await_archive_completion(self.account)
 
-    command = get_command_str(mock_google_CallGAMCommand)
+        assert self.google.gam_command_output.call_count == 1
 
-    assert "allfields" in command
-    assert "members managers owners" in command
-    assert "formatjson" in command
+    def test_await_archive_completion__callback(self, mocker):
+        callback = mocker.Mock()
+        self.google.gam_command_output.side_effect = [
+            ["Overall Transfer Status: pending"],
+            ["Overall Transfer Status: completed"],
+        ]
 
+        self.google.await_archive_completion(self.account, callback=callback)
 
-def test_get_org_units(mock_google_CallGAMCommand, get_command_str):
-    get_org_units(kwarg1="one")
+        assert self.google.gam_command_output.call_count == 2
+        assert mocker.call("", "Overall Transfer Status: pending") in callback.mock_calls
+        assert mocker.call("Overall Transfer Status: pending", "Overall Transfer Status: completed") in callback.mock_calls
 
-    command = get_command_str(mock_google_CallGAMCommand)
+    def test_create_email_backup(self, get_command_str):
+        self.google.create_email_backup(self.account)
 
-    assert "print orgs" in command
-    assert "kwarg1 one" in command
+        command = get_command_str(self.google.gyb_command)
+        assert "--service-account" in command
+        assert f"--email {self.account}" in command
+        assert "--action backup" in command
 
+    def test_restore_email_backup(self, get_command_str):
+        self.google.restore_email_backup(self.account, "/backupdir")
 
-def test_get_users(mock_google_CallGAMCommand, get_command_str):
-    get_users(kwarg1="one")
+        command = get_command_str(self.google.gyb_command)
+        assert "--service-account" in command
+        assert f"--email {GoogleUsers.USER_ARCHIVE}" in command
+        assert "--action restore" in command
+        assert "--local-folder /backupdir" in command
+        assert f"--label-restored {self.account}" in command
 
-    command = get_command_str(mock_google_CallGAMCommand)
 
-    assert "print users" in command
-    assert "issuspended false isarchived false" in command
-    assert "kwarg1 one" in command
+class TestGoogleGroups:
+    @pytest.fixture(autouse=True)
+    def setup(self, mock_gam_gyb):
+        self.account = GoogleAccount("username")
+        self.group = GoogleAccount("group")
+        self.google = GoogleGroups(self.group)
+        mock_gam_gyb(self.google)
 
+    def test_add_user(self, get_command_str):
+        self.google.add_user(self.account)
 
-def test_get_users__inactive(mock_google_CallGAMCommand, get_command_str):
-    get_users(inactive=True)
+        command = get_command_str(self.google.gam_command)
 
-    command = get_command_str(mock_google_CallGAMCommand)
+        assert f"user {self.account}" in command
+        assert f"add groups member {self.group}" in command
 
-    assert "issuspended true isarchived true" in command
+    def test_contains_user__user_does_not_exist(self, mock_account_exists):
+        mock_account_exists(self.account, False)
 
+        assert self.google.contains_user(self.account) is False
 
-def test_get_users__format_csv(mock_google_CallGAMCommand, get_command_str):
-    get_users(format=Format.CSV)
+    def test_contains_user__user_exists_in_group(self, mock_account_exists):
+        mock_account_exists(self.account, True)
+        self.google.gam_command_output.return_value = [str(self.group)]
 
-    command = get_command_str(mock_google_CallGAMCommand)
+        assert self.google.contains_user(self.account) is True
 
-    assert "full" in command
+    def test_contains_user__user_exists_not_in_group(self, mock_account_exists):
+        mock_account_exists(self.account, True)
+        self.google.gam_command_output.return_value = [str(self.group)]
 
+        assert self.google.contains_user(self.account, group=GoogleAccount("nope")) is False
 
-@pytest.mark.parametrize("inactive,expected_in_command", ((True, "users_arch_or_susp"), (False, "users_na_ns")))
-def test_get_users__format_json(mock_google_CallGAMCommand, get_command_str, inactive, expected_in_command):
-    get_users(inactive=inactive, format=Format.JSON)
+    def test_get(self, get_command_str):
+        self.google.get()
 
-    command = get_command_str(mock_google_CallGAMCommand)
+        command = get_command_str(self.google.gam_command_output)
 
-    assert "info users all" in command
-    assert "formatjson" in command
-    assert expected_in_command in command
+        assert "print groups" in command
 
+    def test_get__kwargs(self, get_command_str):
+        self.google.get(kwarg1="value1")
 
-def test_get_users__org_units(mock_google_CallGAMCommand, get_command_str):
-    get_users(org_units=ORG_UNITS.values())
+        command = get_command_str(self.google.gam_command_output)
 
-    command = get_command_str(mock_google_CallGAMCommand)
+        assert "kwarg1 value1" in command
 
-    assert "queries" in command
-    for ou in ORG_UNITS.values():
-        assert f"'orgUnitPath={ou}'" in command
+    def test_get__format_csv(self, get_command_str):
+        self.google.get(format=Format.CSV)
 
+        command = get_command_str(self.google.gam_command_output)
 
-def test_get_users__org_units_unexepected():
-    with pytest.raises(ValueError, match=re.escape("Unexpected org_unit(s): /unexpected")):
-        get_users(org_units=["/unexpected"])
+        assert "allfields" in command
 
+    def test_get__format_json(self, get_command_str):
+        expected = json.dumps(
+            [
+                {
+                    "json": "json_value",
+                    "members": [{"json-members": "json_members_value"}],
+                    "json-settings": "json_settings_value",
+                }
+            ]
+        )
 
-@pytest.mark.parametrize("inactive,ou_entity", [(True, "ous_arch"), (False, "ou_na_ns")])
-def test_get_users__org_units__format_json(mock_google_CallGAMCommand, get_command_str, inactive, ou_entity):
-    get_users(inactive=inactive, org_units=ORG_UNITS.values(), format=Format.JSON)
+        self.google.gam_command_output.return_value = [
+            "# comment, blank line, should be skipped",
+            "email,JSON,JSON-members,JSON-settings",
+            'example@example.com,"{""json"":""json_value""}","[{""json-members"":""json_members_value""}]","{""json-settings"":""json_settings_value""}",',  # noqa: E501
+        ]
 
-    command = get_command_str(mock_google_CallGAMCommand)
+        output = self.google.get(format=Format.JSON)
+        command = get_command_str(self.google.gam_command_output)
 
-    assert ou_entity in command
+        assert "allfields" in command
+        assert "members managers owners" in command
+        assert "formatjson" in command
+        assert output == expected
 
+    def test_get__format_json__bad_encoding(self):
+        self.google.gam_command_output.return_value = [
+            "email,JSON,JSON-members,JSON-settings",
+            "example@example.com,not-json,not-json,not-json",
+        ]
 
-def test_move_user_ou(mock_google_CallGAMCommand):
-    move_user_ou("username", "theou")
+        output = self.google.get(format=Format.JSON)
 
-    mock_google_CallGAMCommand.assert_called_once()
+        assert output == "[]"
 
+    def test_get__format_json__missing_data(self):
+        self.google.gam_command_output.return_value = [
+            "email,JSON,JSON-members,JSON-settings",
+            "example@example.com,,,",
+        ]
 
-def test_remove_user_from_group(mock_google_CallGAMCommand):
-    remove_user_from_group("username", "thegroup")
+        output = self.google.get(format=Format.JSON)
 
-    mock_google_CallGAMCommand.assert_called_once()
+        assert output == "[]"
 
+    def test_get__format_json__no_data(self):
+        self.google.gam_command_output.return_value = []
 
-def test_user_exists_username_not_in_domain(capfd):
-    res = user_exists("someone@domain.com")
-    captured = capfd.readouterr()
+        output = self.google.get(format=Format.JSON)
 
-    assert res is False
-    assert "User not in domain" in captured.out
+        assert output == "[]"
 
+    def test_remove_user(self, get_command_str):
+        self.google.remove_user(self.account)
 
-def test_user_exists_user_exists(mock_google_user_info):
-    mock_google_user_info.return_value = {"First Name": "Test", "Last Name": "User"}
+        command = get_command_str(self.google.gam_command)
 
-    res = user_exists(user_account_name("username"))
+        assert f"update group {self.group}" in command
+        assert f"delete {self.account}" in command
 
-    assert res is True
 
+class TestGoogleOrgs:
+    @pytest.fixture(autouse=True)
+    def setup(self, mock_gam_gyb):
+        self.account = GoogleAccount("username")
+        self.ou = GoogleOrgs.OU_SERVICE_ACCOUNTS
+        self.google = GoogleOrgs(self.ou)
+        mock_gam_gyb(self.google)
 
-def test_user_exists_user_does_not_exist(mock_google_user_info):
-    mock_google_user_info.return_value = {}
+    @pytest.mark.parametrize("ou_key", GoogleOrgs.ORG_UNITS.keys())
+    def test_get_item(self, ou_key):
+        assert self.google[ou_key] == self.google.ORG_UNITS[ou_key]
 
-    res = user_exists(user_account_name("username"))
+    def test_contains_user__unexepected_ou(self):
+        with pytest.raises(ValueError, match="Unexpected OU: /unexpected"):
+            self.google.contains_user(self.account, "/unexpected")
 
-    assert res is False
+    def test_contains_user__user_does_not_exist(self, mock_account_exists):
+        mock_account_exists(self.account, False)
 
+        assert self.google.contains_user(self.account, self.ou) is False
 
-def test_user_info_user_exists(mock_gam_CallGAMCommand, mock_NamedTemporaryFile_with_readlines):
-    mock_NamedTemporaryFile_with_readlines(MODULE, ["First Name:Test", "Last Name:User"])
-    mock_gam_CallGAMCommand.return_value = Result.SUCCESS
+    def test_contains_user__user_exists_in_ou(self, mock_account_exists):
+        mock_account_exists(self.account, True)
+        self.google.gam_command_output.return_value = [str(self.account)]
 
-    res = user_info(user_account_name("username"))
+        assert self.google.contains_user(self.account, self.ou) is True
 
-    assert res == {"First Name": "Test", "Last Name": "User"}
+    def test_contains_user__user_exists_not_in_ou(self, mock_account_exists):
+        mock_account_exists(self.account, True)
+        self.google.gam_command_output.return_value = ["nope"]
 
+        assert self.google.contains_user(self.account, self.ou) is False
 
-def test_user_info_user_does_not_exists(mock_gam_CallGAMCommand):
-    mock_gam_CallGAMCommand.return_value = Result.FAILURE
+    def test_get(self, get_command_str):
+        self.google.get()
 
-    res = user_info(user_account_name("username"))
+        command = get_command_str(self.google.gam_command_output)
 
-    assert res == {}
+        assert "print orgs" in command
 
+    def test_get__kwargs(self, get_command_str):
+        self.google.get(kwarg1="value1")
 
-@pytest.mark.usefixtures("mock_google_user_exists_no")
-def test_user_in_group_user_does_not_exist(capfd):
-    res = user_in_group("username", "group")
-    captured = capfd.readouterr()
+        command = get_command_str(self.google.gam_command_output)
 
-    assert res is False
-    assert "User does not exist" in captured.out
+        assert "kwarg1 value1" in command
 
+    def test_move_user(self):
+        self.google.move_user(self.account, self.ou)
 
-@pytest.mark.usefixtures("mock_google_CallGAMCommand", "mock_google_user_exists_yes")
-def test_user_in_group_user_exists_in_group(mock_NamedTemporaryFile_with_readlines):
-    mock_NamedTemporaryFile_with_readlines(MODULE, ["group"])
+        self.google.gam_command.assert_called_once()
 
-    res = user_in_group("username", "group")
+    def test_move_user__unexpected_ou(self):
+        with pytest.raises(ValueError, match="Unexpected OU: /unexpected"):
+            self.google.move_user(self.account, "/unexpected")
 
-    assert res is True
 
+class TestGoogleUsers:
+    @pytest.fixture(autouse=True)
+    def setup(self, mock_gam_gyb):
+        self.account = GoogleAccount("username")
+        self.google = GoogleUsers()
+        mock_gam_gyb(self.google)
 
-@pytest.mark.usefixtures("mock_google_CallGAMCommand", "mock_google_user_exists_yes")
-def test_user_in_group_user_exists_not_in_group(mock_NamedTemporaryFile_with_readlines):
-    mock_NamedTemporaryFile_with_readlines(MODULE, ["group"])
+    def test_clear_profile(self, mocker):
+        self.google.clear_profile(self.account)
 
-    res = user_in_group("username", "nope")
+        for prop in ["address", "location", "otheremail", "phone"]:
+            assert mocker.call(("update", "user", self.account, prop, "clear")) in self.google.gam_command.mock_calls
 
-    assert res is False
+    def test_create(self, get_command_str):
+        self.google.create(self.account)
 
+        command = get_command_str(self.google.gam_command)
+        assert f"create user {self.account}" in command
+        assert "password random" in command
+        assert "changepassword" in command
 
-@pytest.mark.usefixtures("mock_google_user_exists_no")
-def test_user_in_ou_user_does_not_exist(capfd):
-    res = user_in_ou("username", "ou")
-    captured = capfd.readouterr()
+    def test_create__notify(self, get_command_str):
+        self.google.create(self.account, notify="notify@example.com")
 
-    assert res is False
-    assert "User does not exist" in captured.out
+        command = get_command_str(self.google.gam_command)
+        assert "notify notify@example.com" in command
+        assert f"from {GoogleUsers.USER_HELLO}" in command
 
+    def test_delete(self, get_command_str):
+        self.google.delete(self.account)
 
-@pytest.mark.usefixtures("mock_google_user_exists_yes")
-def test_user_in_ou_user_exists_in_ou(mock_NamedTemporaryFile_with_readlines):
-    mock_NamedTemporaryFile_with_readlines(MODULE, ["username"])
+        command = get_command_str(self.google.gam_command)
+        assert f"delete user {self.account}" in command
+        assert "noactionifalias" in command
 
-    res = user_in_ou("username", "ou")
+    def test_deprovision_popimap(self, get_command_str):
+        self.google.deprovision_popimap(self.account)
 
-    assert res is True
+        command = get_command_str(self.google.gam_command)
+        assert f"user {self.account}" in command
+        assert "deprovision popimap" in command
 
+    def test_disable_2fa(self, get_command_str):
+        self.google.disable_2fa(self.account)
 
-@pytest.mark.usefixtures("mock_google_user_exists_yes")
-def test_user_in_ou_user_exists_not_in_ou(mock_NamedTemporaryFile_with_readlines):
-    mock_NamedTemporaryFile_with_readlines(MODULE, ["nope"])
+        command = get_command_str(self.google.gam_command)
+        assert f"user {self.account}" in command
+        assert "turnoff2sv" in command
 
-    res = user_in_ou("username", "ou")
+    def test_get(self, get_command_str):
+        self.google.get(kwarg1="one")
 
-    assert res is False
+        command = get_command_str(self.google.gam_command_output)
 
+        assert "print users" in command
+        assert "issuspended false isarchived false" in command
+        assert "kwarg1 one" in command
 
-def test_user_is_deactivated_checks_alumni_ou(mock_google_user_in_ou):
-    user_is_deactivated("username")
+    def test_get__inactive(self, get_command_str):
+        self.google.get(inactive=True)
 
-    mock_google_user_in_ou.assert_called_once()
-    assert mock_google_user_in_ou.call_args.args == ("username", OU_ALUMNI)
+        command = get_command_str(self.google.gam_command_output)
 
+        assert "issuspended true isarchived true" in command
 
-def test_user_is_partner_checks_partner_group(mock_google_user_in_group):
-    user_is_partner("username")
+    def test_get__format_csv(self, get_command_str):
+        self.google.get(format=Format.CSV)
 
-    mock_google_user_in_group.assert_called_once()
-    assert mock_google_user_in_group.call_args.args == ("username", GROUP_PARTNERS)
+        command = get_command_str(self.google.gam_command_output)
 
+        assert "full" in command
 
-def test_user_is_staff_checks_staff_group(mock_google_user_in_group):
-    user_is_staff("username")
+    @pytest.mark.parametrize("inactive,expected_in_command", ((True, "users_arch_or_susp"), (False, "users_na_ns")))
+    def test_get__format_json(self, get_command_str, inactive, expected_in_command):
+        self.google.get(inactive=inactive, format=Format.JSON)
 
-    mock_google_user_in_group.assert_called_once()
-    assert mock_google_user_in_group.call_args.args == ("username", GROUP_STAFF)
+        command = get_command_str(self.google.gam_command_output)
+
+        assert "info users all" in command
+        assert "formatjson" in command
+        assert expected_in_command in command
+
+    def test_get__org_units(self, get_command_str):
+        self.google.get(org_units=GoogleOrgs.ORG_UNITS.values())
+
+        command = get_command_str(self.google.gam_command_output)
+
+        assert "queries" in command
+        for ou in GoogleOrgs.ORG_UNITS.values():
+            assert f"'orgUnitPath={ou}'" in command
+
+    def test_get__org_units_unexepected(self):
+        with pytest.raises(ValueError, match=re.escape("Unexpected org_unit(s): /unexpected")):
+            self.google.get(org_units=["/unexpected"])
+
+    @pytest.mark.parametrize("inactive,ou_entity", [(True, "ous_arch"), (False, "ou_na_ns")])
+    def test_get__org_units__format_json(self, get_command_str, inactive, ou_entity):
+        self.google.get(inactive=inactive, org_units=GoogleOrgs.ORG_UNITS.values(), format=Format.JSON)
+
+        command = get_command_str(self.google.gam_command_output)
+
+        assert ou_entity in command
+
+    def test_reset_recovery_info(self, mocker):
+        self.google.reset_recovery_info(self.account, recovery_email="email@example.com", recovery_phone="555-555-5555")
+
+        assert (
+            mocker.call(("update", "user", self.account, "recoveryemail", "email@example.com"))
+            in self.google.gam_command.mock_calls
+        )
+        assert (
+            mocker.call(("update", "user", self.account, "recoveryphone", "555-555-5555"))
+            in self.google.gam_command.mock_calls
+        )
+
+    def test_reset_password(self, get_command_str):
+        self.google.reset_password(self.account)
+
+        command = get_command_str(self.google.gam_command)
+        assert f"update user {self.account} password random" in command
+        assert "changepassword" in command
+
+    def test_reset_password__notify(self, get_command_str):
+        self.google.reset_password(self.account, notify="notify@example.com")
+
+        command = get_command_str(self.google.gam_command)
+        assert f"notify notify@example.com from {GoogleUsers.USER_HELLO}" in command
+
+    def test_remove_from_groups(self, get_command_str):
+        self.google.remove_from_groups(self.account)
+
+        command = get_command_str(self.google.gam_command)
+        assert f"user {self.account}" in command
+        assert "delete groups" in command
+
+    def test_signout(self, get_command_str):
+        self.google.signout(self.account)
+
+        command = get_command_str(self.google.gam_command)
+        assert f"user {self.account} signout" in command
 
 
 @pytest.mark.e2e
-def test_archive_user_exists(capfd):
-    res = user_exists(USER_ARCHIVE)
-    captured = capfd.readouterr()
+class TestE2E:
 
-    assert res is True
-    assert f"User: {USER_ARCHIVE}" in captured.out
-    assert "Google Unique ID:" in captured.out
+    def test_archive_user_exists(self, capfd):
+        res = GoogleAccount(GoogleUsers.USER_ARCHIVE).exists()
+        captured = capfd.readouterr()
 
+        assert res is True
+        assert f"User: {GoogleUsers.USER_ARCHIVE}" in captured.out
+        assert "Google Unique ID:" in captured.out
 
-@pytest.mark.e2e
-def test_nonexistent_user_does_not_exist(capfd):
-    username = f"nope_does_not_exist@{DOMAIN}"
-    res = user_exists(username)
-    captured = capfd.readouterr()
+    def test_nonexistent_user_does_not_exist(self, capfd):
+        username = f"nope_does_not_exist@{GoogleAccount.DOMAIN}"
+        res = GoogleAccount(username).exists()
+        captured = capfd.readouterr()
 
-    assert res is False
-    assert f"User: {username}, Does not exist" in captured.err
+        assert res is False
+        assert f"User: {username}, Does not exist" in captured.err
 
+    def test_nonexistent_not_in_team(self):
+        username = f"nope_does_not_exist@{GoogleAccount.DOMAIN}"
 
-@pytest.mark.e2e
-def test_nonexistent_not_in_team():
-    username = f"nope_does_not_exist@{DOMAIN}"
+        assert not GoogleGroups(GoogleGroups.GROUP_TEAM).contains_user(username)
 
-    assert not user_in_group(username, GROUP_TEAM)
+    def test_archive_user_not_in_team(self):
+        assert not GoogleGroups(GoogleGroups.GROUP_TEAM).contains_user(GoogleUsers.USER_ARCHIVE)
 
+    def test_archive_user_is_not_partner(self):
+        assert not GoogleUsers.USER_ARCHIVE.is_partner()
 
-@pytest.mark.e2e
-def test_archive_user_not_in_team():
-    assert not user_in_group(USER_ARCHIVE, GROUP_TEAM)
-
-
-@pytest.mark.e2e
-def test_archive_user_is_not_partner():
-    assert not user_is_partner(USER_ARCHIVE)
-
-
-@pytest.mark.e2e
-def test_archive_user_is_not_staff():
-    assert not user_is_staff(USER_ARCHIVE)
+    def test_archive_user_is_not_staff(self):
+        assert not GoogleUsers.USER_ARCHIVE.is_staff()
