@@ -2,7 +2,7 @@ import click
 
 from compiler_admin import Result
 from compiler_admin.commands.user.signout import signout
-from compiler_admin.services.google import USER_HELLO, CallGAMCommand, user_account_name, user_exists
+from compiler_admin.services.google import GoogleAccount, GoogleUsers
 
 
 @click.command()
@@ -12,9 +12,10 @@ from compiler_admin.services.google import USER_HELLO, CallGAMCommand, user_acco
 @click.pass_context
 def reset(ctx: click.Context, username: str, force: bool = False, notify: str = "", **kwargs):
     """Reset a user's password."""
-    account = user_account_name(username)
+    account = GoogleAccount(username)
+    google = GoogleUsers()
 
-    if not user_exists(account):
+    if not account.exists():
         click.echo(f"User does not exist: {account}")
         raise SystemExit(Result.FAILURE)
 
@@ -26,11 +27,7 @@ def reset(ctx: click.Context, username: str, force: bool = False, notify: str = 
 
     click.echo(f"User exists, resetting password: {account}")
 
-    command = ("update", "user", account, "password", "random", "changepassword")
-    if notify:
-        command += ("notify", notify, "from", USER_HELLO)
-
-    CallGAMCommand(command)
+    google.reset_password(account=account, notify=notify)
 
     # call the signout command
     ctx.forward(signout)
