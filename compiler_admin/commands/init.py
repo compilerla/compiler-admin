@@ -5,7 +5,7 @@ from shutil import rmtree
 
 import click
 
-from compiler_admin.services.google import USER_ARCHIVE, CallGAMCommand
+from compiler_admin.services.google import GoogleUsers
 
 GAM_CONFIG_DIR = os.environ.get("GAMCFGDIR", "./.config/gam")
 GAM_CONFIG_PATH = Path(GAM_CONFIG_DIR)
@@ -33,13 +33,15 @@ def init(username: str, init_gam: bool = False, init_gyb: bool = False):
     - <https://github.com/GAM-team/GAM/wiki/How-to-Install-GAM7>
     - <https://github.com/GAM-team/got-your-back/wiki>
     """
+    google = GoogleUsers()
+
     if init_gam:
         _clean_config_dir(GAM_CONFIG_PATH)
         # GAM is already installed via pyproject.toml
-        CallGAMCommand(("config", "drive_dir", str(GAM_CONFIG_PATH), "verify"))
-        CallGAMCommand(("create", "project"))
-        CallGAMCommand(("oauth", "create"))
-        CallGAMCommand(("user", username, "check", "serviceaccount"))
+        google.gam_command(("config", "drive_dir", str(GAM_CONFIG_PATH), "verify"))
+        google.gam_command(("create", "project"))
+        google.gam_command(("oauth", "create"))
+        google.gam_command(("user", username, "check", "serviceaccount"))
 
     if init_gyb:
         _clean_config_dir(GYB_CONFIG_PATH)
@@ -54,4 +56,4 @@ def init(username: str, init_gam: bool = False, init_gyb: bool = False):
         # https://github.com/GAM-team/got-your-back/blob/main/install-gyb.sh
         #
         # use GYB_CONFIG_PATH.parent for the install directory option, otherwise we get a .config/gyb/gyb directory structure
-        subprocess.call((gyb, "-u", username, "-r", USER_ARCHIVE, "-d", str(GYB_CONFIG_PATH.parent)))
+        subprocess.call((gyb, "-u", username, "-r", google.USER_ARCHIVE, "-d", str(GYB_CONFIG_PATH.parent)))
