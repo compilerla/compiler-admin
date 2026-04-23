@@ -1,7 +1,15 @@
 import pytest
 
 from compiler_admin import Result
+from compiler_admin.commands.user.deactivate import deactivate
+from compiler_admin.commands.user.delete import delete
 from compiler_admin.commands.user.offboard import __name__ as MODULE, offboard
+
+
+@pytest.fixture
+def mock_ctx_forward(mocker):
+    """Mock click.Context.forward."""
+    return mocker.patch("click.Context.forward")
 
 
 @pytest.fixture
@@ -15,48 +23,54 @@ def mock_input_no(mock_input_no):
 
 
 @pytest.fixture
-def mock_NamedTemporaryFile(mock_NamedTemporaryFile_with_readlines):
-    return mock_NamedTemporaryFile_with_readlines(MODULE, ["Overall Transfer Status: completed"])
+def mock_GoogleAccount(mocker):
+    return mocker.patch(f"{MODULE}.GoogleAccount").return_value
 
 
 @pytest.fixture
-def mock_commands_deactivate(mock_commands_deactivate):
-    return mock_commands_deactivate(MODULE)
+def mock_GoogleArchive(mocker):
+    return mocker.patch(f"{MODULE}.GoogleArchive").return_value
 
 
 @pytest.fixture
-def mock_commands_delete(mock_commands_delete):
-    return mock_commands_delete(MODULE)
+def mock_GoogleUsers(mocker):
+    return mocker.patch(f"{MODULE}.GoogleUsers").return_value
 
 
-@pytest.fixture
-def mock_google_user_exists(mock_google_user_exists):
-    return mock_google_user_exists(MODULE)
+@pytest.mark.usefixtures("mock_ctx_forward", "mock_input_yes", "mock_GoogleArchive", "mock_GoogleUsers")
+def test_offboard__alias(cli_runner, mock_GoogleAccount):
+    mock_GoogleAccount.exists.return_value = True
+
+    result = cli_runner.invoke(offboard, ["--alias", "alias_username", "username"])
+
+    assert result.exit_code == Result.SUCCESS
+    mock_GoogleAccount.add_email_alias.assert_called_once_with(mock_GoogleAccount)
 
 
-@pytest.fixture
-def mock_google_CallGAMCommand(mock_google_CallGAMCommand):
-    return mock_google_CallGAMCommand(MODULE)
+def test_offboard__alias__user_does_not_exist(cli_runner, mock_GoogleAccount):
+    # the first call returns True (the user exists), the second False (the alias user does not exist)
+    # https://stackoverflow.com/a/24897297
+    mock_GoogleAccount.exists.side_effect = [True, False]
 
+    result = cli_runner.invoke(offboard, ["--alias", "alias_username", "username"])
 
-@pytest.fixture
-def mock_google_CallGYBCommand(mock_google_CallGYBCommand):
-    return mock_google_CallGYBCommand(MODULE)
+    assert result.exit_code != Result.SUCCESS
+    assert "Alias target user does not exist" in result.output
 
 
 @pytest.mark.usefixtures("mock_input_yes")
 @pytest.mark.parametrize("should_delete", [True, False])
-def test_offboard_confirm_yes(
+def test_offboard__confirm_yes(
     cli_runner,
-    mock_google_user_exists,
-    mock_google_CallGAMCommand,
-    mock_google_CallGYBCommand,
-    mock_NamedTemporaryFile,
-    mock_commands_deactivate,
-    mock_commands_delete,
+    mocker,
+    mock_account_exists,
+    mock_ctx_forward,
+    mock_GoogleAccount,
+    mock_GoogleArchive,
+    mock_GoogleUsers,
     should_delete,
 ):
-    mock_google_user_exists.return_value = True
+    mock_account_exists(mock_GoogleAccount, True)
 
     args = ["username"]
     if should_delete:
@@ -65,55 +79,61 @@ def test_offboard_confirm_yes(
     result = cli_runner.invoke(offboard, args)
 
     assert result.exit_code == Result.SUCCESS
-    assert mock_google_CallGAMCommand.call_count > 0
-    mock_google_CallGYBCommand.assert_called_once()
-    mock_NamedTemporaryFile.assert_called_once()
-
-    mock_commands_deactivate.callback.assert_called_once()
+    assert mocker.call(deactivate) in mock_ctx_forward.mock_calls
+    mock_GoogleArchive.create_email_backup.assert_called_once_with(mock_GoogleAccount)
+    mock_GoogleArchive.archive_content.assert_called_once_with(mock_GoogleAccount)
+    mock_GoogleArchive.await_archive_completion.assert_called_once()
+    mock_GoogleUsers.deprovision_popimap.assert_called_once_with(mock_GoogleAccount)
 
     if should_delete:
-        mock_commands_delete.callback.assert_called_once()
+        assert mocker.call(delete) in mock_ctx_forward.mock_calls
     else:
-        mock_commands_delete.callback.assert_not_called()
+        assert mocker.call(delete) not in mock_ctx_forward.mock_calls
 
 
 @pytest.mark.usefixtures("mock_input_no")
-def test_offboard_confirm_no(
-    cli_runner,
-    mock_google_user_exists,
-    mock_google_CallGAMCommand,
-    mock_google_CallGYBCommand,
-    mock_commands_deactivate,
-    mock_commands_delete,
-):
-    mock_google_user_exists.return_value = True
+def test_offboard__confirm_no(cli_runner, mocker, mock_ctx_forward, mock_GoogleAccount, mock_GoogleArchive, mock_GoogleUsers):
+    mock_GoogleAccount.return_value = True
 
     result = cli_runner.invoke(offboard, ["username"])
 
     assert result.exit_code == Result.SUCCESS
-    mock_google_CallGAMCommand.assert_not_called()
-    mock_google_CallGYBCommand.assert_not_called()
+    assert mocker.call(deactivate) not in mock_ctx_forward.mock_calls
+    mock_GoogleArchive.create_email_backup.assert_not_called()
+    mock_GoogleArchive.archive_content.assert_not_called()
+    mock_GoogleArchive.await_archive_completion.assert_not_called()
+    mock_GoogleUsers.deprovision_popimap.assert_not_called()
+    assert mocker.call(delete) not in mock_ctx_forward.mock_calls
 
-    mock_commands_deactivate.callback.assert_not_called()
-    mock_commands_delete.callback.assert_not_called()
+
+def test_offboard__force(
+    cli_runner, mocker, mock_account_exists, mock_ctx_forward, mock_GoogleAccount, mock_GoogleArchive, mock_GoogleUsers
+):
+    mock_account_exists(mock_GoogleAccount, True)
+
+    args = ["username", "--force"]
+    result = cli_runner.invoke(offboard, args)
+
+    assert result.exit_code == Result.SUCCESS
+    assert mocker.call(deactivate) in mock_ctx_forward.mock_calls
+    mock_GoogleArchive.create_email_backup.assert_called_once_with(mock_GoogleAccount)
+    mock_GoogleArchive.archive_content.assert_called_once_with(mock_GoogleAccount)
+    mock_GoogleArchive.await_archive_completion.assert_called_once()
+    mock_GoogleUsers.deprovision_popimap.assert_called_once_with(mock_GoogleAccount)
 
 
-def test_offboard_user_does_not_exist(cli_runner, mock_google_user_exists, mock_google_CallGAMCommand):
-    mock_google_user_exists.return_value = False
+def test_offboard__user_does_not_exist(
+    cli_runner, mocker, mock_account_exists, mock_ctx_forward, mock_GoogleAccount, mock_GoogleArchive, mock_GoogleUsers
+):
+    mock_account_exists(mock_GoogleAccount, False)
 
     result = cli_runner.invoke(offboard, ["username"])
 
     assert result.exit_code != Result.SUCCESS
-    assert mock_google_CallGAMCommand.call_count == 0
-
-
-def test_offboard_alias_user_does_not_exist(cli_runner, mock_google_user_exists, mock_google_CallGAMCommand):
-    # the first call returns True (the user exists), the second False (the alias user does not)
-    # https://stackoverflow.com/a/24897297
-    mock_google_user_exists.side_effect = [True, False]
-
-    result = cli_runner.invoke(offboard, ["--alias", "alias_username", "username"])
-
-    assert result.exit_code != Result.SUCCESS
-    assert mock_google_user_exists.call_count == 2
-    assert mock_google_CallGAMCommand.call_count == 0
+    assert "User does not exist" in result.output
+    assert mocker.call(deactivate) not in mock_ctx_forward.mock_calls
+    mock_GoogleArchive.create_email_backup.assert_not_called()
+    mock_GoogleArchive.archive_content.assert_not_called()
+    mock_GoogleArchive.await_archive_completion.assert_not_called()
+    mock_GoogleUsers.deprovision_popimap.assert_not_called()
+    assert mocker.call(delete) not in mock_ctx_forward.mock_calls
