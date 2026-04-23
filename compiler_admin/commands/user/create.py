@@ -1,14 +1,7 @@
 import click
 
 from compiler_admin import Result
-from compiler_admin.services.google import (
-    GROUP_TEAM,
-    USER_HELLO,
-    CallGAMCommand,
-    add_user_to_group,
-    user_account_name,
-    user_exists,
-)
+from compiler_admin.services.google import GoogleAccount, GoogleGroups, GoogleUsers
 
 
 @click.command(context_settings={"ignore_unknown_options": True})
@@ -24,23 +17,15 @@ def create(username: str, notify: str = "", gam_args: list = []):
 
     <https://github.com/GAM-team/GAM/wiki/Users#create-a-user>
     """
-    account = user_account_name(username)
+    account = GoogleAccount(username)
 
-    if user_exists(account):
+    if account.exists():
         click.echo(f"User already exists: {account}")
         raise SystemExit(Result.FAILURE)
 
     click.echo(f"User does not exist, continuing: {account}")
 
-    command = ("create", "user", account, "password", "random", "changepassword")
-
-    if notify:
-        command += ("notify", notify, "from", USER_HELLO)
-
-    command += (*gam_args,)
-
-    CallGAMCommand(command)
-
-    add_user_to_group(account, GROUP_TEAM)
+    GoogleUsers().create(account, notify, *gam_args)
+    GoogleGroups(GoogleGroups.GROUP_TEAM).add_user(account)
 
     click.echo(f"User created successfully: {account}")
