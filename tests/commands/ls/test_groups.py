@@ -22,13 +22,8 @@ MOCK_GROUPS = [
 
 
 @pytest.fixture
-def mock_google_get_org_units(mocker):
-    return mocker.patch(f"{MODULE}.get_org_units")
-
-
-@pytest.fixture
-def mock_google_get_groups(mocker):
-    return mocker.patch(f"{MODULE}.get_groups")
+def mock_GoogleGroups(mocker):
+    return mocker.patch(f"{MODULE}.GoogleGroups").return_value
 
 
 @pytest.fixture
@@ -79,17 +74,17 @@ def test_groups__system_unknown(cli_runner, mock_google, mock_toggl):
     mock_toggl.assert_not_called()
 
 
-def test_google(mock_google_get_groups):
+def test_google(mock_GoogleGroups):
     google()
 
-    mock_google_get_groups.assert_called_once()
+    mock_GoogleGroups.get.assert_called_once_with(format=Format.BASIC)
 
 
 @pytest.mark.parametrize("format", set(FORMATS.values()))
-def test_google__format(mock_google_get_groups, format):
+def test_google__format(mock_GoogleGroups, format):
     google(format=format)
 
-    mock_google_get_groups.assert_called_once_with(format=format)
+    mock_GoogleGroups.get.assert_called_once_with(format=format)
 
 
 def test_toggl(mock_toggl_api, capfd):

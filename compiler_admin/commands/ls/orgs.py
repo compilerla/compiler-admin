@@ -1,10 +1,10 @@
 import click
 
-from compiler_admin.services.google import get_org_units
+from compiler_admin.services.google import GoogleOrgs
 
 
 @click.command()
 def orgs(**kwargs):
     """List org units in the Compiler Google workspace."""
-    output = get_org_units(**kwargs)
+    output = GoogleOrgs().get(**kwargs)
     click.echo(output)
