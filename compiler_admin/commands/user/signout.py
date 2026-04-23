@@ -1,7 +1,7 @@
 import click
 
 from compiler_admin import Result
-from compiler_admin.services.google import CallGAMCommand, user_account_name, user_exists
+from compiler_admin.services.google import GoogleAccount, GoogleUsers
 
 
 @click.command()
@@ -9,9 +9,10 @@ from compiler_admin.services.google import CallGAMCommand, user_account_name, us
 @click.argument("username")
 def signout(username: str, force: bool = False, **kwargs):
     """Sign a user out from all active sessions."""
-    account = user_account_name(username)
+    account = GoogleAccount(username)
+    google = GoogleUsers()
 
-    if not user_exists(account):
+    if not account.exists():
         click.echo(f"User does not exist: {account}")
         raise SystemExit(Result.FAILURE)
 
@@ -23,4 +24,4 @@ def signout(username: str, force: bool = False, **kwargs):
 
     click.echo(f"User exists, signing out from all active sessions: {account}")
 
-    CallGAMCommand(("user", account, "signout"))
+    google.signout(account)
