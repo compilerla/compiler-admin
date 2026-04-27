@@ -14,7 +14,7 @@ dependencies = [
     "click==8.3.2",
     "gam7==7.40.3",
     "pandas==3.0.2",
-    "tzdata==2026.1",
+    "tzdata==2026.2",
 ]
 
 [project.urls]
