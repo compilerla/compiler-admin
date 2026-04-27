@@ -68,7 +68,7 @@ def test_users(cli_runner, mock_google, mock_toggl):
     result = cli_runner.invoke(users, args)
 
     assert result.exit_code == Result.SUCCESS
-    mock_google.assert_called_once_with(format=Format.BASIC, inactive=False)
+    mock_google.assert_called_once_with(format=Format.BASIC, inactive=False, account_type=None)
     mock_toggl.assert_not_called()
 
 
@@ -104,7 +104,7 @@ def test_users__inactive(cli_runner, mock_google):
     result = cli_runner.invoke(users, args)
 
     assert result.exit_code == Result.SUCCESS
-    mock_google.assert_called_once_with(format=Format.BASIC, inactive=True)
+    mock_google.assert_called_once_with(format=Format.BASIC, inactive=True, account_type=None)
 
 
 def test_users__inactive__system_toggl(cli_runner, mock_toggl):
@@ -112,7 +112,31 @@ def test_users__inactive__system_toggl(cli_runner, mock_toggl):
     result = cli_runner.invoke(users, args)
 
     assert result.exit_code == Result.SUCCESS
-    mock_toggl.assert_called_once_with(format=Format.BASIC, inactive=True)
+    mock_toggl.assert_called_once_with(format=Format.BASIC, inactive=True, account_type=None)
+
+
+def test_users__account_type(cli_runner, mock_google):
+    args = ["--account_type", "service_accounts"]
+    result = cli_runner.invoke(users, args)
+
+    assert result.exit_code == Result.SUCCESS
+    mock_google.assert_called_once_with(format=Format.BASIC, inactive=False, account_type="service_accounts")
+
+
+def test_users__account_type__system_toggl(cli_runner, mock_toggl):
+    args = ["--account_type", "service_accounts", "toggl"]
+    result = cli_runner.invoke(users, args)
+
+    assert result.exit_code == Result.SUCCESS
+    mock_toggl.assert_called_once_with(format=Format.BASIC, inactive=False, account_type="service_accounts")
+
+
+def test_users__account_type__unknown(cli_runner):
+    args = ["--account_type", "unknown"]
+    result = cli_runner.invoke(users, args)
+
+    assert result.exit_code != Result.SUCCESS
+    assert "Invalid value for '-t' / '--account_type': 'unknown'" in result.output
 
 
 def test_google(mock_google_get_users):
@@ -121,26 +145,50 @@ def test_google(mock_google_get_users):
     mock_google_get_users.assert_called_once()
 
 
+def test_google__account_type(mock_google_get_users):
+    google(account_type="service_accounts")
+
+    mock_google_get_users.assert_called_once_with(format=Format.BASIC, inactive=False, org_units=["/service-accounts"])
+
+
+def test_google__account_type__unknown():
+    with pytest.raises(ValueError, match="Unexpected account_type: unknown"):
+        google(account_type="unknown")
+
+
 @pytest.mark.parametrize("format", set(FORMATS.values()))
 def test_google__format(mock_google_get_users, format):
     google(format=format)
 
-    mock_google_get_users.assert_called_once_with(inactive=False, format=format)
+    mock_google_get_users.assert_called_once_with(inactive=False, format=format, org_units=[])
 
 
 def test_toggl(mock_toggl_api, capfd):
     toggl()
     captured = capfd.readouterr()
 
-    mock_toggl_api.get_organization_users.assert_called_once_with(inactive=False)
+    mock_toggl_api.get_organization_users.assert_called_once_with(inactive=False, groups=[])
     assert "Getting all Toggl users" in captured.err
     assert "Got 2 Users" in captured.err
+
+
+def test_toggl__account_type(mock_toggl_api):
+    mock_toggl_api.get_organization_group.return_value = {"group_id": 1234}
+
+    toggl(account_type="service_accounts")
+
+    mock_toggl_api.get_organization_users.assert_called_once_with(inactive=False, groups=[1234])
+
+
+def test_toggl__account_type__unknown(mock_toggl_api):
+    with pytest.raises(ValueError, match="Unexpected account_type: unknown"):
+        toggl(account_type="unknown")
 
 
 def test_toggl__inactive(mock_toggl_api):
     toggl(inactive=True)
 
-    mock_toggl_api.get_organization_users.assert_called_once_with(inactive=True)
+    mock_toggl_api.get_organization_users.assert_called_once_with(inactive=True, groups=[])
 
 
 @pytest.mark.usefixtures("mock_toggl_api")
