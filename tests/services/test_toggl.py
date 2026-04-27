@@ -326,6 +326,16 @@ class TestTogglUsers:
         assert output == data
         self.users.api_organization.get_users.assert_called_once_with(**call_kwargs)
 
+    def test_get_organization_users__groups(self, mocker):
+        data = {"user": "name"}
+        self.users.api_organization.get_users.return_value = mocker.Mock(json=mocker.Mock(return_value=data))
+        call_kwargs = {"active_status": "active", "groups": "1234,5678"}
+
+        output = self.users.get_organization_users(groups=[1234, 5678])
+
+        assert output == data
+        self.users.api_organization.get_users.assert_called_once_with(**call_kwargs)
+
     def test_get_organization_users__inactive(self, mocker):
         data = {"user": "name"}
         self.users.api_organization.get_users.return_value = mocker.Mock(json=mocker.Mock(return_value=data))

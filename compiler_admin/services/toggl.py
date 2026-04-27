@@ -347,11 +347,12 @@ class TogglUsers(TogglService):
 
         return data
 
-    def get_organization_users(self, inactive: bool = False, **kwargs) -> dict:
+    def get_organization_users(self, inactive: bool = False, groups: list[str] = [], **kwargs) -> dict:
         """Get a list of users from the Toggl organization.
 
         Args:
             inactive (bool): True to get inactive users. False (the default) to get only active users.
+            groups (list[str]): An optional list of Toggl group ids, returning only users in any one of the given groups.
 
         Returns:
             dict: The resulting JSON data of users.
@@ -360,8 +361,11 @@ class TogglUsers(TogglService):
             active_status = "inactive,invited"
         else:
             active_status = "active"
-
         kwargs["active_status"] = active_status
+
+        if groups:
+            kwargs["groups"] = ",".join((str(g) for g in groups))
+
         response = self.api_organization.get_users(**kwargs)
         json = response.json()
 
