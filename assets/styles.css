@@ -1,0 +1,4 @@
+a[data-md-component="logo"] > img {
+  box-shadow: 0 0 0 1px #bbb;
+  border-radius: 0.375rem;
+}
