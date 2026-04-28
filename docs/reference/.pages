@@ -3,6 +3,7 @@ nav:
   - CLI reference:
       - init: reference/cli/init
       - info: reference/cli/info
+      - ls: reference/cli/ls
       - time: reference/cli/time
       - user: reference/cli/user
   - Coverage report: ./reference/coverage

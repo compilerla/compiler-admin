@@ -12,6 +12,8 @@ from compiler_admin.api.toggl import TogglOrganization, TogglReports, TogglWorks
 from compiler_admin.services.google import user_info as google_user_info
 from compiler_admin.services.time import TimeSummary
 
+GROUPS = dict(contractors="Contractors", service_accounts="Service Accounts", staff="Staff", partners="Partners")
+
 
 class TogglService:
     def __init__(self):
@@ -310,11 +312,47 @@ class TogglTime(TogglService):
 
 
 class TogglUsers(TogglService):
-    def get_organization_users(self, inactive=False, **kwargs) -> dict:
+    def get_organization_group(self, name: str) -> dict:
+        """Get group of users from the Toggl organization.
+
+        Args:
+            name (str): The name of the group.
+
+        Returns:
+            dict: The resulting JSON data of the group.
+        """
+        response = self.api_organization.get_groups(name=name)
+        json = response.json()
+        return json[0] if json else None
+
+    def get_organization_groups(self, group_names: list[str] = []) -> list[dict]:
+        """Get a list of users from the Toggl organization.
+
+        Args:
+            group_names (list[str]): Return only groups with a name matching one of the provided names.
+
+        Returns:
+            list[dict]: The resulting JSON data of groups.
+        """
+        data = []
+
+        if len(group_names) > 0:
+            for group in group_names:
+                json = self.get_organization_group(group)
+                data.extend([json])
+        else:
+            response = self.api_organization.get_groups()
+            json = response.json()
+            data.extend(json)
+
+        return data
+
+    def get_organization_users(self, inactive: bool = False, groups: list[str] = [], **kwargs) -> dict:
         """Get a list of users from the Toggl organization.
 
         Args:
             inactive (bool): True to get inactive users. False (the default) to get only active users.
+            groups (list[str]): An optional list of Toggl group ids, returning only users in any one of the given groups.
 
         Returns:
             dict: The resulting JSON data of users.
@@ -323,8 +361,11 @@ class TogglUsers(TogglService):
             active_status = "inactive,invited"
         else:
             active_status = "active"
-
         kwargs["active_status"] = active_status
+
+        if groups:
+            kwargs["groups"] = ",".join((str(g) for g in groups))
+
         response = self.api_organization.get_users(**kwargs)
         json = response.json()
 

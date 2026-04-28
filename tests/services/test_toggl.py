@@ -286,6 +286,35 @@ class TestTogglUsers:
         self.users.api_reports = mocker.Mock()
         self.users.api_workspace = mocker.Mock()
 
+    def test_get_organization_group(self, mocker):
+        data = [{"name": "group1", "id": 1234}]
+        self.users.api_organization.get_groups.return_value = mocker.Mock(json=mocker.Mock(return_value=data))
+        kwargs = {"name": "group1"}
+
+        output = self.users.get_organization_group("group1")
+
+        assert output == data[0]
+        self.users.api_organization.get_groups.assert_called_once_with(**kwargs)
+
+    def test_get_organization_groups(self, mocker):
+        data = [{"name": "group1", "id": 1234}, {"name": "group2", "id": 5678}]
+        self.users.api_organization.get_groups.return_value = mocker.Mock(json=mocker.Mock(return_value=data))
+
+        output = self.users.get_organization_groups()
+
+        assert output == data
+        self.users.api_organization.get_groups.assert_called_once_with()
+
+    def test_get_organization_groups__group_names(self, mocker):
+        data = [{"name": "group1", "id": 1234}, {"name": "group2", "id": 5678}]
+        self.users.get_organization_group = mocker.Mock(side_effect=data)
+
+        output = self.users.get_organization_groups(group_names=["group1", "group2"])
+
+        assert output == data
+        assert self.users.get_organization_group.call_count == 2
+        assert self.users.get_organization_group.call_args_list == [mocker.call("group1"), mocker.call("group2")]
+
     def test_get_organization_users(self, mocker):
         data = {"user": "name"}
         self.users.api_organization.get_users.return_value = mocker.Mock(json=mocker.Mock(return_value=data))
@@ -293,6 +322,16 @@ class TestTogglUsers:
         call_kwargs = {**kwargs, "active_status": "active"}
 
         output = self.users.get_organization_users(**kwargs)
+
+        assert output == data
+        self.users.api_organization.get_users.assert_called_once_with(**call_kwargs)
+
+    def test_get_organization_users__groups(self, mocker):
+        data = {"user": "name"}
+        self.users.api_organization.get_users.return_value = mocker.Mock(json=mocker.Mock(return_value=data))
+        call_kwargs = {"active_status": "active", "groups": "1234,5678"}
+
+        output = self.users.get_organization_users(groups=[1234, 5678])
 
         assert output == data
         self.users.api_organization.get_users.assert_called_once_with(**call_kwargs)

@@ -2,20 +2,20 @@
 
 !!! seealso "Full Command Reference"
 
-    For a complete reference of all options, see the [`compiler-admin user ls` reference section](../../reference/cli/user.md#compiler-admin-user-ls).
+    For a complete reference of all options, see the [`compiler-admin ls` reference section](../../reference/cli/ls.md).
 
-This guide explains how to use the `compiler-admin user ls` command to list users in the Compiler workspace.
+This guide explains how to use the `compiler-admin ls` command to list users and other related information from the Compiler workspace.
 
 ## Actions Performed
 
-The `ls` command prints information about users, such as email address, name, and user ID.
+The `ls users` command prints information about users, such as email address, name, and user ID.
 
 ## Basic Usage
 
 To list users in the Compiler workspace, call the command without any arguments:
 
 ```console
-compiler-admin user ls
+compiler-admin ls users
 ```
 
 The output will be a list of email addresses of active users in the Compiler Google workspace.
@@ -25,7 +25,7 @@ The output will be a list of email addresses of active users in the Compiler Goo
 To list users in a specific system, use the `system` argument.
 
 ```console
-compiler-admin user ls toggl
+compiler-admin ls users toggl
 ```
 
 ## Showing Inactive Users
@@ -33,7 +33,7 @@ compiler-admin user ls toggl
 You can view inactive users in the system with the `--inactive` flag.
 
 ```console
-compiler-admin user ls --inactive
+compiler-admin ls users --inactive
 ```
 
 ## Changing the Output Format
@@ -41,11 +41,11 @@ compiler-admin user ls --inactive
 To get more user details, use the `--format` flag:
 
 ```console
-compiler-admin user ls --format csv
+compiler-admin ls users --format csv
 ```
 
 Or for even more detailed JSON output:
 
 ```console
-compiler-admin user ls --format json
+compiler-admin ls users --format json
 ```

@@ -1,3 +1,6 @@
+import csv
+import io
+import json
 import subprocess
 import sys
 from tempfile import NamedTemporaryFile
@@ -17,10 +20,15 @@ GYB = "gyb"
 DOMAIN = "compiler.la"
 
 # Org structure
-OU_ALUMNI = "alumni"
-OU_CONTRACTORS = "contractors"
-OU_STAFF = "staff"
+OU_ALUMNI = "/alumni"
+OU_CONTRACTORS = "/contractors"
+OU_SERVICE_ACCOUNTS = "/service-accounts"
+OU_STAFF = "/staff"
 OU_PARTNERS = f"{OU_STAFF}/partners"
+
+ORG_UNITS = dict(
+    alumni=OU_ALUMNI, contractors=OU_CONTRACTORS, service_accounts=OU_SERVICE_ACCOUNTS, staff=OU_STAFF, partners=OU_PARTNERS
+)
 
 
 def user_account_name(username: str) -> str:
@@ -97,23 +105,124 @@ def get_backup_codes(username: str) -> str:
     return output
 
 
-def get_users(inactive: bool = False, format=Format.BASIC, **kwargs) -> str:
-    flag = str(inactive).lower()
+def get_groups(format: int = Format.BASIC, **kwargs) -> int:
+    """Get information about the groups."""
     output = ""
-    command = ("print", "users", "issuspended", flag, "isarchived", flag)
+    command = ("print", "groups")
+
     if len(kwargs) > 0:
         for k, v in kwargs.items():
             command += (k, v)
 
-    match format:
-        case Format.CSV:
-            command += ("full",)
-        case Format.JSON:
-            command = ("info", "users", "all", "users_arch_or_susp" if inactive else "users_na_ns", "formatjson")
+    if format in [Format.CSV, Format.JSON]:
+        command += ("allfields",)
+    if format == Format.JSON:
+        command += (
+            "members",
+            "managers",
+            "owners",
+            "formatjson",
+        )
+
+    with NamedTemporaryFile("w+") as stdout:
+        CallGAMCommand(command, stdout=stdout.name)
+        lines = stdout.readlines()
+
+        if format == Format.JSON:
+            # GAM returns a CSV structure like "email,JSON,JSON-settings"
+            # extract JSON cols to array of dicts for convenience
+
+            # ensure we start from the CSV header
+            start_index = 0
+            groups_data = []
+            for i, line in enumerate(lines):
+                if line.startswith("email,JSON,JSON-members,JSON-settings"):
+                    start_index = i
+                    break
+
+            # rebuild the clean CSV string and parse it
+            clean_csv = "\n".join(lines[start_index:])
+            reader = csv.DictReader(io.StringIO(clean_csv))
+
+            for row in reader:
+                # check if the JSON columns exist and have data
+                if all((col in row and row[col].strip() for col in ["JSON", "JSON-members", "JSON-settings"])):
+                    try:
+                        # unpack the JSON strings back into native Python dicts
+                        group_obj: dict = json.loads(row["JSON"])
+                        group_obj["members"] = json.loads(row["JSON-members"])
+                        group_obj.update(json.loads(row["JSON-settings"]))
+                        groups_data.append(group_obj)
+                    except json.JSONDecodeError as e:
+                        print(f"Skipping row for {row.get('email')} due to JSON error: {e}")
+
+            output = json.dumps(groups_data)
+        else:
+            output = "".join(lines)
+
+    return output
+
+
+def get_org_units(**kwargs) -> str:
+    """Print information about the org units."""
+    output = ""
+    command = ("print", "orgs")
+
+    if len(kwargs) > 0:
+        for k, v in kwargs.items():
+            command += (k, v)
 
     with NamedTemporaryFile("w+") as stdout:
         CallGAMCommand(command, stdout=stdout.name, stderr="stdout")
-        output = "".join(stdout.readlines())
+        lines = stdout.readlines()
+        output = "".join(lines)
+
+    return output
+
+
+def get_users(format: int = Format.BASIC, inactive: bool = False, org_units: list[str] = [], **kwargs) -> str:
+    flag = str(inactive).lower()
+    output = ""
+    queries = ""
+    command = ("print", "users", "issuspended", flag, "isarchived", flag)
+
+    if len(kwargs) > 0:
+        for k, v in kwargs.items():
+            command += (k, v)
+
+    if len(org_units) > 0:
+        workspace_org_units = ORG_UNITS.values()
+        if not all((ou in workspace_org_units for ou in org_units)):
+            raise ValueError(f"Unexpected org_unit(s): {', '.join(org_units)}")
+        queries = ",".join([f"'orgUnitPath={ou}'" for ou in org_units])
+        command += ("queries", queries)
+
+    if format == Format.CSV:
+        command += ("full",)
+    elif format == Format.JSON:
+        queries = ",".join(org_units)
+        if queries:
+            user_entity = ("ous_arch" if inactive else "ou_na_ns", queries)
+        else:
+            user_entity = ("all", "users_arch_or_susp" if inactive else "users_na_ns")
+
+        command = (
+            "info",
+            "users",
+            *user_entity,
+            "nobuildingnames",
+            "noschemas",
+            "formatjson",
+        )
+
+    with NamedTemporaryFile("w+") as stdout:
+        CallGAMCommand(command, stdout=stdout.name, stderr="stdout")
+        lines = stdout.readlines()
+        if format == Format.JSON:
+            # GAM returns JSON record lines, write a JSON array for convenience
+            output = f"[{",".join(lines)}]"
+        else:
+            output = "".join(lines)
 
     return output
 

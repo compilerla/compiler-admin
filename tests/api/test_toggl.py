@@ -1,5 +1,4 @@
 from datetime import datetime
-from pathlib import Path
 
 import pytest
 
@@ -54,11 +53,28 @@ class TestTogglBase:
         assert self.toggl.api_url_resource in url
         assert "/endpoint" in url
 
+    def test_get(self, mock_requests):
+        url = "https://example.com"
+        kwargs = dict(kwarg1=1, kwarg2="two")
+        response = self.toggl._get(url, **kwargs)
+
+        mock_requests.get.assert_called_once_with(url, params=kwargs, timeout=self.toggl.timeout)
+        response.raise_for_status.assert_called_once()
+
+    def test_post(self, mock_requests):
+        url = "https://example.com"
+        kwargs = dict(kwarg1=1, kwarg2="two")
+        response = self.toggl._post(url, **kwargs)
+
+        mock_requests.post.assert_called_once_with(url, json=kwargs, timeout=self.toggl.timeout)
+        response.raise_for_status.assert_called_once()
+
 
 class TestTogglOrganization:
     @pytest.fixture(autouse=True)
-    def setup(self):
+    def setup(self, mocker):
         self.toggl = TogglOrganization("token", 1234, 5678)
+        self.get_spy = self.toggl._get = mocker.patch.object(self.toggl, "_get")
 
     def test_init(self):
         assert self.toggl.organization_id == 5678
@@ -66,15 +82,30 @@ class TestTogglOrganization:
     def test_api_url_resource(self):
         assert self.toggl.api_url_resource == "organizations/5678"
 
-    def test_get_users(self, mock_requests):
+    def test_get_groups(self):
+        url = self.toggl.make_api_url("groups")
+        kwargs = {"workspace": "1234"}
+
+        self.toggl.get_groups()
+
+        self.get_spy.assert_called_once_with(url, **kwargs)
+
+    def test_get_groups__name(self):
+        url = self.toggl.make_api_url("groups")
+        kwargs = {"workspace": "1234", "name": "group1"}
+
+        self.toggl.get_groups("group1")
+
+        self.get_spy.assert_called_once_with(url, **kwargs)
+
+    def test_get_users(self):
         url = self.toggl.make_api_url("users")
         kwargs = dict(kwarg1=1, kwarg2="two")
         call_kwargs = dict(workspaces="1234", **kwargs)
 
-        response = self.toggl.get_users(**kwargs)
+        self.toggl.get_users(**kwargs)
 
-        response.raise_for_status.assert_called_once()
-        mock_requests.get.assert_called_once_with(url, params=call_kwargs, timeout=self.toggl.timeout)
+        self.get_spy.assert_called_once_with(url, **call_kwargs)
 
 
 class TestTogglReports:
@@ -82,38 +113,21 @@ class TestTogglReports:
     def setup(self):
         self.toggl = TogglReports("token", 1234)
 
-    @pytest.fixture
-    def toggl_mock_post_reports(self, mocker, toggl_file):
-        # setup a mock response to a requests.post call
-        mock_csv_bytes = Path(toggl_file).read_bytes()
-        mock_post_response = mocker.Mock()
-        mock_post_response.raise_for_status.return_value = None
-        # prepend the BOM to the mock content
-        mock_post_response.content = b"\xef\xbb\xbf" + mock_csv_bytes
-        # override the requests.post call to return the mock response
-        mocker.patch.object(self.toggl, "post_reports", return_value=mock_post_response)
-        return self.toggl
-
     def test_api_url_resource(self):
         assert self.toggl.api_url_resource == "workspace/1234"
 
     def test_api_url_version(self):
         assert self.toggl.api_url_version == self.toggl.REPORTS_API_VERSION
 
-    def test_toggl_post_reports(self, mock_requests):
-        url = self.toggl.make_api_url("endpoint")
-        response = self.toggl.post_reports("endpoint", kwarg1=1, kwarg2="two")
-
-        response.raise_for_status.assert_called_once()
-
-        mock_requests.post.assert_called_once_with(url, json=dict(kwarg1=1, kwarg2="two"), timeout=self.toggl.timeout)
-
-    def test_toggl_detailed_time_entries(self, toggl_mock_post_reports):
+    def test_toggl_detailed_time_entries(self, mocker):
         dt = datetime(2024, 9, 25)
-        toggl_mock_post_reports.detailed_time_entries(dt, dt, kwarg1=1, kwarg2="two")
+        url = "https://api.track.toggl.com/reports/api/v3/workspace/1234/search/time_entries.csv"
+        self.toggl._post = mocker.Mock()
 
-        toggl_mock_post_reports.post_reports.assert_called_once_with(
-            "search/time_entries.csv",
+        self.toggl.detailed_time_entries(dt, dt, kwarg1=1, kwarg2="two")
+
+        self.toggl._post.assert_called_once_with(
+            url,
             start_date="2024-09-25",
             end_date="2024-09-25",
             rounding=1,
@@ -135,28 +149,28 @@ class TestTogglReports:
 
 class TestTogglWorkspace:
     @pytest.fixture(autouse=True)
-    def setup(self):
+    def setup(self, mocker):
         self.toggl = TogglWorkspace("token", 1234)
+        self.get_spy = self.toggl._get = mocker.Mock()
+        self.post_spy = self.toggl._post = mocker.Mock()
 
     def test_api_url_resource(self):
         assert self.toggl.api_url_resource == "workspaces/1234"
 
-    def test_get_users(self, mock_requests):
+    def test_get_users(self):
         url = self.toggl.make_api_url("users")
         kwargs = dict(kwarg1=1, kwarg2="two")
 
-        response = self.toggl.get_users(**kwargs)
+        self.toggl.get_users(**kwargs)
 
-        response.raise_for_status.assert_called_once()
-        mock_requests.get.assert_called_once_with(url, params=kwargs, timeout=self.toggl.timeout)
+        self.get_spy.assert_called_once_with(url, **kwargs)
 
     def test_update_preferences(self, mocker, mock_requests):
         url = "http://fake.url"
         mocker.patch.object(self.toggl, "make_api_url", return_value=url)
         prefs = {"pref1": "value1", "pref2": True}
 
-        response = self.toggl.update_preferences(**prefs)
+        self.toggl.update_preferences(**prefs)
 
-        response.raise_for_status.assert_called_once()
         self.toggl.make_api_url.assert_called_once_with("preferences")
-        mock_requests.post.assert_called_once_with(url, json=prefs, timeout=self.toggl.timeout)
+        self.post_spy.assert_called_once_with(url, **prefs)
