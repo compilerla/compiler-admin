@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="index.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.5">coverage.py v7.13.5</a>,
-            created at 2026-04-28 00:14 +0000
+            created at 2026-04-28 00:17 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -93,7 +93,7 @@
     <p class="pln"><span class="n"><a id="t9" href="#t9">9</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t10" href="#t10">10</a></span><span class="t"><span class="key">import</span> <span class="nam">compiler_admin</span><span class="op">.</span><span class="nam">services</span><span class="op">.</span><span class="nam">files</span> <span class="key">as</span> <span class="nam">files</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t11" href="#t11">11</a></span><span class="t"><span class="key">from</span> <span class="nam">compiler_admin</span><span class="op">.</span><span class="nam">api</span><span class="op">.</span><span class="nam">toggl</span> <span class="key">import</span> <span class="nam">TogglOrganization</span><span class="op">,</span> <span class="nam">TogglReports</span><span class="op">,</span> <span class="nam">TogglWorkspace</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t12" href="#t12">12</a></span><span class="t"><span class="key">from</span> <span class="nam">compiler_admin</span><span class="op">.</span><span class="nam">services</span><span class="op">.</span><span class="nam">google</span> <span class="key">import</span> <span class="nam">user_info</span> <span class="key">as</span> <span class="nam">google_user_info</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t12" href="#t12">12</a></span><span class="t"><span class="key">from</span> <span class="nam">compiler_admin</span><span class="op">.</span><span class="nam">services</span><span class="op">.</span><span class="nam">google</span> <span class="key">import</span> <span class="nam">GoogleAccount</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t13" href="#t13">13</a></span><span class="t"><span class="key">from</span> <span class="nam">compiler_admin</span><span class="op">.</span><span class="nam">services</span><span class="op">.</span><span class="nam">time</span> <span class="key">import</span> <span class="nam">TimeSummary</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t14" href="#t14">14</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t15" href="#t15">15</a></span><span class="t"><span class="nam">GROUPS</span> <span class="op">=</span> <span class="nam">dict</span><span class="op">(</span><span class="nam">contractors</span><span class="op">=</span><span class="str">"Contractors"</span><span class="op">,</span> <span class="nam">service_accounts</span><span class="op">=</span><span class="str">"Service Accounts"</span><span class="op">,</span> <span class="nam">staff</span><span class="op">=</span><span class="str">"Staff"</span><span class="op">,</span> <span class="nam">partners</span><span class="op">=</span><span class="str">"Partners"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -138,7 +138,7 @@
     <p class="run"><span class="n"><a id="t54" href="#t54">54</a></span><span class="t">        <span class="nam">user</span> <span class="op">=</span> <span class="nam">info</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="nam">email</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t55" href="#t55">55</a></span><span class="t">        <span class="nam">name</span> <span class="op">=</span> <span class="nam">user</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="nam">name_key</span><span class="op">)</span> <span class="key">if</span> <span class="nam">user</span> <span class="key">else</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t56" href="#t56">56</a></span><span class="t">        <span class="key">if</span> <span class="nam">name</span> <span class="key">is</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t57" href="#t57">57</a></span><span class="t">            <span class="nam">user</span> <span class="op">=</span> <span class="nam">google_user_info</span><span class="op">(</span><span class="nam">email</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t57" href="#t57">57</a></span><span class="t">            <span class="nam">user</span> <span class="op">=</span> <span class="nam">GoogleAccount</span><span class="op">(</span><span class="nam">email</span><span class="op">)</span><span class="op">.</span><span class="nam">get_info</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t58" href="#t58">58</a></span><span class="t">            <span class="nam">name</span> <span class="op">=</span> <span class="nam">user</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="nam">name_key</span><span class="op">)</span> <span class="key">if</span> <span class="nam">user</span> <span class="key">else</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t59" href="#t59">59</a></span><span class="t">            <span class="key">if</span> <span class="nam">email</span> <span class="key">in</span> <span class="nam">info</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t60" href="#t60">60</a></span><span class="t">                <span class="nam">info</span><span class="op">[</span><span class="nam">email</span><span class="op">]</span><span class="op">.</span><span class="nam">update</span><span class="op">(</span><span class="nam">user</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -473,7 +473,7 @@
             <a class="nav" href="index.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.5">coverage.py v7.13.5</a>,
-            created at 2026-04-28 00:14 +0000
+            created at 2026-04-28 00:17 +0000
         </p>
     </div>
 </footer>
