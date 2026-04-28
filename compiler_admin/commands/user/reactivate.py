@@ -3,18 +3,7 @@ import click
 from compiler_admin import Result
 from compiler_admin.commands.user.backupcodes import backupcodes
 from compiler_admin.commands.user.reset import reset
-from compiler_admin.services.google import (
-    GROUP_STAFF,
-    GROUP_TEAM,
-    OU_CONTRACTORS,
-    OU_STAFF,
-    CallGAMCommand,
-    add_user_to_group,
-    move_user_ou,
-    user_account_name,
-    user_exists,
-    user_is_deactivated,
-)
+from compiler_admin.services.google import GoogleAccount, GoogleGroups, GoogleOrgs, GoogleUsers
 
 
 @click.command()
@@ -45,13 +34,13 @@ def reactivate(
     **kwargs,
 ):
     """Reactivate a previously deactivated user."""
-    account = user_account_name(username)
+    account = GoogleAccount(username)
 
-    if not user_exists(account):
+    if not account.exists():
         click.echo(f"User does not exist: {account}")
         raise SystemExit(Result.FAILURE)
 
-    if not user_is_deactivated(account):
+    if not account.is_deactivated():
         click.echo("User is not deactivated, cannot reactivate")
         raise SystemExit(Result.FAILURE)
 
@@ -63,27 +52,23 @@ def reactivate(
 
     click.echo(f"User exists, reactivating: {account}")
 
-    click.echo(f"Adding to group: {GROUP_TEAM}")
-    add_user_to_group(account, GROUP_TEAM)
+    click.echo(f"Adding to group: {GoogleGroups.GROUP_TEAM}")
+    GoogleGroups(GoogleGroups.GROUP_TEAM).add_user(account)
 
     if staff:
-        click.echo(f"Moving to OU: {OU_STAFF}")
-        move_user_ou(account, OU_STAFF)
-        click.echo(f"Adding to group: {GROUP_STAFF}")
-        add_user_to_group(account, GROUP_STAFF)
+        click.echo(f"Moving to OU: {GoogleOrgs.OU_STAFF}")
+        GoogleOrgs(GoogleOrgs.OU_STAFF).move_user(account)
+        click.echo(f"Adding to group: {GoogleGroups.GROUP_STAFF}")
+        GoogleGroups(GoogleGroups.GROUP_STAFF).add_user(account)
     else:
-        click.echo(f"Moving to OU: {OU_CONTRACTORS}")
-        move_user_ou(account, OU_CONTRACTORS)
+        click.echo(f"Moving to OU: {GoogleOrgs.OU_CONTRACTORS}")
+        GoogleOrgs(GoogleOrgs.OU_CONTRACTORS).move_user(account)
 
     # reset password, sign out
     ctx.forward(reset)
 
     click.echo("Update user profile info")
-    profile = dict(recoveryemail=recovery_email, recoveryphone=recovery_phone)
-    profile = {k: v for k, v in profile.items() if v}
-    for prop, val in profile.items():
-        command = ("update", "user", account, prop, val)
-        CallGAMCommand(command)
+    GoogleUsers().reset_recovery_info(account=account, recovery_email=recovery_email, recovery_phone=recovery_phone)
 
     # get the user's backup codes
     ctx.forward(backupcodes)

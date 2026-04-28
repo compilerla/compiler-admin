@@ -20,18 +20,13 @@ def mock_environment(monkeypatch):
 
 
 @pytest.fixture
-def spy_files(mocker):
-    return mocker.patch.object(compiler_admin.services.toggl, "files", wraps=files)
+def mock_GoogleAccount(mocker):
+    return mocker.patch(f"{MODULE}.GoogleAccount").return_value
 
 
 @pytest.fixture()
 def mock_user_info(mocker):
     return mocker.patch.object(TogglTime, "user_info")
-
-
-@pytest.fixture
-def mock_google_user_info(mocker):
-    return mocker.patch(f"{MODULE}.google_user_info")
 
 
 @pytest.fixture
@@ -41,14 +36,20 @@ def mock_toggl_api_env(monkeypatch):
     monkeypatch.setenv("TOGGL_WORKSPACE_ID", "workspace")
 
 
+@pytest.fixture
+def spy_files(mocker):
+    return mocker.patch.object(compiler_admin.services.toggl, "files", wraps=files)
+
+
 class TestTogglTime:
 
     @pytest.fixture(autouse=True)
-    def setup(self, mocker):
+    def setup(self, mocker, mock_GoogleAccount):
         self.time = TogglTime()
         self.time.api_organization = mocker.Mock()
         self.time.api_reports = mocker.Mock()
         self.time.api_workspace = mocker.Mock()
+        self.account = mock_GoogleAccount
 
     @pytest.fixture
     def mock_toggl_detailed_time_entries(self, toggl_file):
@@ -63,61 +64,61 @@ class TestTogglTime:
 
         assert result == "User"
 
-    def test_get_first_name_lookup_with_record(self, mock_user_info, mock_google_user_info):
+    def test_get_first_name_lookup_with_record(self, mock_user_info):
         email = "user@email.com"
         mock_user_info.return_value = {email: {"Data": 1234}}
-        mock_google_user_info.return_value = {"First Name": "User"}
+        self.account.get_info.return_value = {"First Name": "User"}
 
         result = self.time._get_first_name(email)
 
         assert result == "User"
         assert mock_user_info.return_value[email]["First Name"] == "User"
         assert mock_user_info.return_value[email]["Data"] == 1234
-        mock_google_user_info.assert_called_once_with(email)
+        self.account.get_info.assert_called_once_with()
 
-    def test_get_first_name_lookup_without_record(self, mock_user_info, mock_google_user_info):
+    def test_get_first_name_lookup_without_record(self, mock_user_info):
         email = "user@email.com"
         mock_user_info.return_value = {email: {}}
-        mock_google_user_info.return_value = {"First Name": "User"}
+        self.account.get_info.return_value = {"First Name": "User"}
 
         result = self.time._get_first_name(email)
 
         assert result == "User"
         assert mock_user_info.return_value[email]["First Name"] == "User"
         assert list(mock_user_info.return_value[email].keys()) == ["First Name"]
-        mock_google_user_info.assert_called_once_with(email)
+        self.account.get_info.assert_called_once_with()
 
-    def test_get_last_name_matching(self, mock_user_info, mock_google_user_info):
+    def test_get_last_name_matching(self, mock_user_info):
         mock_user_info.return_value = {"email": {"Last Name": "User"}}
 
         result = self.time._get_last_name("email")
 
         assert result == "User"
-        mock_google_user_info.assert_not_called()
+        self.account.get_info.assert_not_called()
 
-    def test_get_last_name_lookup_with_record(self, mock_user_info, mock_google_user_info):
+    def test_get_last_name_lookup_with_record(self, mock_user_info):
         email = "user@email.com"
         mock_user_info.return_value = {email: {"Data": 1234}}
-        mock_google_user_info.return_value = {"Last Name": "User"}
+        self.account.get_info.return_value = {"Last Name": "User"}
 
         result = self.time._get_last_name(email)
 
         assert result == "User"
         assert mock_user_info.return_value[email]["Last Name"] == "User"
         assert mock_user_info.return_value[email]["Data"] == 1234
-        mock_google_user_info.assert_called_once_with(email)
+        self.account.get_info.assert_called_once_with()
 
-    def test_get_last_name_lookup_without_record(self, mock_user_info, mock_google_user_info):
+    def test_get_last_name_lookup_without_record(self, mock_user_info):
         email = "user@email.com"
         mock_user_info.return_value = {email: {}}
-        mock_google_user_info.return_value = {"Last Name": "User"}
+        self.account.get_info.return_value = {"Last Name": "User"}
 
         result = self.time._get_last_name(email)
 
         assert result == "User"
         assert mock_user_info.return_value[email]["Last Name"] == "User"
         assert list(mock_user_info.return_value[email].keys()) == ["Last Name"]
-        mock_google_user_info.assert_called_once_with(email)
+        self.account.get_info.assert_called_once_with()
 
     def test_str_timedelta(self):
         dt = "01:30:15"
@@ -127,7 +128,6 @@ class TestTogglTime:
         assert isinstance(result, timedelta)
         assert result.total_seconds() == (1 * 60 * 60) + (30 * 60) + 15
 
-    @pytest.mark.usefixtures("mock_google_user_info")
     def test_prepare_input(self, toggl_file, spy_files):
         df = self.time._prepare_input(toggl_file)
 
@@ -161,8 +161,8 @@ class TestTogglTime:
         assert self.time.converters.get("justworks") == self.time.convert_to_justworks
         assert self.time.converters.get("nope") is None
 
-    def test_convert_to_harvest_mocked(self, toggl_file, spy_files, mock_google_user_info):
-        mock_google_user_info.return_value = {}
+    def test_convert_to_harvest_mocked(self, toggl_file, spy_files):
+        self.account.get_info.return_value = {}
 
         self.time.convert_to_harvest(toggl_file, client_name=None)
 
@@ -171,8 +171,8 @@ class TestTogglTime:
         assert sys.stdout in call_args[0]
         assert call_args.kwargs["columns"] == TogglTime.HARVEST_COLUMNS
 
-    def test_convert_to_harvest_sample(self, toggl_file, harvest_file, mock_google_user_info):
-        mock_google_user_info.return_value = {}
+    def test_convert_to_harvest_sample(self, toggl_file, harvest_file):
+        self.account.get_info.return_value = {}
         output = None
 
         with StringIO() as output_data:
@@ -190,10 +190,10 @@ class TestTogglTime:
         assert set(output_df.columns.to_list()) <= set(sample_output_df.columns.to_list())
         assert output_df["Client"].eq("Test Client 123").all()
 
-    def test_convert_to_harvest_with_duplicates(self, mock_google_user_info):
+    def test_convert_to_harvest_with_duplicates(self):
         # Test that seemingly duplicate time entries are disambiguated
 
-        mock_google_user_info.return_value = {"First Name": "Test", "Last Name": "User"}
+        self.account.get_info.return_value = {"First Name": "Test", "Last Name": "User"}
         csv_input = """Email,Project,Task,Client,Start date,Start time,Duration,Description
     test@example.com,Compiler,Backend,ACME,2025-11-18,09:00:00,01:00:00,A task
     test@example.com,Compiler,Backend,ACME,2025-11-18,10:00:00,01:00:00,A task

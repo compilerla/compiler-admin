@@ -4,6 +4,7 @@ from click.testing import CliRunner
 from pytest_socket import disable_socket
 
 from compiler_admin import Result
+from compiler_admin.services.google import GoogleAccount, GoogleService
 
 
 def pytest_runtest_setup():
@@ -118,78 +119,6 @@ def mock_google_CallGYBCommand(mock_module_name):
 
 
 @pytest.fixture
-def mock_google_add_user_to_group(mock_module_name):
-    """Fixture returns a function that patches the add_user_to_group function from a given module."""
-    return mock_module_name("add_user_to_group")
-
-
-@pytest.fixture
-def mock_google_move_user_ou(mock_module_name):
-    """Fixture returns a function that patches the move_user_ou function from a given module."""
-    return mock_module_name("move_user_ou")
-
-
-@pytest.fixture
-def mock_google_remove_user_from_group(mock_module_name):
-    """Fixture returns a function that patches the remove_user_from_group function from a given module."""
-    return mock_module_name("remove_user_from_group")
-
-
-@pytest.fixture
-def mock_google_user_exists(mock_module_name):
-    """Fixture returns a function that patches the user_exists function from a given module."""
-    return mock_module_name("user_exists")
-
-
-@pytest.fixture
-def mock_google_user_exists_no(mock_google_user_exists):
-    """Fixture returns a function that patches the user_exists function from a given module to return False."""
-
-    def _mock_google_user_exists_no(module):
-        exists = mock_google_user_exists(module)
-        exists.return_value = False
-        return exists
-
-    return _mock_google_user_exists_no
-
-
-@pytest.fixture
-def mock_google_user_exists_yes(mock_google_user_exists):
-    """Fixture returns a function that patches the user_exists function from a given module to return True."""
-
-    def _mock_google_user_exists_yes(module):
-        exists = mock_google_user_exists(module)
-        exists.return_value = True
-        return exists
-
-    return _mock_google_user_exists_yes
-
-
-@pytest.fixture
-def mock_google_user_info(mock_module_name):
-    """Fixture returns a function that patches the user_info function from a given module."""
-    return mock_module_name("user_info")
-
-
-@pytest.fixture
-def mock_google_user_in_group(mock_module_name):
-    """Fixture returns a function that patches the user_in_group function from a given module."""
-    return mock_module_name("user_in_group")
-
-
-@pytest.fixture
-def mock_google_user_is_partner(mock_module_name):
-    """Fixture returns a function that patches the user_is_partner function from a given module."""
-    return mock_module_name("user_is_partner")
-
-
-@pytest.fixture
-def mock_google_user_is_staff(mock_module_name):
-    """Fixture returns a function that patches the user_is_staff function from a given module."""
-    return mock_module_name("user_is_staff")
-
-
-@pytest.fixture
 def mock_NamedTemporaryFile_with_readlines(mocker):
     """Fixture returns a function that patches NamedTemporaryFile in a given module.
 
@@ -208,6 +137,29 @@ def mock_NamedTemporaryFile_with_readlines(mocker):
         return patched
 
     return _mock_NamedTemporaryFile
+
+
+@pytest.fixture
+def mock_account_exists(mocker):
+    """Returns a function that mocks the exists method on a GoogleAccounts instance."""
+
+    def _mock_account_exists(account: GoogleAccount, exists: bool = True) -> bool:
+        return mocker.patch.object(account, "exists", return_value=exists)
+
+    return _mock_account_exists
+
+
+@pytest.fixture
+def mock_gam_gyb(mocker):
+    """Returns a function that mocks the GAM and GYB commands on a GoogleService."""
+
+    def _mock_gam_gyb(service: GoogleService) -> GoogleService:
+        mocker.patch.object(service, "gam_command")
+        mocker.patch.object(service, "gam_command_output")
+        mocker.patch.object(service, "gyb_command")
+        return service
+
+    return _mock_gam_gyb
 
 
 @pytest.fixture

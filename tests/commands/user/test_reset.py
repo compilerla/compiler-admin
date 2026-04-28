@@ -2,7 +2,13 @@ import pytest
 
 from compiler_admin import Result
 from compiler_admin.commands.user.reset import __name__ as MODULE, reset
-from compiler_admin.services.google import USER_HELLO
+from compiler_admin.commands.user.signout import signout
+
+
+@pytest.fixture
+def mock_ctx_forward(mocker):
+    """Mock click.Context.forward."""
+    return mocker.patch("click.Context.forward")
 
 
 @pytest.fixture
@@ -16,72 +22,62 @@ def mock_input_no(mock_input_no):
 
 
 @pytest.fixture
-def mock_commands_signout(mock_commands_signout):
-    return mock_commands_signout(MODULE)
+def mock_GoogleAccount(mocker):
+    return mocker.patch(f"{MODULE}.GoogleAccount").return_value
 
 
 @pytest.fixture
-def mock_google_user_exists(mock_google_user_exists):
-    return mock_google_user_exists(MODULE)
+def mock_GoogleUsers(mocker):
+    return mocker.patch(f"{MODULE}.GoogleUsers").return_value
 
 
-@pytest.fixture
-def mock_google_CallGAMCommand(mock_google_CallGAMCommand):
-    return mock_google_CallGAMCommand(MODULE)
-
-
-def test_reset_user_does_not_exist(cli_runner, mock_google_user_exists):
-    mock_google_user_exists.return_value = False
+def test_reset__user_does_not_exist(cli_runner, mock_account_exists, mock_GoogleAccount):
+    mock_account_exists(mock_GoogleAccount, False)
 
     result = cli_runner.invoke(reset, ["username"])
 
     assert result.exit_code != Result.SUCCESS
+    assert "User does not exist" in result.output
 
 
 @pytest.mark.usefixtures("mock_input_yes")
-def test_reset_confirm_yes(cli_runner, mock_google_user_exists, mock_google_CallGAMCommand, mock_commands_signout):
-    mock_google_user_exists.return_value = True
+def test_reset__confirm_yes(cli_runner, mocker, mock_account_exists, mock_ctx_forward, mock_GoogleAccount, mock_GoogleUsers):
+    mock_account_exists(mock_GoogleAccount, True)
 
     result = cli_runner.invoke(reset, ["username"])
 
     assert result.exit_code == Result.SUCCESS
-    mock_google_CallGAMCommand.assert_called_once()
-    mock_commands_signout.callback.assert_called_once()
+    mock_GoogleUsers.reset_password.assert_called_once_with(account=mock_GoogleAccount, notify=None)
+    assert mocker.call(signout) in mock_ctx_forward.mock_calls
 
 
 @pytest.mark.usefixtures("mock_input_no")
-def test_reset_confirm_no(cli_runner, mock_google_user_exists, mock_google_CallGAMCommand, mock_commands_signout):
-    mock_google_user_exists.return_value = True
+def test_reset__confirm_no(cli_runner, mocker, mock_account_exists, mock_ctx_forward, mock_GoogleAccount, mock_GoogleUsers):
+    mock_account_exists(mock_GoogleAccount, True)
 
     result = cli_runner.invoke(reset, ["username"])
 
     assert result.exit_code == Result.SUCCESS
-    mock_google_CallGAMCommand.assert_not_called()
-    mock_commands_signout.callback.assert_not_called()
+    mock_GoogleUsers.reset_password.assert_not_called()
+    assert mocker.call(signout) not in mock_ctx_forward.mock_calls
 
 
-def test_reset_user_exists(cli_runner, mock_google_user_exists, mock_google_CallGAMCommand, mock_commands_signout):
-    mock_google_user_exists.return_value = True
+def test_reset__force(cli_runner, mocker, mock_account_exists, mock_ctx_forward, mock_GoogleAccount, mock_GoogleUsers):
+    mock_account_exists(mock_GoogleAccount, True)
 
     result = cli_runner.invoke(reset, ["--force", "username"])
 
     assert result.exit_code == Result.SUCCESS
-    mock_google_CallGAMCommand.assert_called_once()
-    call_args = " ".join(mock_google_CallGAMCommand.call_args[0][0])
-    assert "update user" in call_args
-    assert "password random changepassword" in call_args
-    mock_commands_signout.callback.assert_called_once()
+    mock_GoogleUsers.reset_password.assert_called_once_with(account=mock_GoogleAccount, notify=None)
+    assert mocker.call(signout) in mock_ctx_forward.mock_calls
 
 
-def test_reset_notify(cli_runner, mock_google_user_exists, mock_google_CallGAMCommand, mock_commands_signout):
-    mock_google_user_exists.return_value = True
+@pytest.mark.usefixtures("mock_input_yes")
+def test_reset__notify(cli_runner, mocker, mock_account_exists, mock_ctx_forward, mock_GoogleAccount, mock_GoogleUsers):
+    mock_account_exists(mock_GoogleAccount, True)
 
-    result = cli_runner.invoke(reset, ["--force", "--notify", "notification@example.com", "username"])
+    result = cli_runner.invoke(reset, ["--notify", "notification@example.com", "username"])
 
     assert result.exit_code == Result.SUCCESS
-    mock_google_CallGAMCommand.assert_called_once()
-    call_args = " ".join(mock_google_CallGAMCommand.call_args[0][0])
-    assert "update user" in call_args
-    assert "password random changepassword" in call_args
-    assert f"notify notification@example.com from {USER_HELLO}" in call_args
-    mock_commands_signout.callback.assert_called_once()
+    mock_GoogleUsers.reset_password.assert_called_once_with(account=mock_GoogleAccount, notify="notification@example.com")
+    assert mocker.call(signout) in mock_ctx_forward.mock_calls

@@ -2,14 +2,7 @@ import click
 
 from compiler_admin import Result
 from compiler_admin.commands.user.reset import reset
-from compiler_admin.services.google import (
-    OU_ALUMNI,
-    CallGAMCommand,
-    move_user_ou,
-    user_account_name,
-    user_exists,
-    user_is_deactivated,
-)
+from compiler_admin.services.google import GoogleAccount, GoogleOrgs, GoogleUsers
 
 
 @click.command()
@@ -33,13 +26,15 @@ def deactivate(
     ctx: click.Context, username: str, force: bool = False, recovery_email: str = "", recovery_phone: str = "", **kwargs
 ):
     """Deactivate (but do not delete) a user."""
-    account = user_account_name(username)
+    account = GoogleAccount(username)
+    google_users = GoogleUsers()
+    google_orgs = GoogleOrgs()
 
-    if not user_exists(account):
+    if not account.exists():
         click.echo(f"User does not exist: {account}")
         raise SystemExit(Result.FAILURE)
 
-    if user_is_deactivated(account):
+    if account.is_deactivated():
         click.echo("User is already deactivated")
         raise SystemExit(Result.FAILURE)
 
@@ -51,30 +46,22 @@ def deactivate(
 
     click.echo(f"User exists, deactivating: {account}")
 
-    click.echo("Removing from groups")
-    CallGAMCommand(("user", account, "delete", "groups"))
+    click.echo(f"Moving to OU: {GoogleOrgs.OU_ALUMNI}")
+    google_orgs.move_user(account, GoogleOrgs.OU_ALUMNI)
 
-    click.echo(f"Moving to OU: {OU_ALUMNI}")
-    move_user_ou(account, OU_ALUMNI)
+    click.echo("Removing from groups")
+    google_users.remove_from_groups(account)
 
     # reset password, sign out
     ctx.forward(reset)
 
     click.echo("Clearing user profile info")
-    for prop in ["address", "location", "otheremail", "phone"]:
-        command = ("update", "user", account, prop, "clear")
-        CallGAMCommand(command)
+    google_users.clear_profile(account)
 
-    click.echo("Resetting recovery email")
-    command = ("update", "user", account, "recoveryemail", recovery_email)
-    CallGAMCommand(command)
-
-    click.echo("Resetting recovery phone")
-    command = ("update", "user", account, "recoveryphone", recovery_phone)
-    CallGAMCommand(command)
+    click.echo("Resetting recovery email and phone")
+    google_users.reset_recovery_info(account=account, recovery_email=recovery_email, recovery_phone=recovery_phone)
 
     click.echo("Turning off 2FA")
-    command = ("user", account, "turnoff2sv")
-    CallGAMCommand(command)
+    google_users.disable_2fa(account)
 
     click.echo(f"User is deactivated: {account}")

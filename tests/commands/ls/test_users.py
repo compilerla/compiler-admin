@@ -38,8 +38,8 @@ MOCK_USERS = [
 
 
 @pytest.fixture
-def mock_google_get_users(mocker):
-    return mocker.patch(f"{MODULE}.get_users")
+def mock_GoogleUsers(mocker):
+    return mocker.patch(f"{MODULE}.GoogleUsers").return_value
 
 
 @pytest.fixture
@@ -139,16 +139,16 @@ def test_users__account_type__unknown(cli_runner):
     assert "Invalid value for '-t' / '--account_type': 'unknown'" in result.output
 
 
-def test_google(mock_google_get_users):
+def test_google(mock_GoogleUsers):
     google()
 
-    mock_google_get_users.assert_called_once()
+    mock_GoogleUsers.get.assert_called_once_with(format=Format.BASIC, inactive=False, org_units=[])
 
 
-def test_google__account_type(mock_google_get_users):
+def test_google__account_type(mock_GoogleUsers):
     google(account_type="service_accounts")
 
-    mock_google_get_users.assert_called_once_with(format=Format.BASIC, inactive=False, org_units=["/service-accounts"])
+    mock_GoogleUsers.get.assert_called_once_with(format=Format.BASIC, inactive=False, org_units=["/service-accounts"])
 
 
 def test_google__account_type__unknown():
@@ -157,10 +157,17 @@ def test_google__account_type__unknown():
 
 
 @pytest.mark.parametrize("format", set(FORMATS.values()))
-def test_google__format(mock_google_get_users, format):
+def test_google__format(mock_GoogleUsers, format):
     google(format=format)
 
-    mock_google_get_users.assert_called_once_with(inactive=False, format=format, org_units=[])
+    mock_GoogleUsers.get.assert_called_once_with(format=format, inactive=False, org_units=[])
+
+
+@pytest.mark.parametrize("inactive", (True, False))
+def test_google__inactive(mock_GoogleUsers, inactive):
+    google(inactive=inactive)
+
+    mock_GoogleUsers.get.assert_called_once_with(format=Format.BASIC, inactive=inactive, org_units=[])
 
 
 def test_toggl(mock_toggl_api, capfd):

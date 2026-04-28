@@ -3,18 +3,18 @@ import pandas as pd
 
 from compiler_admin import FORMATS, Format
 from compiler_admin.services import files
-from compiler_admin.services.google import ORG_UNITS, get_users
+from compiler_admin.services.google import GoogleOrgs, GoogleUsers
 from compiler_admin.services.toggl import GROUPS, TogglUsers
 
 
 def google(format: int = Format.BASIC, inactive: bool = False, account_type: str = "", **kwargs):
     """Use GAM to print the users in the Google Workspace."""
-    if account_type and account_type not in ORG_UNITS:
+    if account_type and account_type not in GoogleOrgs.ORG_UNITS:
         raise ValueError(f"Unexpected account_type: {account_type}")
 
-    org_unit = ORG_UNITS.get(account_type)
+    org_unit = GoogleOrgs.ORG_UNITS.get(account_type)
     org_units = [org_unit] if org_unit else []
-    output = get_users(format=format, inactive=inactive, org_units=org_units, **kwargs)
+    output = GoogleUsers().get(inactive=inactive, format=format, org_units=org_units, **kwargs)
     click.echo(output)
 
 
@@ -61,7 +61,7 @@ def toggl(format: int = Format.BASIC, inactive: bool = False, account_type: str 
         files.write_json(stdout, users)
 
 
-ACCOUNT_TYPES = set((*GROUPS.keys(), *ORG_UNITS.keys()))
+ACCOUNT_TYPES = set((*GROUPS.keys(), *GoogleOrgs.ORG_UNITS.keys()))
 USER_SYSTEMS = {"google": google, "toggl": toggl}
 
 

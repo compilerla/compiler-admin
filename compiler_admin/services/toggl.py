@@ -9,7 +9,7 @@ import pandas as pd
 
 import compiler_admin.services.files as files
 from compiler_admin.api.toggl import TogglOrganization, TogglReports, TogglWorkspace
-from compiler_admin.services.google import user_info as google_user_info
+from compiler_admin.services.google import GoogleAccount
 from compiler_admin.services.time import TimeSummary
 
 GROUPS = dict(contractors="Contractors", service_accounts="Service Accounts", staff="Staff", partners="Partners")
@@ -54,7 +54,7 @@ class TogglTime(TogglService):
         user = info.get(email)
         name = user.get(name_key) if user else None
         if name is None:
-            user = google_user_info(email)
+            user = GoogleAccount(email).get_info()
             name = user.get(name_key) if user else None
             if email in info:
                 info[email].update(user)

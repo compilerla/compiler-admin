@@ -3,13 +3,13 @@ import pandas as pd
 
 from compiler_admin import FORMATS, Format
 from compiler_admin.services import files
-from compiler_admin.services.google import get_groups
+from compiler_admin.services.google import GoogleGroups
 from compiler_admin.services.toggl import TogglUsers
 
 
 def google(format: int = Format.BASIC, **kwargs):
     """Use GAM to print the groups in the Google Workspace."""
-    output = get_groups(format=format, **kwargs)
+    output = GoogleGroups().get(format=format, **kwargs)
     click.echo(output)
 
 

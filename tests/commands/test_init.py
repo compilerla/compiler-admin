@@ -25,8 +25,8 @@ def mock_clean_config_dir(mocker):
 
 
 @pytest.fixture
-def mock_google_CallGAMCommand(mock_google_CallGAMCommand):
-    return mock_google_CallGAMCommand(MODULE)
+def mock_GoogleUsers(mocker):
+    return mocker.patch(f"{MODULE}.GoogleUsers").return_value
 
 
 @pytest.fixture
@@ -52,22 +52,21 @@ def test_clean_config_dir(mocker, mock_GAM_CONFIG_PATH, mock_rmtree):
     assert mock_dir in mock_rmtree.call_args.args
 
 
-def test_init_default(cli_runner, mock_clean_config_dir, mock_google_CallGAMCommand, mock_subprocess_call):
+def test_init_default(cli_runner, mock_clean_config_dir, mock_subprocess_call):
     result = cli_runner.invoke(init, ["username"])
 
     assert result.exit_code == Result.SUCCESS
-    assert mock_clean_config_dir.call_count == 0
-    assert mock_google_CallGAMCommand.call_count == 0
-    assert mock_subprocess_call.call_count == 0
+    mock_clean_config_dir.assert_not_called()
+    mock_subprocess_call.assert_not_called()
 
 
-def test_init_gam(cli_runner, mock_GAM_CONFIG_PATH, mock_clean_config_dir, mock_google_CallGAMCommand):
+def test_init_gam(cli_runner, mock_GAM_CONFIG_PATH, mock_clean_config_dir, mock_GoogleUsers):
     result = cli_runner.invoke(init, ["--gam", "username"])
 
     assert result.exit_code == Result.SUCCESS
     mock_clean_config_dir.assert_called_once()
     assert mock_GAM_CONFIG_PATH in mock_clean_config_dir.call_args.args
-    assert mock_google_CallGAMCommand.call_count > 0
+    assert mock_GoogleUsers.gam_command.call_count == 4
 
 
 def test_init_gyb(cli_runner, mock_GYB_CONFIG_PATH, mock_clean_config_dir, mock_subprocess_call):

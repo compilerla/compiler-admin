@@ -1,11 +1,9 @@
-from tempfile import NamedTemporaryFile
-
 import click
 
 from compiler_admin import Result
 from compiler_admin.commands.user.deactivate import deactivate
 from compiler_admin.commands.user.delete import delete
-from compiler_admin.services.google import USER_ARCHIVE, CallGAMCommand, CallGYBCommand, user_account_name, user_exists
+from compiler_admin.services.google import GoogleAccount, GoogleArchive, GoogleUsers
 
 
 @click.command()
@@ -20,16 +18,20 @@ def offboard(ctx: click.Context, username: str, alias: str = "", _delete: bool =
 
     Deactivate, back up email, transfer Calendar/Drive, and optionally delete.
     """
-    account = user_account_name(username)
+    account = GoogleAccount(username)
+    google_users = GoogleUsers()
+    google_archive = GoogleArchive()
 
-    if not user_exists(account):
+    if not account.exists():
         click.echo(f"User does not exist: {account}")
         raise SystemExit(Result.FAILURE)
 
-    alias_account = user_account_name(alias)
-    if alias_account and not user_exists(alias_account):
-        click.echo(f"Alias target user does not exist: {alias_account}")
-        raise SystemExit(Result.FAILURE)
+    alias_account = None
+    if alias:
+        alias_account = GoogleAccount(alias)
+        if not alias_account.exists():
+            click.echo(f"Alias target user does not exist: {alias_account}")
+            raise SystemExit(Result.FAILURE)
 
     if not force:
         cont = input(f"Offboard account {account} {' (assigning alias to ' + alias_account + ')' if alias else ''}? (Y/n): ")
@@ -43,22 +45,16 @@ def offboard(ctx: click.Context, username: str, alias: str = "", _delete: bool =
     ctx.forward(deactivate)
 
     click.echo("Backing up email")
-    CallGYBCommand(("--service-account", "--email", account, "--action", "backup"))
+    google_archive.create_email_backup(account)
 
     click.echo("Starting Drive and Calendar transfer")
-    CallGAMCommand(("create", "transfer", account, "calendar,drive", USER_ARCHIVE, "all", "releaseresources"))
+    google_archive.archive_content(account)
 
-    status = ""
-    with NamedTemporaryFile("w+") as stdout:
-        while "Overall Transfer Status: completed" not in status:
-            click.echo("Transfer in progress")
-            CallGAMCommand(("show", "transfers", "olduser", username), stdout=stdout.name, stderr="stdout")
-            status = " ".join(stdout.readlines())
-            stdout.seek(0)
-        click.echo("Transfer complete")
+    google_archive.await_archive_completion(account, lambda: click.echo("Transfer in progress"))
+    click.echo("Transfer complete")
 
     click.echo("Deprovisioning POP/IMAP")
-    CallGAMCommand(("user", account, "deprovision", "popimap"))
+    google_users.deprovision_popimap(account)
 
     # call the delete command
     if _delete:
@@ -66,6 +62,6 @@ def offboard(ctx: click.Context, username: str, alias: str = "", _delete: bool =
 
     if alias_account:
         click.echo(f"Adding an alias to account: {alias_account}")
-        CallGAMCommand(("create", "alias", account, "user", alias_account))
+        alias_account.add_email_alias(account)
 
     click.echo(f"Offboarding for user complete: {account}")
