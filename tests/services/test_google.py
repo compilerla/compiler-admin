@@ -66,14 +66,6 @@ class TestGoogleService:
 
         assert command == f"{self.google.GAM} args"
 
-    def test_gam_command_output(self, mock_gam_CallGAMCommand, mock_NamedTemporaryFile_with_readlines, get_command_str):
-        expected_output = ["output"]
-        mock_NamedTemporaryFile_with_readlines(MODULE, expected_output)
-
-        output = self.google.gam_command_output(("command",))
-
-        assert output == expected_output
-
     def test_gam_command__stdouterr_override(self, mock_gam_CallGAMCommand, get_command_str):
         self.google.gam_command(("args",), stdout="override-stdout", stderr="override-stderr")
 
@@ -81,6 +73,28 @@ class TestGoogleService:
 
         assert "redirect stdout override-stdout" in command
         assert "redirect stderr override-stderr" in command
+
+    def test_gam_command_output(self, mock_gam_CallGAMCommand, mock_NamedTemporaryFile_with_readlines, get_command_str):
+        expected_output = ["output"]
+        mock_NamedTemporaryFile_with_readlines(MODULE, expected_output)
+
+        output = self.google.gam_command_output(("command",))
+        command = get_command_str(mock_gam_CallGAMCommand)
+
+        assert output == expected_output
+        assert "redirect stdout" in command
+        assert "redirect stderr" not in command
+
+    def test_gam_command_output__redirect_stderr(
+        self, mock_gam_CallGAMCommand, mock_NamedTemporaryFile_with_readlines, get_command_str
+    ):
+        expected_output = ["output"]
+        mock_NamedTemporaryFile_with_readlines(MODULE, expected_output)
+
+        self.google.gam_command_output(("command",), stderr="stderr-override")
+        command = get_command_str(mock_gam_CallGAMCommand)
+
+        assert "redirect stderr stderr-override" in command
 
     def test_gyb_command__prepends_gyb(self, mock_subprocess_call):
         self.google.gyb_command(("args",))

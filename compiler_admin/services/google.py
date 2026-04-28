@@ -33,7 +33,7 @@ class GoogleService:
 
         return int(CallGAMCommand(args))
 
-    def gam_command_output(self, args: Sequence[str], stderr: str = "stderr") -> list[str]:
+    def gam_command_output(self, args: Sequence[str], stderr: str = None) -> list[str]:
         """Call GAM with the provided arguments, optionally redirecting stderr. Returns stdout lines as a list of str."""
         with NamedTemporaryFile("w+") as stdout:
             self.gam_command(args, stdout=stdout.name, stderr=stderr)
