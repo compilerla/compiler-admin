@@ -2,6 +2,8 @@ name: Bi-Weekly Time Reporting
 description: Posts a time report from Toggl to Slack of all billable time in the date range (defaults to prior 2 weeks).
 
 on:
+  schedule:
+    - cron: "0 15 * * 3" # Every Wednesday at 15:00 UTC (8:00 AM PDT / 7:00 AM PST)
   workflow_dispatch:
     inputs:
       start-date:
@@ -12,7 +14,28 @@ on:
         required: false
 
 jobs:
+  check-schedule:
+    runs-on: ubuntu-latest
+    outputs:
+      should-run: ${{ steps.check.outputs.should-run }}
+    steps:
+      - id: check
+        run: |
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            # We want to run every 2 weeks on odd ISO weeks
+            if (( $(date +%V) % 2 != 0 )); then
+              echo "should-run=true" >> $GITHUB_OUTPUT
+            else
+              echo "should-run=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            # not a scheduled run, so run it!
+            echo "should-run=true" >> $GITHUB_OUTPUT
+          fi
+
   time-reporting:
+    needs: check-schedule
+    if: needs.check-schedule.outputs.should-run == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -54,16 +77,15 @@ jobs:
 
           FILENAME=$(echo "$OUTPUT" | grep "Download complete:" | cut -d' ' -f3)
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
+          echo "start_date=$START_DATE" >> $GITHUB_OUTPUT
+          echo "end_date=$END_DATE" >> $GITHUB_OUTPUT
 
       - name: Summarize
         id: summarize
         run: |
-          FILENAME="${{ steps.download.outputs.filename }}"
-          {
-            echo "summary<<EOF"
-            Billable time report "$FILENAME"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+          START_DATE="${{ steps.download.outputs.start_date }}"
+          END_DATE="${{ steps.download.outputs.end_date }}"
+          echo "summary=Billable time report for $START_DATE to $END_DATE" >> $GITHUB_OUTPUT
 
       - name: Post to Slack
         id: slack
