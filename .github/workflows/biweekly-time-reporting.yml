@@ -54,12 +54,15 @@ jobs:
 
           FILENAME=$(echo "$OUTPUT" | grep "Download complete:" | cut -d' ' -f3)
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
+          echo "start_date=$START_DATE" >> $GITHUB_OUTPUT
+          echo "end_date=$END_DATE" >> $GITHUB_OUTPUT
 
       - name: Summarize
         id: summarize
         run: |
-          FILENAME="${{ steps.download.outputs.filename }}"
-          echo "summary=Billable time report $FILENAME" >> $GITHUB_OUTPUT
+          START_DATE="${{ steps.download.outputs.start_date }}"
+          END_DATE="${{ steps.download.outputs.end_date }}"
+          echo "summary=Billable time report for $START_DATE to $END_DATE" >> $GITHUB_OUTPUT
 
       - name: Post to Slack
         id: slack
