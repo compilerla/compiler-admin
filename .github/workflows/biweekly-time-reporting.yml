@@ -68,7 +68,7 @@ jobs:
       - name: Post to Slack
         id: slack
         if: success()
-        uses: slackapi/slack-github-action@v3.0.1
+        uses: slackapi/slack-github-action@v3.0.3
         with:
           method: files.uploadV2
           token: ${{ secrets.SLACK_BOT_TOKEN }}
