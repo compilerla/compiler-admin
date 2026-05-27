@@ -59,11 +59,7 @@ jobs:
         id: summarize
         run: |
           FILENAME="${{ steps.download.outputs.filename }}"
-          {
-            echo "summary<<EOF"
-            Billable time report "$FILENAME"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+          echo "summary=Billable time report $FILENAME" >> $GITHUB_OUTPUT
 
       - name: Post to Slack
         id: slack
