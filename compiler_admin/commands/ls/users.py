@@ -36,14 +36,11 @@ def toggl(format: int = Format.BASIC, inactive: bool = False, account_type: str 
 
     click.echo("Getting all Toggl users...", err=True)
     users = api.get_organization_users(inactive=inactive, groups=group_filter, **kwargs)
-    users_df = pd.DataFrame(users)
     click.echo(f"Got {len(users)} Users", err=True)
 
     stdout = click.get_text_stream("stdout")
     columns = ["email"]
-    if format == Format.BASIC:
-        files.write_csv(stdout, users_df, columns=columns)
-    elif format == Format.CSV:
+    if format == Format.CSV:
         columns += [
             "name",
             "id",
@@ -56,7 +53,10 @@ def toggl(format: int = Format.BASIC, inactive: bool = False, account_type: str 
             "2fa_enabled",
             "avatar_url",
         ]
-        files.write_csv(stdout, users_df, columns=columns)
+
+    if format in [Format.BASIC, Format.CSV]:
+        dataframe = pd.DataFrame(users)
+        files.write_csv(stdout, dataframe, columns=columns)
     elif format == Format.JSON:
         files.write_json(stdout, users)
 
