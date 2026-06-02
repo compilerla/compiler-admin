@@ -49,3 +49,15 @@ Or for even more detailed JSON output:
 ```console
 compiler-admin ls users --format json
 ```
+
+## Listing Toggl Resources
+
+Because Toggl is the primary source for workspace project metadata today, `compiler-admin ls` also supports Toggl-specific list operations:
+
+```console
+compiler-admin ls clients
+compiler-admin ls projects
+compiler-admin ls project-users
+```
+
+Each command supports the `--format` flag and filtering options such as `--id`, `--client-id`, and `--name`.
