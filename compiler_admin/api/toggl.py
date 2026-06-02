@@ -165,6 +165,108 @@ class TogglReports(TogglBase):
 
         return response
 
+    def list_clients(
+        self, ids: list[int] | None = None, name: str | None = None, start: int | None = None
+    ) -> requests.Response:
+        """Request a filtered list of clients from Toggl Reports utils.
+
+        Args:
+            ids (list[int] | None): Optional client IDs to filter.
+            name (str | None): Optional client name filter.
+            start (int | None): Optional pagination cursor.
+
+        Returns:
+            requests.Response: The HTTP response.
+        """
+        params: dict[str, object] = {}
+        if ids is not None:
+            params["ids"] = ids
+        if name is not None:
+            params["name"] = name
+        if start is not None:
+            params["start"] = start
+
+        url = self.make_api_url("filters/clients")
+        return self._post(url, **params)
+
+    def list_projects(
+        self,
+        client_ids: list[int] | None = None,
+        currency: str | None = None,
+        ids: list[int] | None = None,
+        is_active: bool | None = None,
+        is_billable: bool | None = None,
+        is_private: bool | None = None,
+        name: str | None = None,
+        page_size: int | None = None,
+        start: int | None = None,
+    ) -> requests.Response:
+        """Request a filtered list of projects from Toggl Reports utils.
+
+        Args:
+            client_ids (list[int] | None): Optional Toggl client IDs.
+            currency (str | None): Optional currency filter.
+            ids (list[int] | None): Optional project IDs.
+            is_active (bool | None): Optional archived state filter.
+            is_billable (bool | None): Optional billable filter.
+            is_private (bool | None): Optional private filter.
+            name (str | None): Optional project name filter.
+            page_size (int | None): Optional page size.
+            start (int | None): Optional pagination cursor.
+
+        Returns:
+            requests.Response: The HTTP response.
+        """
+        params: dict[str, object] = {}
+        if client_ids is not None:
+            params["client_ids"] = client_ids
+        if currency is not None:
+            params["currency"] = currency
+        if ids is not None:
+            params["ids"] = ids
+        if is_active is not None:
+            params["is_active"] = is_active
+        if is_billable is not None:
+            params["is_billable"] = is_billable
+        if is_private is not None:
+            params["is_private"] = is_private
+        if name is not None:
+            params["name"] = name
+        if page_size is not None:
+            params["page_size"] = page_size
+        if start is not None:
+            params["start"] = start
+
+        url = self.make_api_url("filters/projects")
+        return self._post(url, **params)
+
+    def list_project_users(
+        self,
+        client_ids: list[int] | None = None,
+        project_ids: list[int] | None = None,
+        start_id: int | None = None,
+    ) -> requests.Response:
+        """Request a filtered list of project users from Toggl Reports utils.
+
+        Args:
+            client_ids (list[int] | None): Optional client IDs.
+            project_ids (list[int] | None): Optional project IDs.
+            start_id (int | None): Optional pagination cursor.
+
+        Returns:
+            requests.Response: The HTTP response.
+        """
+        params: dict[str, object] = {}
+        if client_ids is not None:
+            params["client_ids"] = client_ids
+        if project_ids is not None:
+            params["project_ids"] = project_ids
+        if start_id is not None:
+            params["start_id"] = start_id
+
+        url = self.make_api_url("filters/project_users")
+        return self._post(url, **params)
+
 
 class TogglWorkspace(TogglBase):
     WORKSPACES_ID = "workspaces/{}"

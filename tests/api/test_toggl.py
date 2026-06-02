@@ -146,6 +146,49 @@ class TestTogglReports:
         mock_requests.post.assert_called_once()
         assert mock_requests.post.call_args.kwargs["timeout"] == 30
 
+    def test_list_clients(self, mocker):
+        url = "https://api.track.toggl.com/reports/api/v3/workspace/1234/filters/clients"
+        self.toggl._post = mocker.Mock()
+
+        self.toggl.list_clients(ids=[1, 2], name="Client", start=10)
+
+        self.toggl._post.assert_called_once_with(url, ids=[1, 2], name="Client", start=10)
+
+    def test_list_projects(self, mocker):
+        url = "https://api.track.toggl.com/reports/api/v3/workspace/1234/filters/projects"
+        self.toggl._post = mocker.Mock()
+
+        self.toggl.list_projects(
+            client_ids=[1],
+            ids=[11],
+            is_active=True,
+            is_billable=False,
+            is_private=True,
+            name="Project",
+            page_size=50,
+            start=0,
+        )
+
+        self.toggl._post.assert_called_once_with(
+            url,
+            client_ids=[1],
+            ids=[11],
+            is_active=True,
+            is_billable=False,
+            is_private=True,
+            name="Project",
+            page_size=50,
+            start=0,
+        )
+
+    def test_list_project_users(self, mocker):
+        url = "https://api.track.toggl.com/reports/api/v3/workspace/1234/filters/project_users"
+        self.toggl._post = mocker.Mock()
+
+        self.toggl.list_project_users(client_ids=[1], project_ids=[11], start_id=5)
+
+        self.toggl._post.assert_called_once_with(url, client_ids=[1], project_ids=[11], start_id=5)
+
 
 class TestTogglWorkspace:
     @pytest.fixture(autouse=True)
