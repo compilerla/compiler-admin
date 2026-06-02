@@ -22,12 +22,12 @@ def toggl(format: int = Format.BASIC, **kwargs):
 
     click.echo("Getting all Toggl groups...", err=True)
     groups = api.get_organization_groups()
-    groups_df = pd.DataFrame(groups)
     click.echo(f"Got {len(groups)} Groups", err=True)
 
     stdout = click.get_text_stream("stdout")
     if format in [Format.BASIC, Format.CSV]:
-        files.write_csv(stdout, groups_df, columns=["group_id", "name", "at"])
+        dataframe = pd.DataFrame(groups)
+        files.write_csv(stdout, dataframe, columns=["group_id", "name", "at"])
     elif format == Format.JSON:
         files.write_json(stdout, groups)
 
