@@ -34,18 +34,10 @@ jobs:
           CFGDIR: "${{ github.workspace }}/.config"
           GAMCFGDIR: "${{ github.workspace }}/.config/gam"
         run: |
+          echo "CFGDIR=$CFGDIR" >> $GITHUB_OUTPUT
+
           mkdir -p $GAMCFGDIR/gamcache
           mkdir -p $GAMCFGDIR/Downloads
-
-          cat > $CFGDIR/toggl-project-info.json <<- EOM
-          ${{ secrets.TOGGL_PROJECT_INFO }}
-          EOM
-          echo "TOGGL_PROJECT_INFO=$CFGDIR/toggl-project-info.json" >> $GITHUB_OUTPUT
-
-          cat > $CFGDIR/toggl-user-info.json <<- EOM
-          ${{ secrets.TOGGL_USER_INFO }}
-          EOM
-          echo "TOGGL_USER_INFO=$CFGDIR/toggl-user-info.json" >> $GITHUB_OUTPUT
 
           cat > $GAMCFGDIR/gam.cfg <<- EOM
           ${{ secrets.GAM_CFG }}
@@ -61,6 +53,12 @@ jobs:
           cat > $GAMCFGDIR/oauth2service.json <<- EOM
           ${{ secrets.GOOGLE_OAUTH2_SERVICE }}
           EOM
+
+          gam user ${{ vars.GAM_USER }} get drivefile ${{ vars.TOGGL_PROJECT_INFO }} targetfolder $CFGDIR
+          echo "TOGGL_PROJECT_INFO=$CFGDIR/toggl-project-info.json" >> $GITHUB_OUTPUT
+
+          gam user ${{ vars.GAM_USER }} get drivefile ${{ vars.TOGGL_USER_INFO }} targetfolder $CFGDIR
+          echo "TOGGL_USER_INFO=$CFGDIR/toggl-user-info.json" >> $GITHUB_OUTPUT
 
       - name: Lock Toggl time entries
         id: lock
@@ -150,6 +148,8 @@ jobs:
 
       - name: Cleanup
         id: cleanup
+        env:
+          CFGDIR: "${{ steps.config.outputs.CFGDIR }}"
         if: always()
         run: |
-          rm -rf .config/
+          rm -rf "$CFGDIR"
