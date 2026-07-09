@@ -34,6 +34,8 @@ jobs:
           CFGDIR: "${{ github.workspace }}/.config"
           GAMCFGDIR: "${{ github.workspace }}/.config/gam"
         run: |
+          echo "CFGDIR=$CFGDIR" >> $GITHUB_OUTPUT
+
           mkdir -p $GAMCFGDIR/gamcache
           mkdir -p $GAMCFGDIR/Downloads
 
@@ -146,6 +148,8 @@ jobs:
 
       - name: Cleanup
         id: cleanup
+        env:
+          CFGDIR: "${{ steps.config.outputs.CFGDIR }}"
         if: always()
         run: |
-          rm -rf .config/
+          rm -rf "$CFGDIR"
