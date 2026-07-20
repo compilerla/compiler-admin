@@ -3,7 +3,7 @@ mkdocs==1.6.1
 mkdocs-awesome-pages-plugin
 mkdocs-click
 mkdocs-macros-plugin
-mkdocs-material==9.7.6
+mkdocs-material==9.7.7
 mkdocs-redirects
 mkdocstrings
 mkdocstrings-python
