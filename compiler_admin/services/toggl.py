@@ -311,6 +311,122 @@ class TogglTime(TogglService):
         return summary
 
 
+class TogglUtils(TogglService):
+    def get_clients(self, ids: list[int] | None = None, name: str | None = None) -> dict:
+        """Get a filtered list of Toggl clients, paging until all results are returned."""
+        results: list[dict] = []
+        start_cursor = None
+        seen_ids: set[int] = set()
+
+        while True:
+            response = self.api_reports.list_clients(ids=ids, name=name, start=start_cursor)
+            data = response.json()
+            # API returns a list of items for this endpoint; treat the json as the page items.
+            if not data:
+                break
+
+            new_items = [item for item in data if item.get("id") not in seen_ids]
+            if not new_items:
+                break
+
+            results.extend(new_items)
+            seen_ids.update(item.get("id") for item in new_items if item.get("id") is not None)
+
+            last_id = data[-1].get("id")
+            if last_id is None:
+                break
+            if start_cursor is not None and last_id <= start_cursor:
+                break
+
+            start_cursor = last_id
+
+        return results
+
+    def get_projects(
+        self,
+        client_ids: list[int] | None = None,
+        ids: list[int] | None = None,
+        is_active: bool | None = None,
+        is_billable: bool | None = None,
+        is_private: bool | None = None,
+        name: str | None = None,
+    ) -> dict:
+        """Get a filtered list of Toggl projects, paging until all results are returned."""
+        results: list[dict] = []
+        start_cursor = None
+        page_size = 200  # default to 200, but code below grabs all the projects
+        seen_ids: set[int] = set()
+
+        while True:
+            response = self.api_reports.list_projects(
+                client_ids=client_ids,
+                ids=ids,
+                is_active=is_active,
+                is_billable=is_billable,
+                is_private=is_private,
+                name=name,
+                page_size=page_size,
+                start=start_cursor,
+            )
+            data = response.json()
+            # API returns a list of items for this endpoint; treat the json as the page items.
+            if not data:
+                break
+
+            new_items = [item for item in data if item.get("id") not in seen_ids]
+            if not new_items:
+                break
+
+            results.extend(new_items)
+            seen_ids.update(item.get("id") for item in new_items if item.get("id") is not None)
+
+            last_id = data[-1].get("id")
+            if last_id is None:
+                break
+            if start_cursor is not None and last_id <= start_cursor:
+                break
+            if len(data) < page_size:
+                break
+
+            start_cursor = last_id
+
+        return results
+
+    def get_project_users(self, client_ids: list[int] | None = None, project_ids: list[int] | None = None) -> dict:
+        """Get a filtered list of Toggl project users, paging until all results are returned."""
+        results: list[dict] = []
+        current_start_id = None
+        seen_ids: set[int] = set()
+
+        while True:
+            response = self.api_reports.list_project_users(
+                client_ids=client_ids,
+                project_ids=project_ids,
+                start_id=current_start_id,
+            )
+            data = response.json()
+            # API returns a list of items for this endpoint; treat the json as the page items.
+            if not data:
+                break
+
+            new_items = [item for item in data if item.get("id") not in seen_ids]
+            if not new_items:
+                break
+
+            results.extend(new_items)
+            seen_ids.update(item.get("id") for item in new_items if item.get("id") is not None)
+
+            last_id = data[-1].get("id")
+            if last_id is None:
+                break
+            if current_start_id is not None and last_id <= current_start_id:
+                break
+
+            current_start_id = last_id
+
+        return results
+
+
 class TogglUsers(TogglService):
     def get_organization_group(self, name: str) -> dict:
         """Get group of users from the Toggl organization.
