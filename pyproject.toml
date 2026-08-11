@@ -29,7 +29,7 @@ dev = [
     "ipykernel",
     "isort",
     "pre-commit",
-    "setuptools_scm>=8"
+    "setuptools_scm>=10.0.5"
 ]
 test = [
     "coverage",
