@@ -100,7 +100,7 @@ jobs:
             "docs/requirements.txt"
 
       - name: Download coverage report
-        uses: dawidd6/action-download-artifact@v21
+        uses: dawidd6/action-download-artifact@v24
         with:
           workflow: pytest.yml
           branch: main
