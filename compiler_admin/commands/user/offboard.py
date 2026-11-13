@@ -50,7 +50,10 @@ def offboard(ctx: click.Context, username: str, alias: str = "", _delete: bool =
     click.echo("Starting Drive and Calendar transfer")
     google_archive.archive_content(account)
 
-    google_archive.await_archive_completion(account, lambda: click.echo("Transfer in progress"))
+    def _status_update(pre_status, status):
+        click.echo("Transfer in progress")
+
+    google_archive.await_archive_completion(account, _status_update)
     click.echo("Transfer complete")
 
     click.echo("Deprovisioning POP/IMAP")

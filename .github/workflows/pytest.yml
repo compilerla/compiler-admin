@@ -19,14 +19,14 @@ jobs:
       contents: write
     steps:
       - name: Check out code
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install system packages
         run: |
           sudo apt-get update -y
           sudo apt-get install -y swig libpcsclite-dev
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version-file: .github/workflows/.python-version
           cache: pip
@@ -39,13 +39,13 @@ jobs:
         run: ./tests/run.sh
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: coverage-report
           path: docs/reference/coverage
 
       - name: Coverage comment
-        uses: py-cov-action/python-coverage-comment-action@v3
+        uses: py-cov-action/python-coverage-comment-action@07249dd712cd2464873eb8a59a24f97fd281e76f # v4.6
         with:
           GITHUB_TOKEN: ${{ github.token }}
           MINIMUM_GREEN: 90

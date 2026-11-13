@@ -10,7 +10,7 @@ from compiler_admin.services.google import GoogleAccount, GoogleUsers
 def delete(username: str, force: bool = False, **kwargs):
     """Delete a user account."""
     account = GoogleAccount(username)
-    google = GoogleUsers(account)
+    google = GoogleUsers()
 
     if not account.exists():
         click.echo(f"User does not exist: {account}")
