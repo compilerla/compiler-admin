@@ -24,7 +24,7 @@
 | compiler\_admin/commands/user/create.py       |       16 |        0 |        2 |        0 |    100% |           |
 | compiler\_admin/commands/user/deactivate.py   |       39 |        0 |        8 |        0 |    100% |           |
 | compiler\_admin/commands/user/delete.py       |       19 |        0 |        6 |        0 |    100% |           |
-| compiler\_admin/commands/user/offboard.py     |       46 |        0 |       14 |        0 |    100% |           |
+| compiler\_admin/commands/user/offboard.py     |       48 |        1 |       14 |        0 |     98% |        54 |
 | compiler\_admin/commands/user/reactivate.py   |       41 |        0 |       10 |        0 |    100% |           |
 | compiler\_admin/commands/user/reset.py        |       23 |        0 |        6 |        0 |    100% |           |
 | compiler\_admin/commands/user/restore.py      |       15 |        0 |        2 |        0 |    100% |           |
@@ -36,7 +36,7 @@
 | compiler\_admin/services/harvest.py           |       49 |        0 |        6 |        0 |    100% |           |
 | compiler\_admin/services/time.py              |       39 |       10 |       28 |       10 |     70% |20, 23, 25, 27, 32, 35, 38, 41, 43, 46 |
 | compiler\_admin/services/toggl.py             |      154 |        0 |       30 |        1 |     99% |   88-\>94 |
-| **TOTAL**                                     | **1252** |   **23** |  **318** |   **25** | **97%** |           |
+| **TOTAL**                                     | **1254** |   **24** |  **318** |   **25** | **97%** |           |
 
 
 ## Setup coverage badge
