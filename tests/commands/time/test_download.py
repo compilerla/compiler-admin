@@ -1,3 +1,4 @@
+import io
 from datetime import datetime
 
 import pytest
@@ -124,3 +125,36 @@ def test_download_all(cli_runner, mock_time_download):
     mock_time_download.assert_called_once()
     call = mock_time_download.mock_calls[0]
     assert "billable" not in call.kwargs
+
+
+def test_download_stdout_flag(cli_runner, mock_time_download, mock_local_now):
+    result = cli_runner.invoke(download, ["--stdout"])
+
+    assert result.exit_code == Result.SUCCESS
+    mock_time_download.assert_called_once()
+    call = mock_time_download.mock_calls[0]
+    assert isinstance(call.kwargs["output_path"], io.TextIOBase)
+
+
+def test_download_stdout_option(cli_runner, mock_time_download, mock_local_now):
+    result = cli_runner.invoke(download, ["--output", "stdout"])
+
+    assert result.exit_code == Result.SUCCESS
+    mock_time_download.assert_called_once()
+    call = mock_time_download.mock_calls[0]
+    assert isinstance(call.kwargs["output_path"], io.TextIOBase)
+
+
+def test_download_stdout_completion_message(cli_runner, mock_time_download, mock_local_now):
+    result = cli_runner.invoke(download, ["--stdout"])
+
+    assert result.exit_code == Result.SUCCESS
+    assert "Download complete: stdout" in result.output
+
+
+def test_download_default_completion_message(cli_runner, mock_time_download, mock_local_now):
+    result = cli_runner.invoke(download, [])
+
+    assert result.exit_code == Result.SUCCESS
+    # Should contain "Download complete:" followed by a filename pattern
+    assert "Download complete: ./Toggl_time_entries_" in result.output
