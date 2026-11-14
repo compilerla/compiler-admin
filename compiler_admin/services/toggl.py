@@ -311,6 +311,253 @@ class TogglTime(TogglService):
         return summary
 
 
+class TogglUtils(TogglService):
+    # Integer fields that must not be floats in JSON/CSV output
+    CLIENT_INT_FIELDS = {"id", "creator_id"}
+    PROJECT_INT_FIELDS = {"id", "cid", "client_id", "workspace_id"}
+    PROJECT_USER_INT_FIELDS = {"id", "user_id", "project_id", "workspace_id"}
+
+    def _normalize_int_fields(self, data: list[dict], int_fields: set[str]) -> list[dict]:
+        """Convert known integer fields from float to int to avoid .0 in output."""
+        normalized = []
+        for item in data:
+            normalized_item = dict(item)
+            for field in int_fields:
+                if field in normalized_item and isinstance(normalized_item[field], float):
+                    normalized_item[field] = int(normalized_item[field])
+            normalized.append(normalized_item)
+        return normalized
+
+    def get_clients(self, ids: list[int] | None = None, name: str | None = None) -> dict:
+        """Get a filtered list of Toggl clients, paging until all results are returned."""
+        results: list[dict] = []
+        start_cursor = None
+        seen_ids: set[int] = set()
+
+        while True:
+            response = self.api_reports.list_clients(ids=ids, name=name, start=start_cursor)
+            data = response.json()
+            # API returns a list of items for this endpoint; treat the json as the page items.
+            if not data:
+                break
+
+            new_items = [item for item in data if item.get("id") not in seen_ids]
+            if not new_items:
+                break
+
+            results.extend(new_items)
+            seen_ids.update(item.get("id") for item in new_items if item.get("id") is not None)
+
+            last_id = data[-1].get("id")
+            if last_id is None:
+                break
+            if start_cursor is not None and last_id <= start_cursor:
+                break
+
+            start_cursor = last_id
+
+        return results
+
+    def get_clients_detailed(self, ids: list[int] | None = None, name: str | None = None) -> list[dict]:
+        """Get all clients from the Toggl workspace with full Track API data.
+
+        Uses the Track API to retrieve all available client fields, including
+        archived status, notes, and integration metadata.
+
+        Args:
+            ids: Optional client IDs to filter by.
+            name: Optional client name filter.
+
+        Returns:
+            list[dict]: List of client records with full Track API fields.
+        """
+        results: list[dict] = []
+        page = 1
+        per_page = 200  # max page size
+        seen_ids: set[int] = set()
+
+        while True:
+            params: dict[str, object] = {"per_page": per_page, "page": page}
+            if ids is not None:
+                params["id"] = ids
+            if name is not None:
+                params["name"] = name
+
+            response = self.api_workspace.get_clients(**params)
+            data = response.json()
+
+            if not data:
+                break
+
+            new_items = [item for item in data if item.get("id") not in seen_ids]
+            if not new_items:
+                break
+
+            results.extend(self._normalize_int_fields(new_items, self.CLIENT_INT_FIELDS))
+            seen_ids.update(item.get("id") for item in new_items if item.get("id") is not None)
+
+            if len(data) < per_page:
+                break
+
+            page += 1
+
+        return results
+
+    def get_projects(
+        self,
+        client_ids: list[int] | None = None,
+        ids: list[int] | None = None,
+        is_active: bool | None = None,
+        is_billable: bool | None = None,
+        is_private: bool | None = None,
+        name: str | None = None,
+    ) -> dict:
+        """Get a filtered list of Toggl projects, paging until all results are returned."""
+        results: list[dict] = []
+        start_cursor = None
+        page_size = 200  # default to 200, but code below grabs all the projects
+        seen_ids: set[int] = set()
+
+        while True:
+            response = self.api_reports.list_projects(
+                client_ids=client_ids,
+                ids=ids,
+                is_active=is_active,
+                is_billable=is_billable,
+                is_private=is_private,
+                name=name,
+                page_size=page_size,
+                start=start_cursor,
+            )
+            data = response.json()
+            # API returns a list of items for this endpoint; treat the json as the page items.
+            if not data:
+                break
+
+            new_items = [item for item in data if item.get("id") not in seen_ids]
+            if not new_items:
+                break
+
+            results.extend(new_items)
+            seen_ids.update(item.get("id") for item in new_items if item.get("id") is not None)
+
+            last_id = data[-1].get("id")
+            if last_id is None:
+                break
+            if start_cursor is not None and last_id <= start_cursor:
+                break
+            if len(data) < page_size:
+                break
+
+            start_cursor = last_id
+
+        return results
+
+    def get_projects_detailed(
+        self,
+        client_ids: list[int] | None = None,
+        ids: list[int] | None = None,
+        is_active: bool | None = None,
+        is_billable: bool | None = None,
+        is_private: bool | None = None,
+        name: str | None = None,
+    ) -> list[dict]:
+        """Get all projects from the Toggl workspace with full Track API data.
+
+        Uses the Track API to retrieve all available project fields, including
+        rate, estimated_hours, fixed_fee, start_date, end_date, and more.
+
+        Args:
+            client_ids: Optional client IDs to filter by.
+            ids: Optional project IDs to filter by.
+            is_active: Filter for active/inactive projects.
+            is_billable: Filter for billable/non-billable projects.
+            is_private: Filter for private/public projects.
+            name: Optional project name filter.
+
+        Returns:
+            list[dict]: List of project records with full Track API fields.
+        """
+        results: list[dict] = []
+        page = 1
+        per_page = 200  # max page size
+        seen_ids: set[int] = set()
+
+        while True:
+            params: dict[str, object] = {"per_page": per_page, "page": page}
+            if client_ids is not None:
+                params["client_id"] = client_ids
+            if ids is not None:
+                params["id"] = ids
+            if is_active is not None:
+                params["active"] = str(is_active).lower()
+            if is_billable is not None:
+                params["billable"] = str(is_billable).lower()
+            if is_private is not None:
+                params["is_private"] = str(is_private).lower()
+            if name is not None:
+                params["name"] = name
+
+            response = self.api_workspace.get_projects(**params)
+            data = response.json()
+
+            if not data:
+                break
+
+            new_items = [item for item in data if item.get("id") not in seen_ids]
+            if not new_items:
+                break
+
+            results.extend(self._normalize_int_fields(new_items, self.PROJECT_INT_FIELDS))
+            seen_ids.update(item.get("id") for item in new_items if item.get("id") is not None)
+
+            if len(data) < per_page:
+                break
+
+            page += 1
+
+        return results
+
+    def get_project_users(self, client_ids: list[int] | None = None, project_ids: list[int] | None = None) -> list[dict]:
+        """Get all project users from the Toggl workspace using the Track API.
+
+        Uses the Track API to retrieve project-user assignments including rate
+        and labor cost.
+
+        Args:
+            client_ids: Optional client IDs to filter by.
+            project_ids: Optional project IDs to filter by.
+
+        Returns:
+            list[dict]: List of project-user records.
+        """
+        results: list[dict] = []
+        page = 1
+        per_page = 200
+
+        while True:
+            params: dict[str, object] = {"per_page": per_page, "page": page}
+            if client_ids is not None:
+                params["client_id"] = client_ids
+            if project_ids is not None:
+                params["project_id"] = project_ids
+
+            response = self.api_workspace.get_project_users(**params)
+            data = response.json()
+
+            if not data:
+                break
+
+            results.extend(self._normalize_int_fields(data, self.PROJECT_USER_INT_FIELDS))
+
+            if len(data) < per_page:
+                break
+
+            page += 1
+
+        return results
+
+
 class TogglUsers(TogglService):
     def get_organization_group(self, name: str) -> dict:
         """Get group of users from the Toggl organization.

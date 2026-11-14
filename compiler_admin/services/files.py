@@ -24,6 +24,14 @@ def read_json(file_path):
         raise NotImplementedError(f"Input type for file_path not allowed: {type(file_path)}")
 
 
+def _ensure_int_columns(df: pd.DataFrame, int_cols: list[str]) -> pd.DataFrame:
+    """Convert columns with missing values from float to nullable Int64 to avoid .0 in CSV output."""
+    for col in int_cols:
+        if col in df.columns and df[col].dtype == float:
+            df[col] = df[col].astype("Int64")
+    return df
+
+
 def write_csv(file_path, data: pd.DataFrame, columns: list[str] = None):
     """Write a pandas.DataFrame as CSV to the given path or buffer, with an optional list of columns to write."""
     data.to_csv(file_path, columns=columns, index=False)

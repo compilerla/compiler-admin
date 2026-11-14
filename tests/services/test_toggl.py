@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 
 import compiler_admin.services.toggl
-from compiler_admin.services.toggl import TogglTime, TogglUsers, __name__ as MODULE, files
+from compiler_admin.services.toggl import TogglTime, TogglUsers, TogglUtils, __name__ as MODULE, files
 
 
 @pytest.fixture(autouse=True)
@@ -355,3 +355,127 @@ class TestTogglUsers:
 
         assert output == data
         self.users.api_workspace.get_users.assert_called_once_with(**kwargs)
+
+
+class TestTogglUtils:
+    @pytest.fixture(autouse=True)
+    def setup(self, mocker):
+        self.utils = TogglUtils()
+        self.utils.api_reports = mocker.Mock()
+        self.utils.api_workspace = mocker.Mock()
+
+    def test_get_clients(self, mocker):
+        data = [{"id": 1, "name": "Client A"}]
+        response = mocker.Mock(json=mocker.Mock(side_effect=[data, []]))
+        self.utils.api_reports.list_clients.return_value = response
+
+        output = self.utils.get_clients(ids=[1], name="Client A")
+
+        assert output == data
+        assert self.utils.api_reports.list_clients.call_count == 2
+        assert self.utils.api_reports.list_clients.call_args_list[0] == mocker.call(ids=[1], name="Client A", start=None)
+
+    def test_get_projects(self, mocker):
+        data = [{"id": i, "name": f"Project {i}"} for i in range(1, 201)]
+        response = mocker.Mock(json=mocker.Mock(side_effect=[data, []]))
+        self.utils.api_reports.list_projects.return_value = response
+
+        output = self.utils.get_projects(
+            client_ids=[1],
+            ids=[11],
+            is_active=True,
+            is_billable=False,
+            is_private=True,
+            name="Project A",
+        )
+
+        assert output == data
+        assert self.utils.api_reports.list_projects.call_count == 2
+        assert self.utils.api_reports.list_projects.call_args_list[0] == mocker.call(
+            client_ids=[1],
+            ids=[11],
+            is_active=True,
+            is_billable=False,
+            is_private=True,
+            name="Project A",
+            page_size=200,
+            start=None,
+        )
+
+    def test_get_project_users(self, mocker):
+        first_page = [
+            {"id": i, "project_id": 11, "user_id": i * 10, "workspace_id": 1, "rate": 120, "labor_cost": 80}
+            for i in range(1, 201)
+        ]
+        second_page = [{"id": 201, "project_id": 11, "user_id": 2010, "workspace_id": 1, "rate": 120, "labor_cost": 80}]
+        response1 = mocker.Mock(json=mocker.Mock(return_value=first_page))
+        response2 = mocker.Mock(json=mocker.Mock(return_value=second_page))
+        self.utils.api_workspace.get_project_users.side_effect = [response1, response2]
+
+        output = self.utils.get_project_users(client_ids=[1], project_ids=[11])
+
+        assert len(output) == 201
+        assert self.utils.api_workspace.get_project_users.call_count == 2
+        assert self.utils.api_workspace.get_project_users.call_args_list[0] == mocker.call(
+            client_id=[1],
+            project_id=[11],
+            per_page=200,
+            page=1,
+        )
+
+    def test_get_clients_paging(self, mocker):
+        first_page = [{"id": 1, "name": "Client A"}, {"id": 2, "name": "Client B"}]
+        second_page = [{"id": 3, "name": "Client C"}]
+        end_page = []
+        self.utils.api_reports.list_clients.side_effect = [
+            mocker.Mock(json=mocker.Mock(return_value=first_page)),
+            mocker.Mock(json=mocker.Mock(return_value=second_page)),
+            mocker.Mock(json=mocker.Mock(return_value=end_page)),
+        ]
+
+        output = self.utils.get_clients(name="Client")
+
+        assert output == first_page + second_page
+        assert self.utils.api_reports.list_clients.call_count == 3
+
+    def test_get_projects_paging(self, mocker):
+        first_page = [{"id": i, "name": f"Project {i}"} for i in range(1, 201)]
+        second_page = [{"id": 201, "name": "Project 201"}]
+        self.utils.api_reports.list_projects.side_effect = [
+            mocker.Mock(json=mocker.Mock(return_value=first_page)),
+            mocker.Mock(json=mocker.Mock(return_value=second_page)),
+        ]
+
+        output = self.utils.get_projects(client_ids=[1])
+
+        assert len(output) == 201
+        assert output[0]["id"] == 1
+        assert output[-1]["id"] == 201
+        assert self.utils.api_reports.list_projects.call_count == 2
+
+    def test_get_clients_detailed(self, mocker):
+        first_page = [{"id": i, "name": f"Client {i}", "archived": False} for i in range(1, 201)]
+        second_page = [{"id": 201, "name": "Client 201", "archived": False}]
+        response1 = mocker.Mock(json=mocker.Mock(return_value=first_page))
+        response2 = mocker.Mock(json=mocker.Mock(return_value=second_page))
+        self.utils.api_workspace.get_clients.side_effect = [response1, response2]
+
+        output = self.utils.get_clients_detailed(ids=[1])
+
+        assert len(output) == 201
+        assert self.utils.api_workspace.get_clients.call_count == 2
+        assert self.utils.api_workspace.get_clients.call_args_list[0] == mocker.call(
+            per_page=200,
+            page=1,
+            id=[1],
+        )
+
+    def test_get_clients_detailed_excludes_internal(self, mocker):
+        data = [{"id": 1, "name": "Client A", "total_count": 1, "permissions": {}, "wid": 789}]
+        response = mocker.Mock(json=mocker.Mock(return_value=data))
+        self.utils.api_workspace.get_clients.return_value = response
+
+        # The service returns raw API data; filtering happens in the CLI layer.
+        output = self.utils.get_clients_detailed()
+
+        assert output == data

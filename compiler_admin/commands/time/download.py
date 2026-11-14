@@ -41,7 +41,14 @@ def prior_month_start():
 )
 @click.option(
     "--output",
-    help="The path to the file where downloaded data should be written. Defaults to a path calculated from the date range.",
+    help='The path to the file where downloaded data should be written, or "stdout" to write to stdout. '
+    "Defaults to a path calculated from the date range.",
+)
+@click.option(
+    "--stdout",
+    is_flag=True,
+    default=False,
+    help="Write output to stdout instead of a file.",
 )
 @click.option(
     "--all",
@@ -91,6 +98,7 @@ def download(
     start: datetime,
     end: datetime,
     output: str = "",
+    stdout: bool = False,
     include_all: bool = False,
     client_ids: List[int] = [],
     project_ids: List[int] = [],
@@ -99,11 +107,17 @@ def download(
 ):
     """Download a Toggl time report in CSV format."""
     time = TogglTime()
+    to_stdout = stdout or output == "stdout"
 
-    if not output:
-        output = f"Toggl_time_entries_{start.strftime('%Y-%m-%d')}_{end.strftime('%Y-%m-%d')}.csv"
+    # Determine output destination
+    if to_stdout:
+        output_path = click.get_text_stream("stdout")
+    elif not output:
+        output_path = f"Toggl_time_entries_{start.strftime('%Y-%m-%d')}_{end.strftime('%Y-%m-%d')}.csv"
+    else:
+        output_path = output
 
-    params = dict(start_date=start, end_date=end, output_path=output, output_cols=time.TOGGL_COLUMNS)
+    params = dict(start_date=start, end_date=end, output_path=output_path, output_cols=time.TOGGL_COLUMNS)
 
     # By default include billable=True in params.
     # If --all was passed, do not add billable so callers can treat absence as "all".
@@ -118,11 +132,16 @@ def download(
     if user_ids:
         params.update(dict(user_ids=user_ids))
 
-    click.echo("Downloading Toggl time entries with parameters:")
+    err = {"err": True} if to_stdout else {}
+
+    click.echo("Downloading Toggl time entries with parameters:", **err)
     for k, v in params.items():
-        click.echo(f"  {k}: {v}")
+        click.echo(f"  {k}: {v}", **err)
 
     time.download(**params)
 
-    click.echo()
-    click.echo(f"Download complete: ./{output}")
+    click.echo(**err)
+    if to_stdout:
+        click.echo("Download complete: stdout", **err)
+    else:
+        click.echo(f"Download complete: ./{output_path}")
