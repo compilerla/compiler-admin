@@ -48,6 +48,7 @@ def clients(format_key: str, ids: tuple[int, ...], name: str | None):
     stdout = click.get_text_stream("stdout")
     if format in [Format.BASIC, Format.CSV]:
         dataframe = pd.DataFrame(items)
+        files._ensure_int_columns(dataframe, ["id"])
         if is_detailed:
             requested_columns = list(items[0].keys()) if items else []
         else:

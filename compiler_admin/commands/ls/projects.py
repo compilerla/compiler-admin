@@ -104,6 +104,8 @@ def projects(
     stdout = click.get_text_stream("stdout")
     if format in [Format.BASIC, Format.CSV]:
         dataframe = pd.DataFrame(items)
+        # Ensure integer columns don't render as float (e.g. 12345.0 -> 12345)
+        files._ensure_int_columns(dataframe, ["id", "cid", "client_id", "workspace_id"])
         if is_detailed:
             requested_columns = list(items[0].keys()) if items else []
         else:

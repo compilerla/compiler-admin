@@ -51,6 +51,8 @@ def project_users(
     stdout = click.get_text_stream("stdout")
     if format in [Format.BASIC, Format.CSV]:
         dataframe = pd.DataFrame(items)
+        # Ensure integer columns don't render as float (e.g. 12345.0 -> 12345)
+        files._ensure_int_columns(dataframe, ["id", "user_id", "project_id", "workspace_id"])
         # Track API columns (manager omitted per requirements)
         requested_columns = ["id", "user_id", "project_id", "workspace_id", "rate", "labor_cost"]
         for col in requested_columns:

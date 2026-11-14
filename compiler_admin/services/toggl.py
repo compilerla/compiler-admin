@@ -312,6 +312,22 @@ class TogglTime(TogglService):
 
 
 class TogglUtils(TogglService):
+    # Integer fields that must not be floats in JSON/CSV output
+    CLIENT_INT_FIELDS = {"id", "creator_id"}
+    PROJECT_INT_FIELDS = {"id", "cid", "client_id", "workspace_id"}
+    PROJECT_USER_INT_FIELDS = {"id", "user_id", "project_id", "workspace_id"}
+
+    def _normalize_int_fields(self, data: list[dict], int_fields: set[str]) -> list[dict]:
+        """Convert known integer fields from float to int to avoid .0 in output."""
+        normalized = []
+        for item in data:
+            normalized_item = dict(item)
+            for field in int_fields:
+                if field in normalized_item and isinstance(normalized_item[field], float):
+                    normalized_item[field] = int(normalized_item[field])
+            normalized.append(normalized_item)
+        return normalized
+
     def get_clients(self, ids: list[int] | None = None, name: str | None = None) -> dict:
         """Get a filtered list of Toggl clients, paging until all results are returned."""
         results: list[dict] = []
@@ -377,7 +393,7 @@ class TogglUtils(TogglService):
             if not new_items:
                 break
 
-            results.extend(new_items)
+            results.extend(self._normalize_int_fields(new_items, self.CLIENT_INT_FIELDS))
             seen_ids.update(item.get("id") for item in new_items if item.get("id") is not None)
 
             if len(data) < per_page:
@@ -492,7 +508,7 @@ class TogglUtils(TogglService):
             if not new_items:
                 break
 
-            results.extend(new_items)
+            results.extend(self._normalize_int_fields(new_items, self.PROJECT_INT_FIELDS))
             seen_ids.update(item.get("id") for item in new_items if item.get("id") is not None)
 
             if len(data) < per_page:
@@ -532,7 +548,7 @@ class TogglUtils(TogglService):
             if not data:
                 break
 
-            results.extend(data)
+            results.extend(self._normalize_int_fields(data, self.PROJECT_USER_INT_FIELDS))
 
             if len(data) < per_page:
                 break
