@@ -61,3 +61,13 @@ compiler-admin ls project-users
 ```
 
 Each command supports the `--format` flag and filtering options such as `--id`, `--client-id`, and `--name`.
+
+### Detailed Project Information
+
+The `ls projects` command includes a `--detailed` flag that uses the Toggl Track API to return full project metadata including rate, estimated hours, dates, fixed fee, and more:
+
+```console
+compiler-admin ls projects --detailed
+```
+
+This is useful for auditing project settings, budgeting, and cross-referencing Toggl data with external systems. The basic mode (without `--detailed`) uses the Reports API and returns a concise set of common fields.
