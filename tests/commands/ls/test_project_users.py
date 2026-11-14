@@ -11,7 +11,7 @@ def mock_toggl_project_users(mocker):
 
 def test_project_users(cli_runner, mock_toggl_project_users):
     mock_toggl_project_users.get_project_users.return_value = [
-        {"id": 21, "group_id": 7, "project_id": 11, "user_id": 99, "hourly_rate": 120, "labour_cost": 80}
+        {"id": 21, "user_id": 99, "project_id": 11, "workspace_id": 1, "rate": 120, "labor_cost": 80}
     ]
 
     result = cli_runner.invoke(project_users, ["--client-id", "1", "--project-id", "11"])
@@ -21,4 +21,7 @@ def test_project_users(cli_runner, mock_toggl_project_users):
         client_ids=[1],
         project_ids=[11],
     )
-    assert "group_id" in result.output
+    assert "user_id" in result.output
+    assert "workspace_id" in result.output
+    assert "rate" in result.output
+    assert "labor_cost" in result.output

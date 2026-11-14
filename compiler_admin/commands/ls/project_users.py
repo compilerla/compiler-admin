@@ -51,10 +51,11 @@ def project_users(
     stdout = click.get_text_stream("stdout")
     if format in [Format.BASIC, Format.CSV]:
         dataframe = pd.DataFrame(items)
-        files.write_csv(
-            stdout,
-            dataframe,
-            columns=["id", "group_id", "project_id", "user_id", "hourly_rate", "labour_cost"],
-        )
+        # Track API columns (manager omitted per requirements)
+        requested_columns = ["id", "user_id", "project_id", "workspace_id", "rate", "labor_cost"]
+        for col in requested_columns:
+            if col not in dataframe.columns:
+                dataframe[col] = None
+        files.write_csv(stdout, dataframe, columns=requested_columns)
     elif format == Format.JSON:
         files.write_json(stdout, items)

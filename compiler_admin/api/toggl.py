@@ -291,6 +291,21 @@ class TogglWorkspace(TogglBase):
 
         return self._get(url, **kwargs)
 
+    def get_project_users(self, **kwargs) -> requests.Response:
+        """Request a list of project users from the Toggl workspace.
+
+        See https://engineering.toggl.com/docs/track/api/workspaces/#get-get-workspace-project-users.
+
+        Args:
+            **kwargs: Additional query parameters passed to the API.
+
+        Returns:
+            response (requests.Response): The HTTP response.
+        """
+        url = self.make_api_url("project_users")
+
+        return self._get(url, **kwargs)
+
     def get_users(self, **kwargs) -> requests.Response:
         """Request a list of users from the Toggl workspace.
 

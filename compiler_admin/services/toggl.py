@@ -457,37 +457,44 @@ class TogglUtils(TogglService):
 
         return results
 
-    def get_project_users(self, client_ids: list[int] | None = None, project_ids: list[int] | None = None) -> dict:
-        """Get a filtered list of Toggl project users, paging until all results are returned."""
+    def get_project_users(
+        self, client_ids: list[int] | None = None, project_ids: list[int] | None = None
+    ) -> list[dict]:
+        """Get all project users from the Toggl workspace using the Track API.
+
+        Uses the Track API to retrieve project-user assignments including rate
+        and labor cost.
+
+        Args:
+            client_ids: Optional client IDs to filter by.
+            project_ids: Optional project IDs to filter by.
+
+        Returns:
+            list[dict]: List of project-user records.
+        """
         results: list[dict] = []
-        current_start_id = None
-        seen_ids: set[int] = set()
+        page = 1
+        per_page = 200
 
         while True:
-            response = self.api_reports.list_project_users(
-                client_ids=client_ids,
-                project_ids=project_ids,
-                start_id=current_start_id,
-            )
+            params: dict[str, object] = {"per_page": per_page, "page": page}
+            if client_ids is not None:
+                params["client_id"] = client_ids
+            if project_ids is not None:
+                params["project_id"] = project_ids
+
+            response = self.api_workspace.get_project_users(**params)
             data = response.json()
-            # API returns a list of items for this endpoint; treat the json as the page items.
+
             if not data:
                 break
 
-            new_items = [item for item in data if item.get("id") not in seen_ids]
-            if not new_items:
+            results.extend(data)
+
+            if len(data) < per_page:
                 break
 
-            results.extend(new_items)
-            seen_ids.update(item.get("id") for item in new_items if item.get("id") is not None)
-
-            last_id = data[-1].get("id")
-            if last_id is None:
-                break
-            if current_start_id is not None and last_id <= current_start_id:
-                break
-
-            current_start_id = last_id
+            page += 1
 
         return results
 

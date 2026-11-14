@@ -362,6 +362,7 @@ class TestTogglUtils:
     def setup(self, mocker):
         self.utils = TogglUtils()
         self.utils.api_reports = mocker.Mock()
+        self.utils.api_workspace = mocker.Mock()
 
     def test_get_clients(self, mocker):
         data = [{"id": 1, "name": "Client A"}]
@@ -402,18 +403,24 @@ class TestTogglUtils:
         )
 
     def test_get_project_users(self, mocker):
-        data = [{"id": 21, "project_id": 11, "user_id": 99}]
-        response = mocker.Mock(json=mocker.Mock(side_effect=[data, []]))
-        self.utils.api_reports.list_project_users.return_value = response
+        first_page = [
+            {"id": i, "project_id": 11, "user_id": i * 10, "workspace_id": 1, "rate": 120, "labor_cost": 80}
+            for i in range(1, 201)
+        ]
+        second_page = [{"id": 201, "project_id": 11, "user_id": 2010, "workspace_id": 1, "rate": 120, "labor_cost": 80}]
+        response1 = mocker.Mock(json=mocker.Mock(return_value=first_page))
+        response2 = mocker.Mock(json=mocker.Mock(return_value=second_page))
+        self.utils.api_workspace.get_project_users.side_effect = [response1, response2]
 
         output = self.utils.get_project_users(client_ids=[1], project_ids=[11])
 
-        assert output == data
-        assert self.utils.api_reports.list_project_users.call_count == 2
-        assert self.utils.api_reports.list_project_users.call_args_list[0] == mocker.call(
-            client_ids=[1],
-            project_ids=[11],
-            start_id=None,
+        assert len(output) == 201
+        assert self.utils.api_workspace.get_project_users.call_count == 2
+        assert self.utils.api_workspace.get_project_users.call_args_list[0] == mocker.call(
+            client_id=[1],
+            project_id=[11],
+            per_page=200,
+            page=1,
         )
 
     def test_get_clients_paging(self, mocker):
