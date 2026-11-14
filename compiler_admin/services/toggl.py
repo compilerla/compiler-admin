@@ -342,6 +342,51 @@ class TogglUtils(TogglService):
 
         return results
 
+    def get_clients_detailed(self, ids: list[int] | None = None, name: str | None = None) -> list[dict]:
+        """Get all clients from the Toggl workspace with full Track API data.
+
+        Uses the Track API to retrieve all available client fields, including
+        archived status, notes, and integration metadata.
+
+        Args:
+            ids: Optional client IDs to filter by.
+            name: Optional client name filter.
+
+        Returns:
+            list[dict]: List of client records with full Track API fields.
+        """
+        results: list[dict] = []
+        page = 1
+        per_page = 200  # max page size
+        seen_ids: set[int] = set()
+
+        while True:
+            params: dict[str, object] = {"per_page": per_page, "page": page}
+            if ids is not None:
+                params["id"] = ids
+            if name is not None:
+                params["name"] = name
+
+            response = self.api_workspace.get_clients(**params)
+            data = response.json()
+
+            if not data:
+                break
+
+            new_items = [item for item in data if item.get("id") not in seen_ids]
+            if not new_items:
+                break
+
+            results.extend(new_items)
+            seen_ids.update(item.get("id") for item in new_items if item.get("id") is not None)
+
+            if len(data) < per_page:
+                break
+
+            page += 1
+
+        return results
+
     def get_projects(
         self,
         client_ids: list[int] | None = None,
@@ -457,9 +502,7 @@ class TogglUtils(TogglService):
 
         return results
 
-    def get_project_users(
-        self, client_ids: list[int] | None = None, project_ids: list[int] | None = None
-    ) -> list[dict]:
+    def get_project_users(self, client_ids: list[int] | None = None, project_ids: list[int] | None = None) -> list[dict]:
         """Get all project users from the Toggl workspace using the Track API.
 
         Uses the Track API to retrieve project-user assignments including rate

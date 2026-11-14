@@ -71,3 +71,11 @@ compiler-admin ls projects --detailed
 ```
 
 This is useful for auditing project settings, budgeting, and cross-referencing Toggl data with external systems. The basic mode (without `--detailed`) uses the Reports API and returns a concise set of common fields.
+
+### Detailed Client Information
+
+Similarly, `ls clients --detailed` uses the Track API to return full client metadata including archived status, notes, and integration metadata:
+
+```console
+compiler-admin ls clients --detailed
+```

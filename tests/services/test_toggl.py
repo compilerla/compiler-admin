@@ -452,3 +452,30 @@ class TestTogglUtils:
         assert output[0]["id"] == 1
         assert output[-1]["id"] == 201
         assert self.utils.api_reports.list_projects.call_count == 2
+
+    def test_get_clients_detailed(self, mocker):
+        first_page = [{"id": i, "name": f"Client {i}", "archived": False} for i in range(1, 201)]
+        second_page = [{"id": 201, "name": "Client 201", "archived": False}]
+        response1 = mocker.Mock(json=mocker.Mock(return_value=first_page))
+        response2 = mocker.Mock(json=mocker.Mock(return_value=second_page))
+        self.utils.api_workspace.get_clients.side_effect = [response1, response2]
+
+        output = self.utils.get_clients_detailed(ids=[1])
+
+        assert len(output) == 201
+        assert self.utils.api_workspace.get_clients.call_count == 2
+        assert self.utils.api_workspace.get_clients.call_args_list[0] == mocker.call(
+            per_page=200,
+            page=1,
+            id=[1],
+        )
+
+    def test_get_clients_detailed_excludes_internal(self, mocker):
+        data = [{"id": 1, "name": "Client A", "total_count": 1, "permissions": {}, "wid": 789}]
+        response = mocker.Mock(json=mocker.Mock(return_value=data))
+        self.utils.api_workspace.get_clients.return_value = response
+
+        # The service returns raw API data; filtering happens in the CLI layer.
+        output = self.utils.get_clients_detailed()
+
+        assert output == data

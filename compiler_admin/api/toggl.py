@@ -306,6 +306,21 @@ class TogglWorkspace(TogglBase):
 
         return self._get(url, **kwargs)
 
+    def get_clients(self, **kwargs) -> requests.Response:
+        """Request a list of clients from the Toggl workspace.
+
+        See https://engineering.toggl.com/docs/track/api/clients/#get-list-clients.
+
+        Args:
+            **kwargs: Additional query parameters passed to the API.
+
+        Returns:
+            response (requests.Response): The HTTP response.
+        """
+        url = self.make_api_url("clients")
+
+        return self._get(url, **kwargs)
+
     def get_users(self, **kwargs) -> requests.Response:
         """Request a list of users from the Toggl workspace.
 
