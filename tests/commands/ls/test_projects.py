@@ -79,8 +79,9 @@ def mock_workspace_get_projects_empty(mocker):
     return mock
 
 
-def test_projects_detailed(cli_runner, mock_workspace_get_projects):
-    result = cli_runner.invoke(projects, ["--detailed"])
+def test_projects_csv_format(cli_runner, mock_workspace_get_projects):
+    """CSV format uses Track API and returns detailed fields."""
+    result = cli_runner.invoke(projects, ["--format", "csv"])
 
     assert result.exit_code == Result.SUCCESS
     assert "id" in result.output
@@ -93,17 +94,16 @@ def test_projects_detailed(cli_runner, mock_workspace_get_projects):
     assert "150.0" in result.output
 
 
-def test_projects_detailed_empty(cli_runner, mock_workspace_get_projects_empty):
-    result = cli_runner.invoke(projects, ["--detailed"])
+def test_projects_csv_empty(cli_runner, mock_workspace_get_projects_empty):
+    """CSV format handles empty results."""
+    result = cli_runner.invoke(projects, ["--format", "csv"])
 
     assert result.exit_code == Result.SUCCESS
     mock_workspace_get_projects_empty.assert_called_once()
 
 
-def test_projects_basic_no_detailed(cli_runner, mocker):
-    """Verify that --detailed flag is NOT used when running basic projects."""
-    # The basic path uses TogglUtils.get_projects (Reports API), not Track API.
-    # Mock it so we don't hit the network.
+def test_projects_basic_no_track_api(cli_runner, mocker):
+    """Verify that basic format uses Reports API, not Track API."""
     mock_utils = mocker.patch("compiler_admin.commands.ls.projects.TogglUtils").return_value
     mock_utils.get_projects.return_value = [{"id": 1, "name": "Mock Project"}]
 
@@ -113,10 +113,30 @@ def test_projects_basic_no_detailed(cli_runner, mocker):
     mock_utils.get_projects.assert_called_once()
 
 
-def test_projects_detailed_with_filter(cli_runner, mock_workspace_get_projects):
-    result = cli_runner.invoke(projects, ["--detailed", "--name", "Test"])
+def test_projects_csv_with_filter(cli_runner, mock_workspace_get_projects):
+    """CSV format passes filters to Track API."""
+    result = cli_runner.invoke(projects, ["--format", "csv", "--name", "Test"])
 
     assert result.exit_code == Result.SUCCESS
-    # Verify the name filter was passed to get_projects
     call_kwargs = mock_workspace_get_projects.call_args
     assert call_kwargs[1].get("name") == "Test"
+
+
+def test_projects_json_format(cli_runner, mock_workspace_get_projects):
+    """JSON format uses Track API and returns all fields."""
+    result = cli_runner.invoke(projects, ["--format", "json"])
+
+    assert result.exit_code == Result.SUCCESS
+    assert "id" in result.output
+    assert "rate" in result.output
+
+
+def test_projects_csv_excludes_internal_fields(cli_runner, mock_workspace_get_projects):
+    """Detailed output excludes internal/auxiliary Track API fields."""
+    result = cli_runner.invoke(projects, ["--format", "csv"])
+
+    assert result.exit_code == Result.SUCCESS
+    assert "total_count" not in result.output
+    assert "pinned" not in result.output
+    assert "permissions" not in result.output
+    assert "recurring" not in result.output

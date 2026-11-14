@@ -1,5 +1,3 @@
-import json
-
 import pytest
 
 from compiler_admin import Result
@@ -23,18 +21,18 @@ def test_clients(cli_runner, mock_toggl_clients):
     assert "Client A" in result.output
 
 
-def test_clients_json_format(cli_runner, mock_toggl_clients):
-    mock_toggl_clients.get_clients.return_value = [{"id": 2, "name": "Client B"}]
-
+def test_clients_json_format(cli_runner, mock_workspace_get_clients):
+    """JSON format uses Track API and returns detailed data."""
     result = cli_runner.invoke(clients, ["--format", "json"])
 
     assert result.exit_code == Result.SUCCESS
-    assert json.dumps(mock_toggl_clients.get_clients.return_value, indent=2) in result.output
+    assert "archived" in result.output
+    assert "Test Client" in result.output
 
 
 @pytest.fixture
 def mock_workspace_get_clients(mocker):
-    """Mock TogglWorkspace.get_clients for detailed output."""
+    """Mock TogglWorkspace.get_clients for Track API detailed output."""
     mock_clients = [
         {
             "id": 1,
@@ -59,8 +57,9 @@ def mock_workspace_get_clients(mocker):
     return mock
 
 
-def test_clients_detailed(cli_runner, mock_workspace_get_clients):
-    result = cli_runner.invoke(clients, ["--detailed"])
+def test_clients_csv_format(cli_runner, mock_workspace_get_clients):
+    """CSV format uses Track API and returns detailed fields."""
+    result = cli_runner.invoke(clients, ["--format", "csv"])
 
     assert result.exit_code == Result.SUCCESS
     assert "id" in result.output
@@ -70,8 +69,18 @@ def test_clients_detailed(cli_runner, mock_workspace_get_clients):
     assert "Test Client" in result.output
 
 
-def test_clients_detailed_excludes_internal(cli_runner, mock_workspace_get_clients):
-    result = cli_runner.invoke(clients, ["--detailed"])
+def test_clients_json_detailed(cli_runner, mock_workspace_get_clients):
+    """JSON format uses Track API and returns detailed fields."""
+    result = cli_runner.invoke(clients, ["--format", "json"])
+
+    assert result.exit_code == Result.SUCCESS
+    assert "archived" in result.output
+    assert "notes" in result.output
+
+
+def test_clients_csv_excludes_internal(cli_runner, mock_workspace_get_clients):
+    """Detailed output excludes internal/auxiliary Track API fields."""
+    result = cli_runner.invoke(clients, ["--format", "csv"])
 
     assert result.exit_code == Result.SUCCESS
     assert "total_count" not in result.output
@@ -79,8 +88,8 @@ def test_clients_detailed_excludes_internal(cli_runner, mock_workspace_get_clien
     assert "wid" not in result.output
 
 
-def test_clients_basic_no_detailed(cli_runner, mocker):
-    """Verify that --detailed flag is NOT used when running basic clients."""
+def test_clients_basic_no_track_api(cli_runner, mocker):
+    """Verify that basic format uses Reports API, not Track API."""
     mock_utils = mocker.patch("compiler_admin.commands.ls.clients.TogglUtils").return_value
     mock_utils.get_clients.return_value = [{"id": 1, "name": "Mock Client"}]
 

@@ -5,6 +5,15 @@ from compiler_admin import FORMATS, Format
 from compiler_admin.services import files
 from compiler_admin.services.toggl import TogglUtils
 
+TRACK_EXCLUDED_FIELDS = {
+    "total_count",
+    "pinned",
+    "can_track_time",
+    "permissions",
+    "recurring",
+    "recurring_parameters",
+}
+
 
 @click.command()
 @click.option(
@@ -49,12 +58,6 @@ from compiler_admin.services.toggl import TogglUtils
     default=True,
     help="Filter for private projects if set to --private, public projects if set to --public.",
 )
-@click.option(
-    "--detailed",
-    is_flag=True,
-    default=False,
-    help="Use the Track API to return detailed project information including rate, estimated hours, dates, and more.",
-)
 def projects(
     format_key: str,
     client_ids: tuple[int, ...],
@@ -63,7 +66,6 @@ def projects(
     is_active: bool | None,
     is_billable: bool | None,
     is_private: bool | None,
-    detailed: bool = False,
 ):
     """List Toggl projects from the Compiler workspace."""
     format = FORMATS.get(format_key)
@@ -73,8 +75,10 @@ def projects(
     api = TogglUtils()
     click.echo("Getting Toggl projects...", err=True)
 
-    if detailed:
-        click.echo("Fetching detailed project information (Track API)...", err=True)
+    # Use Track API for detailed output (csv/json), Reports API for basic
+    is_detailed = format in (Format.CSV, Format.JSON)
+    if is_detailed:
+        click.echo("Fetching detailed project information...", err=True)
         items = api.get_projects_detailed(
             client_ids=client_ids_list,
             ids=ids_list,
@@ -83,7 +87,9 @@ def projects(
             is_private=is_private,
             name=name,
         )
-        click.echo(f"Got {len(items)} Projects (detailed)", err=True)
+        # Exclude internal/auxiliary fields from detailed output
+        items = [{k: v for k, v in item.items() if k not in TRACK_EXCLUDED_FIELDS} for item in items]
+        click.echo(f"Got {len(items)} Projects", err=True)
     else:
         items = api.get_projects(
             client_ids=client_ids_list,
@@ -98,22 +104,13 @@ def projects(
     stdout = click.get_text_stream("stdout")
     if format in [Format.BASIC, Format.CSV]:
         dataframe = pd.DataFrame(items)
-        if detailed:
-            # Exclude internal/auxiliary fields from detailed output
-            excluded = {"total_count", "pinned", "can_track_time", "permissions", "recurring", "recurring_parameters"}
-            items_list = [{k: v for k, v in item.items() if k not in excluded} for item in items]
-            dataframe = pd.DataFrame(items_list)
+        if is_detailed:
             requested_columns = list(items[0].keys()) if items else []
         else:
-            # Ensure all requested columns exist on the dataframe to avoid KeyError
             requested_columns = ["id", "name", "client_id", "active", "billable", "private"]
             for col in requested_columns:
                 if col not in dataframe.columns:
                     dataframe[col] = None
-        files.write_csv(
-            stdout,
-            dataframe,
-            columns=requested_columns,
-        )
+        files.write_csv(stdout, dataframe, columns=requested_columns)
     elif format == Format.JSON:
         files.write_json(stdout, items)
