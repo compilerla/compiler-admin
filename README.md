@@ -5,17 +5,20 @@
 | Name                                          |    Stmts |     Miss |   Branch |   BrPart |   Cover |   Missing |
 |---------------------------------------------- | -------: | -------: | -------: | -------: | ------: | --------: |
 | compiler\_admin/\_\_init\_\_.py               |       13 |        2 |        0 |        0 |     85% |     26-28 |
-| compiler\_admin/api/toggl.py                  |       88 |        0 |        2 |        0 |    100% |           |
+| compiler\_admin/api/toggl.py                  |      139 |        7 |       32 |       15 |     87% |182-\>184, 184-\>186, 186-\>189, 221-\>223, 224, 225-\>227, 227-\>229, 229-\>231, 231-\>233, 233-\>235, 235-\>237, 237-\>240, 260-\>262, 262-\>264, 264-\>267, 290-292, 305-307, 320-322 |
 | compiler\_admin/commands/\_\_init\_\_.py      |        0 |        0 |        0 |        0 |    100% |           |
 | compiler\_admin/commands/info.py              |       10 |        0 |        0 |        0 |    100% |           |
 | compiler\_admin/commands/init.py              |       35 |        0 |       10 |        1 |     98% |   20-\>17 |
-| compiler\_admin/commands/ls/\_\_init\_\_.py   |       10 |        1 |        0 |        0 |     90% |        11 |
+| compiler\_admin/commands/ls/\_\_init\_\_.py   |       16 |        1 |        0 |        0 |     94% |        14 |
+| compiler\_admin/commands/ls/clients.py        |       33 |        0 |        8 |        1 |     98% | 57-\>exit |
 | compiler\_admin/commands/ls/groups.py         |       28 |        0 |        4 |        0 |    100% |           |
 | compiler\_admin/commands/ls/orgs.py           |        6 |        0 |        0 |        0 |    100% |           |
-| compiler\_admin/commands/ls/users.py          |       46 |        0 |       12 |        0 |    100% |           |
+| compiler\_admin/commands/ls/project\_users.py |       28 |        3 |        8 |        2 |     81% | 60, 62-63 |
+| compiler\_admin/commands/ls/projects.py       |       41 |        0 |       12 |        1 |     98% |117-\>exit |
+| compiler\_admin/commands/ls/users.py          |       45 |        0 |       12 |        0 |    100% |           |
 | compiler\_admin/commands/time/\_\_init\_\_.py |       12 |        1 |        0 |        0 |     92% |        12 |
 | compiler\_admin/commands/time/convert.py      |       25 |        0 |        2 |        0 |    100% |           |
-| compiler\_admin/commands/time/download.py     |       45 |        0 |       14 |        0 |    100% |           |
+| compiler\_admin/commands/time/download.py     |       53 |        0 |       18 |        0 |    100% |           |
 | compiler\_admin/commands/time/lock.py         |       14 |        0 |        2 |        0 |    100% |           |
 | compiler\_admin/commands/time/verify.py       |       89 |        4 |       48 |        8 |     91% |37, 39, 41, 42-\>45, 45-\>54, 54-\>66, 104-\>exit, 110 |
 | compiler\_admin/commands/user/\_\_init\_\_.py |       24 |        1 |        0 |        0 |     96% |        18 |
@@ -31,12 +34,12 @@
 | compiler\_admin/commands/user/signout.py      |       19 |        0 |        6 |        0 |    100% |           |
 | compiler\_admin/main.py                       |       18 |        2 |        2 |        1 |     85% |    15, 25 |
 | compiler\_admin/services/\_\_init\_\_.py      |        0 |        0 |        0 |        0 |    100% |           |
-| compiler\_admin/services/files.py             |       41 |        2 |       12 |        3 |     91% |24, 40, 50-\>53 |
+| compiler\_admin/services/files.py             |       46 |        3 |       16 |        4 |     89% |24, 31, 48, 58-\>61 |
 | compiler\_admin/services/google.py            |      237 |        0 |       70 |        0 |    100% |           |
 | compiler\_admin/services/harvest.py           |       49 |        0 |        6 |        0 |    100% |           |
 | compiler\_admin/services/time.py              |       39 |       10 |       28 |       10 |     70% |20, 23, 25, 27, 32, 35, 38, 41, 43, 46 |
-| compiler\_admin/services/toggl.py             |      154 |        0 |       30 |        1 |     99% |   88-\>94 |
-| **TOTAL**                                     | **1254** |   **24** |  **318** |   **25** | **97%** |           |
+| compiler\_admin/services/toggl.py             |      287 |       15 |       90 |       21 |     90% |88-\>94, 327, 346, 353, 355, 384, 390, 394, 439, 446, 448, 489, 491, 492-\>494, 494-\>496, 496-\>498, 509, 517, 540-\>542, 542-\>545, 549 |
+| **TOTAL**                                     | **1558** |   **50** |  **444** |   **65** | **94%** |           |
 
 
 ## Setup coverage badge
